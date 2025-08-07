@@ -1,0 +1,38 @@
+const de = {
+  nav: { home: "Startseite", book: "Buchen" },
+  hero: {
+    alt: "Indoor Surfskate Halle – Heldengrafik",
+    title: "Surfskate Hall – Buche deinen Flow",
+    subtitle:
+      "Reserviere dein Zeitfenster in unserer Surfskate-Halle. Einfache Buchung, faire Slots, globale Community – DE/EN.",
+    cta: "Jetzt buchen",
+  },
+  features: {
+    title: "Warum bei uns buchen?",
+    items: [
+      { title: "Flexible Slots", desc: "Stündliche Zeitfenster von 10–22 Uhr – wähle, was dir passt." },
+      { title: "Community Vibes", desc: "Treffe Rider aus aller Welt – Progression mit Surf-Style." },
+      { title: "Einfach & Schnell", desc: "Buchung in Sekunden, Bestätigung sofort – mobil optimiert." },
+    ],
+  },
+  booking: {
+    title: "Buchung",
+    subtitle: "Wähle ein Datum und ein Zeitfenster, danach trägst du deine Daten ein.",
+    pickDate: "Datum wählen",
+    availableSlots: "Verfügbare Slots",
+    selectedDate: "Ausgewähltes Datum",
+    form: {
+      name: "Name",
+      email: "E-Mail",
+      phone: "Telefon (optional)",
+      level: "Level",
+      levelOptions: { beginner: "Einsteiger/in", intermediate: "Fortgeschritten", advanced: "Pro" },
+      notes: "Notizen (optional)",
+      submit: "Slot buchen",
+    },
+    success: "Dein Slot ist reserviert! Wir haben deine Buchung gespeichert.",
+    errors: { selectSlot: "Bitte wähle zuerst ein Zeitfenster aus.", selectDate: "Bitte wähle ein Datum aus." },
+  },
+} as const;
+
+export default de;
