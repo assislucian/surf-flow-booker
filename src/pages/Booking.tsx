@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface BookingForm {
   name: string;
@@ -35,6 +36,7 @@ const allSlots = generateSlots();
 const Booking: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [selectedSlot, setSelectedSlot] = React.useState<string | null>(null);
 
@@ -62,18 +64,17 @@ const Booking: React.FC = () => {
       return;
     }
 
-    const key = bookedKey(date, selectedSlot);
-    const bookings = JSON.parse(localStorage.getItem("bookings") || "{}");
-    if (bookings[key]) {
-      toast({ title: "Slot bereits gebucht / Slot already booked" });
-      return;
-    }
-    bookings[key] = { ...data, date: format(date, "yyyy-MM-dd"), slot: selectedSlot };
-    localStorage.setItem("bookings", JSON.stringify(bookings));
+    // Store pending booking to complete after payment success
+    const pending = {
+      ...data,
+      date: format(date, "yyyy-MM-dd"),
+      slot: selectedSlot,
+      createdAt: Date.now(),
+    };
+    sessionStorage.setItem("pending_booking", JSON.stringify(pending));
 
-    toast({ title: t("booking.success") as string });
-    setSelectedSlot(null);
-    reset();
+    toast({ title: i18n.language === "de" ? "Weiter zur Zahlung" : "Proceeding to payment" });
+    navigate("/checkout");
   };
 
   const isBooked = (slot: string) => {

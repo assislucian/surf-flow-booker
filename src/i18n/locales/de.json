@@ -34,5 +34,24 @@
     },
     "success": "Dein Slot ist reserviert! Wir haben deine Buchung gespeichert.",
     "errors": { "selectSlot": "Bitte wähle zuerst ein Zeitfenster aus.", "selectDate": "Bitte wähle ein Datum aus." }
+  },
+  "checkout": {
+    "title": "Zur Kasse",
+    "subtitle": "Bitte prüfe deine Angaben und starte die Zahlung.",
+    "proceed": "Zur Zahlung",
+    "back": "Zurück zur Buchung",
+    "missing": "Keine ausstehende Buchung gefunden.",
+    "summary": {
+      "date": "Datum",
+      "slot": "Zeitfenster",
+      "name": "Name",
+      "email": "E-Mail",
+      "level": "Level",
+      "notes": "Notizen"
+    }
+  },
+  "payment": {
+    "success": { "title": "Zahlung erfolgreich", "desc": "Deine Buchung ist bestätigt. Eine Bestätigungsmail wird gesendet." },
+    "canceled": { "title": "Zahlung abgebrochen", "desc": "Du kannst die Zahlung jederzeit erneut starten." }
   }
 }

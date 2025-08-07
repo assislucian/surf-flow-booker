@@ -34,5 +34,24 @@
     },
     "success": "Your slot is reserved! We've saved your booking.",
     "errors": { "selectSlot": "Please select a time slot first.", "selectDate": "Please select a date." }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "subtitle": "Review your details and start the payment.",
+    "proceed": "Proceed to Payment",
+    "back": "Back to booking",
+    "missing": "No pending booking found.",
+    "summary": {
+      "date": "Date",
+      "slot": "Time slot",
+      "name": "Name",
+      "email": "Email",
+      "level": "Level",
+      "notes": "Notes"
+    }
+  },
+  "payment": {
+    "success": { "title": "Payment successful", "desc": "Your booking is confirmed. A confirmation email will be sent." },
+    "canceled": { "title": "Payment canceled", "desc": "You can restart the payment anytime." }
   }
 }
