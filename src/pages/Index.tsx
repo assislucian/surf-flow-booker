@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const { t } = useTranslation();
+  const featuresRaw = t("features.items", { returnObjects: true }) as unknown;
+  const featureItems = Array.isArray(featuresRaw) ? (featuresRaw as { title: string; desc: string }[]) : [];
   return (
     <main className="min-h-screen">
       <Helmet>
@@ -35,7 +37,7 @@ const Index = () => {
             </p>
             <div className="mt-6 animate-scale-in">
               <Button asChild size="lg">
-                <Link to="/book">{t("hero.cta")}</Link>
+                <a href="/book">{t("hero.cta")}</a>
               </Button>
             </div>
           </div>
@@ -45,7 +47,7 @@ const Index = () => {
       <section className="container py-12 md:py-16">
         <h2 className="text-2xl md:text-3xl font-semibold">{t("features.title")}</h2>
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {((t("features.items", { returnObjects: true }) as { title: string; desc: string }[]) || []).map((f, i) => (
+          {featureItems.map((f, i) => (
             <article key={i} className="rounded-xl border bg-card p-6 shadow-[var(--shadow-elegant)] transition-transform duration-200 hover:scale-105">
               <h3 className="font-medium text-lg">{f.title}</h3>
               <p className="mt-2 text-muted-foreground">{f.desc}</p>
