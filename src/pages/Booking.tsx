@@ -87,7 +87,7 @@ const Booking: React.FC = () => {
     <main className="container py-10">
       <Helmet>
         <title>Surfskate Hall – {t("booking.title")}</title>
-        <meta name="description" content="Surfskate Buchung – Slots wählen, Daten eintragen, fertig. Deutsch/Englisch." />
+        <meta name="description" content={t("booking.metaDescription", { defaultValue: "Surfskate Buchung in Wiesbaden – Slots wählen, Daten eintragen, fertig. Deutsch/Englisch." }) as string} />
         <link rel="canonical" href="/book" />
       </Helmet>
 
@@ -147,12 +147,12 @@ const Booking: React.FC = () => {
             <div>
               <Label htmlFor="name">{t("booking.form.name")}</Label>
               <Input id="name" {...register("name", { required: true })} />
-              {errors.name && <p className="text-sm text-destructive mt-1">Required</p>}
+              {errors.name && <p className="text-sm text-destructive mt-1">{t("common.required", { defaultValue: "Required" })}</p>}
             </div>
             <div>
               <Label htmlFor="email">{t("booking.form.email")}</Label>
               <Input id="email" type="email" {...register("email", { required: true })} />
-              {errors.email && <p className="text-sm text-destructive mt-1">Required</p>}
+              {errors.email && <p className="text-sm text-destructive mt-1">{t("common.required", { defaultValue: "Required" })}</p>}
             </div>
             <div>
               <Label htmlFor="phone">{t("booking.form.phone")}</Label>

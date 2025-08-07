@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import site from "@/config/site";
 
 const Index = () => {
   const { t } = useTranslation();
@@ -11,17 +12,26 @@ const Index = () => {
   return (
     <main className="min-h-screen">
       <Helmet>
-        <title>Surfskate Hall Buchung | Book Your Slot</title>
-        <meta name="description" content="Buche deinen Surfskate-Slot in unserer Halle. Benutzerfreundliches Buchungssystem auf Deutsch und Englisch." />
+        <title>Surfskate Hall Wiesbaden – Buchung | Booking</title>
+        <meta name="description" content="Buche deinen Surfskate-Slot in Wiesbaden. Benutzerfreundliche Buchung (DE/EN)." />
         <link rel="canonical" href="/" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SportsActivityLocation",
-          name: "Surfskate Hall",
-          description: "Indoor Surfskate Halle mit flexiblem Buchungssystem (DE/EN)",
-          url: "/",
+          name: site.name,
+          description: "Indoor Surfskate Halle in Wiesbaden mit flexiblem Buchungssystem (DE/EN)",
+          url: site.websiteUrl || "/",
           sport: "Surfskating",
-          openingHours: "Mo-So 10:00-22:00"
+          areaServed: "Wiesbaden, Germany",
+          telephone: site.phone,
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: site.address.street,
+            postalCode: site.address.postalCode,
+            addressLocality: site.address.city,
+            addressCountry: "DE"
+          },
+          openingHours: site.openingHours
         })}</script>
       </Helmet>
       <section className="relative overflow-hidden rounded-b-[2rem]">

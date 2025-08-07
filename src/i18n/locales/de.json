@@ -20,6 +20,7 @@
   "booking": {
     "title": "Buchung",
     "subtitle": "Wähle ein Datum und ein Zeitfenster, danach trägst du deine Daten ein.",
+    "metaDescription": "Surfskate Buchung in Wiesbaden – Slots wählen, Daten eintragen, fertig. Deutsch/Englisch.",
     "pickDate": "Datum wählen",
     "availableSlots": "Verfügbare Slots",
     "selectedDate": "Ausgewähltes Datum",
