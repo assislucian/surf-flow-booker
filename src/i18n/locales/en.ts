@@ -18,6 +18,7 @@ const en = {
   booking: {
     title: "Booking",
     subtitle: "Pick a date and a time slot, then enter your details.",
+    metaDescription: "Surfskate booking in Wiesbaden – choose a slot, enter details, done. German/English.",
     pickDate: "Pick a date",
     availableSlots: "Available slots",
     selectedDate: "Selected date",
@@ -33,6 +34,75 @@ const en = {
     success: "Your slot is reserved! We've saved your booking.",
     errors: { selectSlot: "Please select a time slot first.", selectDate: "Please select a date." },
   },
+  checkout: {
+    title: "Checkout",
+    subtitle: "Review your details and start the payment.",
+    proceed: "Proceed to Payment",
+    back: "Back to booking",
+    missing: "No pending booking found.",
+    summary: {
+      date: "Date",
+      slot: "Time slot",
+      name: "Name",
+      email: "Email",
+      level: "Level",
+      notes: "Notes",
+    },
+  },
+  payment: {
+    success: { title: "Payment successful", desc: "Your booking is confirmed. A confirmation email will be sent." },
+    canceled: { title: "Payment canceled", desc: "You can restart the payment anytime." },
+  },
+  footer: { hours: "Opening hours", rights: "All rights reserved." },
+  legal: {
+    imprint: {
+      short: "Imprint",
+      title: "Imprint",
+      desc: "Provider identification according to §5 TMG.",
+      contact: "Contact",
+      responsibility: "Responsible for content",
+      disclaimer: "Disclaimer",
+      text:
+        "Despite careful content control, we assume no liability for the content of external links.",
+    },
+    privacy: {
+      short: "Privacy",
+      title: "Privacy Policy",
+      desc: "Information according to GDPR.",
+      controller: "Controller",
+      controllerText: "The controller is the provider named in the imprint.",
+      data: "Processed data",
+      bookingData: "Booking data (name, email, selected slot)",
+      payment: "Payment processing via Stripe (separate privacy policy)",
+      rights: "Your rights",
+      rightsText: "You have the right to access, rectification, deletion and more.",
+    },
+    terms: {
+      short: "Terms",
+      title: "Terms and Conditions",
+      desc: "Terms for bookings and hall usage.",
+      bookings: "Bookings & Payment",
+      bookingsText: "Bookings become effective only after payment. Prices incl. VAT.",
+      cancellations: "Cancellations",
+      cancellationsText: "Cancellations possible up to 24h before the appointment, no refund afterwards.",
+      rules: "House Rules",
+      rulesText: "Safety first. Staff instructions must be followed.",
+    },
+    withdrawal: {
+      short: "Withdrawal",
+      title: "Right of Withdrawal",
+      desc: "Information on the right of withdrawal for consumers.",
+      text:
+        "Consumers have the right to withdraw from this contract within 14 days without giving reasons (exceptions may apply to leisure services tied to a specific date).",
+    },
+    contact: { short: "Contact", title: "Contact", desc: "How to reach us in Wiesbaden." },
+  },
+  cookies: {
+    message: "We only use essential cookies to improve your experience.",
+    accept: "Accept",
+    decline: "Decline",
+  },
+  common: { required: "Required" },
 } as const;
 
 export default en;

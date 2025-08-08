@@ -18,6 +18,7 @@ const de = {
   booking: {
     title: "Buchung",
     subtitle: "Wähle ein Datum und ein Zeitfenster, danach trägst du deine Daten ein.",
+    metaDescription: "Surfskate Buchung in Wiesbaden – Slots wählen, Daten eintragen, fertig. Deutsch/Englisch.",
     pickDate: "Datum wählen",
     availableSlots: "Verfügbare Slots",
     selectedDate: "Ausgewähltes Datum",
@@ -33,6 +34,75 @@ const de = {
     success: "Dein Slot ist reserviert! Wir haben deine Buchung gespeichert.",
     errors: { selectSlot: "Bitte wähle zuerst ein Zeitfenster aus.", selectDate: "Bitte wähle ein Datum aus." },
   },
+  checkout: {
+    title: "Zur Kasse",
+    subtitle: "Bitte prüfe deine Angaben und starte die Zahlung.",
+    proceed: "Zur Zahlung",
+    back: "Zurück zur Buchung",
+    missing: "Keine ausstehende Buchung gefunden.",
+    summary: {
+      date: "Datum",
+      slot: "Zeitfenster",
+      name: "Name",
+      email: "E-Mail",
+      level: "Level",
+      notes: "Notizen",
+    },
+  },
+  payment: {
+    success: { title: "Zahlung erfolgreich", desc: "Deine Buchung ist bestätigt. Eine Bestätigungsmail wird gesendet." },
+    canceled: { title: "Zahlung abgebrochen", desc: "Du kannst die Zahlung jederzeit erneut starten." },
+  },
+  footer: { hours: "Öffnungszeiten", rights: "Alle Rechte vorbehalten." },
+  legal: {
+    imprint: {
+      short: "Impressum",
+      title: "Impressum",
+      desc: "Anbieterkennzeichnung gemäß §5 TMG.",
+      contact: "Kontakt",
+      responsibility: "Verantwortlich für den Inhalt",
+      disclaimer: "Haftungsausschluss",
+      text:
+        "Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links.",
+    },
+    privacy: {
+      short: "Datenschutz",
+      title: "Datenschutzerklärung",
+      desc: "Informationen gemäß DSGVO.",
+      controller: "Verantwortlicher",
+      controllerText: "Verantwortlicher ist der im Impressum genannte Anbieter.",
+      data: "Verarbeitete Daten",
+      bookingData: "Buchungsdaten (Name, E-Mail, gewählter Slot)",
+      payment: "Zahlungsabwicklung via Stripe (separate Datenschutzerklärung)",
+      rights: "Ihre Rechte",
+      rightsText: "Sie haben das Recht auf Auskunft, Berichtigung, Löschung u.a.",
+    },
+    terms: {
+      short: "AGB",
+      title: "Allgemeine Geschäftsbedingungen",
+      desc: "AGB für Buchungen und Nutzung der Halle.",
+      bookings: "Buchungen & Zahlung",
+      bookingsText: "Buchungen werden erst mit Zahlung wirksam. Preise inkl. MwSt.",
+      cancellations: "Stornierung",
+      cancellationsText: "Stornierungen sind bis 24h vor Termin möglich, danach keine Erstattung.",
+      rules: "Hausordnung",
+      rulesText: "Sicherheit geht vor. Den Anweisungen des Personals ist Folge zu leisten.",
+    },
+    withdrawal: {
+      short: "Widerruf",
+      title: "Widerrufsbelehrung",
+      desc: "Hinweise zum Widerrufsrecht für Verbraucher.",
+      text:
+        "Verbraucher haben das Recht, binnen 14 Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen (Ausnahmen bei terminbezogenen Freizeitdienstleistungen möglich).",
+    },
+    contact: { short: "Kontakt", title: "Kontakt", desc: "So erreichen Sie uns in Wiesbaden." },
+  },
+  cookies: {
+    message: "Wir verwenden nur notwendige Cookies, um Ihr Erlebnis zu verbessern.",
+    accept: "Akzeptieren",
+    decline: "Ablehnen",
+  },
+  common: { required: "Pflichtfeld" },
 } as const;
 
 export default de;
