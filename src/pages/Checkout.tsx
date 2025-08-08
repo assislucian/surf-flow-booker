@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, Link } from "react-router-dom";
+import { createPaymentSession } from "@/lib/payments";
 
 const Checkout: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -17,16 +18,17 @@ const Checkout: React.FC = () => {
   }, []);
 
   const handlePay = async () => {
-    // Placeholder: integrate Stripe via Supabase Edge Function `create-payment`
-    // Once connected, call: const { data } = await supabase.functions.invoke('create-payment', { body: { pending } })
-    // Then: window.open(data.url, '_blank')
-    toast({
-      title: i18n.language === "de" ? "Stripe noch nicht verbunden" : "Stripe not connected yet",
-      description:
-        i18n.language === "de"
-          ? "Verbinden Sie Supabase und richten Sie den Edge Function 'create-payment' ein."
-          : "Connect Supabase and set up the 'create-payment' edge function.",
-    });
+    if (!pending) return;
+    try {
+      const { url } = await createPaymentSession(pending);
+      // Open Stripe checkout in a new tab
+      window.open(url, "_blank");
+    } catch (e: any) {
+      toast({
+        title: i18n.language === "de" ? "Zahlung fehlgeschlagen" : "Payment failed",
+        description: e?.message || (i18n.language === "de" ? "Bitte später erneut versuchen." : "Please try again later."),
+      });
+    }
   };
 
   return (

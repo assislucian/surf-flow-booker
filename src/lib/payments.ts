@@ -1,5 +1,7 @@
-// Payment integration placeholder utilities
-// Replace implementations after connecting Supabase and Stripe
+// Payment integration utilities
+// Implemented via Supabase Edge Function 'create-payment'
+
+import { supabase } from "@/integrations/supabase/client";
 
 export type PendingBooking = {
   name: string;
@@ -12,10 +14,22 @@ export type PendingBooking = {
   createdAt: number;
 };
 
-export async function createPaymentSession(_pending: PendingBooking): Promise<{ url: string }>{
-  // Example after setup:
-  // const { data, error } = await supabase.functions.invoke('create-payment', { body: { pending: _pending } });
-  // if (error) throw error;
-  // return { url: data.url };
-  throw new Error("Stripe edge function 'create-payment' not configured");
+export async function createPaymentSession(
+  pending: PendingBooking,
+  opts?: { amountCents?: number; currency?: string }
+): Promise<{ url: string }> {
+  const amountCents = opts?.amountCents ?? 1499;
+  const currency = (opts?.currency ?? "eur").toLowerCase();
+  const origin = window.location.origin;
+  const { data, error } = await supabase.functions.invoke("create-payment", {
+    body: {
+      pending,
+      amountCents,
+      currency,
+      successUrl: `${origin}/payment-success`,
+      cancelUrl: `${origin}/payment-canceled`,
+    },
+  });
+  if (error) throw error;
+  return { url: (data as any).url };
 }

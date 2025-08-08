@@ -1,10 +1,11 @@
-// Email confirmation placeholder utilities
-// Replace after connecting Supabase and an email provider (e.g., Resend, SendGrid)
+// Email confirmation utilities via Supabase Edge Function
 
+import { supabase } from "@/integrations/supabase/client";
 import type { PendingBooking } from "./payments";
 
-export async function sendConfirmationEmail(_booking: PendingBooking): Promise<void> {
-  // Example after setup via Supabase Edge Function 'send-confirmation-email'
-  // await supabase.functions.invoke('send-confirmation-email', { body: { booking: _booking } });
-  throw new Error("Email edge function 'send-confirmation-email' not configured");
+export async function sendConfirmationEmail(booking: PendingBooking): Promise<void> {
+  const { error } = await supabase.functions.invoke("send-confirmation-email", {
+    body: { booking },
+  });
+  if (error) throw error;
 }

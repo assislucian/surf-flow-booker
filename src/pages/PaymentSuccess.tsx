@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { sendConfirmationEmail } from "@/lib/emails";
 
 const PaymentSuccess: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -20,6 +21,9 @@ const PaymentSuccess: React.FC = () => {
       bookings[key] = pending;
       localStorage.setItem("bookings", JSON.stringify(bookings));
     }
+
+    // Send confirmation email (non-blocking)
+    sendConfirmationEmail(pending).catch((err) => console.error("email error", err));
 
     sessionStorage.removeItem("pending_booking");
     setDetails(pending);
