@@ -11,6 +11,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BookingForm {
   name: string;
@@ -39,6 +40,7 @@ const Booking: React.FC = () => {
   const navigate = useNavigate();
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [selectedSlot, setSelectedSlot] = React.useState<string | null>(null);
+  const [bookedSlots, setBookedSlots] = React.useState<string[]>([]);
 
   const {
     register,
@@ -53,6 +55,27 @@ const Booking: React.FC = () => {
 
   const bookedKey = (d: Date | undefined, s: string | null) =>
     d && s ? `${format(d, "yyyy-MM-dd")}|${s}` : "";
+
+  React.useEffect(() => {
+    const load = async () => {
+      if (!date) {
+        setBookedSlots([]);
+        return;
+      }
+      try {
+        const day = format(date, "yyyy-MM-dd");
+        const { data, error } = await supabase.functions.invoke("get-booked-slots", {
+          body: { date: day },
+        });
+        if (error) throw error;
+        setBookedSlots(((data as any)?.slots ?? []) as string[]);
+      } catch (e) {
+        console.error("get-booked-slots error", e);
+        setBookedSlots([]);
+      }
+    };
+    load();
+  }, [date]);
 
   const onSubmit = (data: BookingForm) => {
     if (!date) {
@@ -78,9 +101,7 @@ const Booking: React.FC = () => {
   };
 
   const isBooked = (slot: string) => {
-    if (!date) return false;
-    const bookings = JSON.parse(localStorage.getItem("bookings") || "{}");
-    return Boolean(bookings[bookedKey(date, slot)]);
+    return bookedSlots.includes(slot);
   };
 
   return (

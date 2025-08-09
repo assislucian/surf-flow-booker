@@ -4,29 +4,35 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { sendConfirmationEmail } from "@/lib/emails";
+import { supabase } from "@/integrations/supabase/client";
 
 const PaymentSuccess: React.FC = () => {
   const { t, i18n } = useTranslation();
   const [details, setDetails] = React.useState<any | null>(null);
 
   React.useEffect(() => {
-    const raw = sessionStorage.getItem("pending_booking");
-    if (!raw) return;
-    const pending = JSON.parse(raw);
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    if (!sessionId) return;
 
-    // Persist booking (demo): finalize after successful payment
-    const key = `${pending.date}|${pending.slot}`;
-    const bookings = JSON.parse(localStorage.getItem("bookings") || "{}");
-    if (!bookings[key]) {
-      bookings[key] = pending;
-      localStorage.setItem("bookings", JSON.stringify(bookings));
-    }
-
-    // Send confirmation email (non-blocking)
-    sendConfirmationEmail(pending).catch((err) => console.error("email error", err));
-
-    sessionStorage.removeItem("pending_booking");
-    setDetails(pending);
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("verify-payment", {
+          body: { sessionId },
+        });
+        if (error) throw error;
+        const booking = (data as any)?.booking;
+        if (booking) {
+          setDetails(booking);
+          // Send confirmation email (non-blocking)
+          sendConfirmationEmail(booking).catch((err) => console.error("email error", err));
+        }
+      } catch (err) {
+        console.error("verify-payment error", err);
+      } finally {
+        sessionStorage.removeItem("pending_booking");
+      }
+    })();
   }, []);
 
   return (

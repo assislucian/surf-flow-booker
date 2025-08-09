@@ -41,8 +41,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: successUrl || `${req.headers.get("origin")}/payment-success`,
-      cancel_url: cancelUrl || `${req.headers.get("origin")}/payment-canceled`,
+      success_url: (successUrl || `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`),
+      cancel_url: (cancelUrl || `${req.headers.get("origin")}/payment-canceled`),
       metadata: {
         name: pending.name ?? "",
         email: pending.email ?? "",

@@ -26,7 +26,7 @@ export async function createPaymentSession(
       pending,
       amountCents,
       currency,
-      successUrl: `${origin}/payment-success`,
+      successUrl: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${origin}/payment-canceled`,
     },
   });
