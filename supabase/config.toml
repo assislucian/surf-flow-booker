@@ -1,1 +1,13 @@
 project_id = "aezvouallinpwtuaakes"
+
+[functions.create-payment]
+verify_jwt = false
+
+[functions.send-confirmation-email]
+verify_jwt = false
+
+[functions.verify-payment]
+verify_jwt = false
+
+[functions.get-booked-slots]
+verify_jwt = false
