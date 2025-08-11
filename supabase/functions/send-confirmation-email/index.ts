@@ -77,7 +77,7 @@ serve(async (req) => {
     `;
 
     const { error: sendError } = await resend.emails.send({
-      from: "Surfskate Hall <noreply@surfskate-hall.com>",
+      from: "Surfskate Hall <noreply@lifabrasil.com>",
       to: [booking.email],
       subject: "🏄‍♂️ Buchung bestätigt – Let's ride!",
       html,
