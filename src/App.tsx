@@ -18,6 +18,9 @@ import Datenschutz from "./pages/Datenschutz";
 import Terms from "./pages/Terms";
 import Widerruf from "./pages/Widerruf";
 import Kontakt from "./pages/Kontakt";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminLayout from "./components/admin/AdminLayout";
 
 const queryClient = new QueryClient();
 
@@ -28,23 +31,36 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Header />
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/book" element={<Booking />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/payment-canceled" element={<PaymentCanceled />} />
-            <Route path="/impressum" element={<Impressum />} />
-            <Route path="/datenschutz" element={<Datenschutz />} />
-            <Route path="/agb" element={<Terms />} />
-            <Route path="/widerruf" element={<Widerruf />} />
-            <Route path="/kontakt" element={<Kontakt />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+            {/* Admin Routes - No Header/Footer */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="dashboard" element={<AdminDashboard />} />
+            </Route>
+            
+            {/* Public Routes - With Header/Footer */}
+            <Route path="/*" element={
+              <>
+                <Header />
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/book" element={<Booking />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/payment-success" element={<PaymentSuccess />} />
+                  <Route path="/payment-canceled" element={<PaymentCanceled />} />
+                  <Route path="/impressum" element={<Impressum />} />
+                  <Route path="/datenschutz" element={<Datenschutz />} />
+                  <Route path="/agb" element={<Terms />} />
+                  <Route path="/widerruf" element={<Widerruf />} />
+                  <Route path="/kontakt" element={<Kontakt />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+                <Footer />
+                <CookieBanner />
+              </>
+            } />
           </Routes>
-          <Footer />
-          <CookieBanner />
         </BrowserRouter>
       </TooltipProvider>
     </HelmetProvider>
