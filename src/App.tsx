@@ -18,6 +18,7 @@ import Datenschutz from "./pages/Datenschutz";
 import Terms from "./pages/Terms";
 import Widerruf from "./pages/Widerruf";
 import Kontakt from "./pages/Kontakt";
+import AdminAccess from "./pages/AdminAccess";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLayout from "./components/admin/AdminLayout";
@@ -33,8 +34,9 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Admin Routes - No Header/Footer */}
+            <Route path="/admin" element={<AdminAccess />} />
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminLayout />}>
+            <Route path="/admin/app" element={<AdminLayout />}>
               <Route path="dashboard" element={<AdminDashboard />} />
             </Route>
             

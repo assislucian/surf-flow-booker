@@ -28,7 +28,7 @@ const AdminLogin = () => {
         
         // Redirect authenticated users to dashboard
         if (session?.user) {
-          navigate("/admin/dashboard");
+          navigate("/admin/app/dashboard");
         }
       }
     );
@@ -39,7 +39,7 @@ const AdminLogin = () => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        navigate("/admin/dashboard");
+        navigate("/admin/app/dashboard");
       }
     });
 

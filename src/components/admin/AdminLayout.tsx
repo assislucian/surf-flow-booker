@@ -24,6 +24,11 @@ const AdminLayout = () => {
         // Redirect unauthenticated users to login
         if (!session?.user) {
           navigate("/admin/login");
+        } else {
+          // If authenticated and on /admin/app, redirect to dashboard
+          if (window.location.pathname === "/admin/app") {
+            navigate("/admin/app/dashboard");
+          }
         }
       }
     );
@@ -36,6 +41,11 @@ const AdminLayout = () => {
       
       if (!session?.user) {
         navigate("/admin/login");
+      } else {
+        // If authenticated and on /admin/app, redirect to dashboard
+        if (window.location.pathname === "/admin/app") {
+          navigate("/admin/app/dashboard");
+        }
       }
     });
 

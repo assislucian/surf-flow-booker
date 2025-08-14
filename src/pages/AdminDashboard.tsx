@@ -44,6 +44,27 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchBookings();
+
+    // Set up real-time subscription for bookings
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'bookings'
+        },
+        (payload) => {
+          console.log('Booking change detected:', payload);
+          fetchBookings(); // Refresh data when changes occur
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchBookings = async () => {
@@ -142,66 +163,79 @@ const AdminDashboard = () => {
       </Helmet>
 
       {/* Page Header */}
-      <div>
-        <h1 className="text-3xl font-display font-semibold">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Übersicht über alle Buchungen und Finanzen
+      <div className="bg-gradient-to-r from-primary/10 to-primary-glow/10 p-6 rounded-lg border border-primary/20">
+        <h1 className="text-3xl font-display font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+          Admin Dashboard
+        </h1>
+        <p className="text-muted-foreground mt-2">
+          Übersicht über alle Buchungen und Finanzen in Echtzeit
         </p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="border-border/50 shadow-elegant hover:shadow-glow transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Gesamte Buchungen</CardTitle>
-            <CalendarDays className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <CalendarDays className="h-4 w-4 text-primary" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalBookings}</div>
+            <div className="text-2xl font-bold text-primary">{stats.totalBookings}</div>
             <p className="text-xs text-muted-foreground">Bestätigte Buchungen</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/50 shadow-elegant hover:shadow-glow transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Gesamtumsatz</CardTitle>
-            <Euro className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 bg-accent/10 rounded-lg">
+              <Euro className="h-4 w-4 text-accent" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(stats.totalRevenue)}</div>
+            <div className="text-2xl font-bold text-accent">{formatCurrency(stats.totalRevenue)}</div>
             <p className="text-xs text-muted-foreground">Alle bestätigten Buchungen</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/50 shadow-elegant hover:shadow-glow transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Heute</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 bg-secondary/10 rounded-lg">
+              <Users className="h-4 w-4 text-secondary" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.todayBookings}</div>
+            <div className="text-2xl font-bold text-secondary">{stats.todayBookings}</div>
             <p className="text-xs text-muted-foreground">Buchungen für heute</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/50 shadow-elegant hover:shadow-glow transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Dieser Monat</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 bg-primary-glow/10 rounded-lg">
+              <TrendingUp className="h-4 w-4 text-primary-glow" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(stats.thisMonthRevenue)}</div>
+            <div className="text-2xl font-bold text-primary-glow">{formatCurrency(stats.thisMonthRevenue)}</div>
             <p className="text-xs text-muted-foreground">Umsatz diesen Monat</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Bookings Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Alle Buchungen</CardTitle>
+      <Card className="border-border/50 shadow-elegant">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+          <CardTitle className="flex items-center gap-2">
+            <CalendarDays className="h-5 w-5 text-primary" />
+            Alle Buchungen ({bookings.length})
+          </CardTitle>
           <CardDescription>
-            Übersicht über alle Buchungen in chronologischer Reihenfolge
+            Übersicht über alle Buchungen in chronologischer Reihenfolge • Aktualisiert in Echtzeit
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -247,9 +281,10 @@ const AdminDashboard = () => {
                       </TableCell>
                       <TableCell>
                         <Badge 
-                          variant={booking.status === 'confirmed' ? 'default' : 'secondary'}
+                          variant={booking.status === 'confirmed' ? 'default' : booking.status === 'pending' ? 'secondary' : 'destructive'}
+                          className={booking.status === 'confirmed' ? 'bg-accent/10 text-accent border-accent/20' : ''}
                         >
-                          {booking.status}
+                          {booking.status === 'confirmed' ? 'Bestätigt' : booking.status === 'pending' ? 'Ausstehend' : booking.status}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
