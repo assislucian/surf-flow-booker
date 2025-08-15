@@ -1,5 +1,5 @@
 const en = {
-  nav: { home: "Home", about: "About", blog: "News", book: "Book" },
+  nav: { home: "Home", book: "Book" },
   hero: {
     alt: "Indoor surfskate hall – hero image",
     title: "Surfskate Hall – Book Your Flow",
@@ -96,41 +96,6 @@ const en = {
         "Consumers have the right to withdraw from this contract within 14 days without giving reasons (exceptions may apply to leisure services tied to a specific date).",
     },
     contact: { short: "Contact", title: "Contact", desc: "How to reach us in Wiesbaden." },
-  },
-  aboutUs: {
-    title: "About Us",
-    subtitle: "The story behind Surfskate Hall Wiesbaden",
-    story: {
-      title: "Our Story",
-      content: "What began as a dream of the perfect wave in the city became Wiesbaden's first indoor surfskate hall. We've created a place where surfers, skaters, and everyone who loves the feeling of flow can come together."
-    },
-    mission: {
-      title: "Our Mission",
-      content: "We bring the energy of the ocean to the city. Whether you're a beginner or a pro – here you'll find your flow and a community that shares your passion."
-    },
-    values: {
-      title: "Our Values",
-      items: [
-        { title: "Community", desc: "We create connections between people who share the same passion." },
-        { title: "Progression", desc: "Everyone can improve – we support you on your journey." },
-        { title: "Authenticity", desc: "Real surf vibes and authentic experiences are at our core." },
-        { title: "Fun", desc: "In the end, it's about having fun and enjoying the moment." }
-      ]
-    },
-    team: {
-      title: "Our Team",
-      subtitle: "The people who make your surfskate experience possible"
-    }
-  },
-  blog: {
-    title: "News & Events",
-    subtitle: "Stay updated with the latest surfskate news, events, and community updates",
-    readMore: "Read more",
-    backToBlog: "Back to blog",
-    noPostsYet: "Exciting news and events coming soon!",
-    publishedOn: "Published on",
-    categories: "Categories",
-    relatedPosts: "Related posts"
   },
   subscription: {
     title: "Premium Membership",

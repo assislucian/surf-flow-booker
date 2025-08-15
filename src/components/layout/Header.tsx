@@ -46,48 +46,6 @@ const Header = () => {
           )}
           {inRouter ? (
             <Link
-              to="/about"
-              className={
-                "px-3 py-2 rounded-md text-sm " +
-                (isActive("/about") ? "bg-secondary text-foreground" : "hover:bg-secondary/60")
-              }
-            >
-              {t("nav.about")}
-            </Link>
-          ) : (
-            <a
-              href="/about"
-              className={
-                "px-3 py-2 rounded-md text-sm " +
-                (isActive("/about") ? "bg-secondary text-foreground" : "hover:bg-secondary/60")
-              }
-            >
-              {t("nav.about")}
-            </a>
-          )}
-          {inRouter ? (
-            <Link
-              to="/blog"
-              className={
-                "px-3 py-2 rounded-md text-sm " +
-                (isActive("/blog") ? "bg-secondary text-foreground" : "hover:bg-secondary/60")
-              }
-            >
-              {t("nav.blog")}
-            </Link>
-          ) : (
-            <a
-              href="/blog"
-              className={
-                "px-3 py-2 rounded-md text-sm " +
-                (isActive("/blog") ? "bg-secondary text-foreground" : "hover:bg-secondary/60")
-              }
-            >
-              {t("nav.blog")}
-            </a>
-          )}
-          {inRouter ? (
-            <Link
               to="/book"
               className={
                 "px-3 py-2 rounded-md text-sm " +
