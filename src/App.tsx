@@ -19,9 +19,13 @@ import Datenschutz from "./pages/Datenschutz";
 import Terms from "./pages/Terms";
 import Widerruf from "./pages/Widerruf";
 import Kontakt from "./pages/Kontakt";
+import AboutUs from "./pages/AboutUs";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import AdminAccess from "./pages/AdminAccess";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import BlogManagement from "./components/admin/BlogManagement";
 import AdminLayout from "./components/admin/AdminLayout";
 
 const queryClient = new QueryClient();
@@ -39,6 +43,7 @@ const App = () => (
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/app" element={<AdminLayout />}>
               <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="blog" element={<BlogManagement />} />
             </Route>
             
             {/* Public Routes - With Header/Footer */}
@@ -48,6 +53,9 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/book" element={<Booking />} />
+                  <Route path="/about" element={<AboutUs />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:slug" element={<BlogPost />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                   <Route path="/payment-canceled" element={<PaymentCanceled />} />

@@ -1,5 +1,5 @@
 const de = {
-  nav: { home: "Startseite", book: "Buchen" },
+  nav: { home: "Startseite", about: "Über uns", blog: "News", book: "Buchen" },
   hero: {
     alt: "Indoor Surfskate Halle – Heldengrafik",
     title: "Surfskate Hall – Buche deinen Flow",
@@ -96,6 +96,41 @@ const de = {
         "Verbraucher haben das Recht, binnen 14 Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen (Ausnahmen bei terminbezogenen Freizeitdienstleistungen möglich).",
     },
     contact: { short: "Kontakt", title: "Kontakt", desc: "So erreichen Sie uns in Wiesbaden." },
+  },
+  aboutUs: {
+    title: "Über uns",
+    subtitle: "Die Geschichte hinter der Surfskate Hall Wiesbaden",
+    story: {
+      title: "Unsere Geschichte",
+      content: "Was als Traum von der perfekten Welle in der Stadt begann, wurde zur ersten Indoor Surfskate Halle in Wiesbaden. Wir haben einen Ort geschaffen, wo sich Surfer, Skater und alle, die das Gefühl des Flows lieben, treffen können."
+    },
+    mission: {
+      title: "Unsere Mission",
+      content: "Wir bringen die Energie des Ozeans in die Stadt. Egal ob Anfänger oder Pro – bei uns findest du deinen Flow und eine Community, die deine Leidenschaft teilt."
+    },
+    values: {
+      title: "Unsere Werte",
+      items: [
+        { title: "Community", desc: "Wir schaffen Verbindungen zwischen Menschen, die die gleiche Leidenschaft teilen." },
+        { title: "Progression", desc: "Jeder kann sich verbessern – wir unterstützen dich auf deinem Weg." },
+        { title: "Authentizität", desc: "Echte Surf-Vibes und authentische Erfahrungen stehen im Mittelpunkt." },
+        { title: "Spaß", desc: "Am Ende geht es darum, Spaß zu haben und den Moment zu genießen." }
+      ]
+    },
+    team: {
+      title: "Unser Team",
+      subtitle: "Die Menschen, die deine Surfskate-Experience möglich machen"
+    }
+  },
+  blog: {
+    title: "News & Events",
+    subtitle: "Bleib auf dem Laufenden mit den neuesten Surfskate-News, Events und Community-Updates",
+    readMore: "Weiterlesen",
+    backToBlog: "Zurück zum Blog",
+    noPostsYet: "Bald gibt es hier spannende News und Events!",
+    publishedOn: "Veröffentlicht am",
+    categories: "Kategorien",
+    relatedPosts: "Ähnliche Beiträge"
   },
   subscription: {
     title: "Premium Mitgliedschaft",
