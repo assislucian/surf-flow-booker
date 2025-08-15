@@ -3,7 +3,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { LogOut, BarChart3 } from "lucide-react";
+import { LogOut, BarChart3, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminLayout = () => {
@@ -117,9 +118,32 @@ const AdminLayout = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container py-6">
-        <Outlet />
-      </main>
+      <div className="flex">
+        {/* Sidebar */}
+        <nav className="w-64 border-r bg-card p-4">
+          <div className="space-y-2">
+            <Link 
+              to="/admin/app/dashboard"
+              className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-secondary"
+            >
+              <BarChart3 className="h-4 w-4" />
+              Dashboard
+            </Link>
+            <Link 
+              to="/admin/app/blog"
+              className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-secondary"
+            >
+              <FileText className="h-4 w-4" />
+              Blog Management
+            </Link>
+          </div>
+        </nav>
+
+        {/* Main Content */}
+        <main className="flex-1 p-6">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };
