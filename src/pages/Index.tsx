@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { SubscriptionPlan } from "@/components/subscription/SubscriptionPlan";
 import site from "@/config/site";
 
 const Index = () => {
@@ -63,6 +64,22 @@ const Index = () => {
               <p className="mt-2 text-muted-foreground">{f.desc}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="bg-gradient-subtle py-16 md:py-20">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              {t("subscription.title")}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {t("subscription.subtitle")}
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <SubscriptionPlan />
+          </div>
         </div>
       </section>
     </main>

@@ -97,6 +97,29 @@ const de = {
     },
     contact: { short: "Kontakt", title: "Kontakt", desc: "So erreichen Sie uns in Wiesbaden." },
   },
+  subscription: {
+    title: "Premium Mitgliedschaft",
+    subtitle: "Unbegrenzter Zugang zu deiner Surfskate Hall",
+    price: "29,99€",
+    period: "/Monat",
+    features: [
+      "Unbegrenzte Slots täglich",
+      "Prioritäts-Buchung",
+      "Kostenlose Stornierung",
+      "Premium Community Zugang",
+      "Exklusive Events & Workshops"
+    ],
+    cta: "Premium werden",
+    benefits: "Warum Premium?",
+    currentPlan: "Dein aktueller Plan",
+    managePlan: "Plan verwalten",
+    subscribed: "Premium Mitglied",
+    notSubscribed: "Basis Mitglied",
+    loading: "Lade...",
+    success: "Premium Mitgliedschaft erfolgreich aktiviert!",
+    canceled: "Subscription wurde abgebrochen.",
+    expires: "Läuft ab am"
+  },
   cookies: {
     message: "Wir verwenden nur notwendige Cookies, um Ihr Erlebnis zu verbessern.",
     accept: "Akzeptieren",

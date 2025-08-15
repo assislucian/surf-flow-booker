@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import Checkout from "./pages/Checkout";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import Impressum from "./pages/Impressum";
 import Datenschutz from "./pages/Datenschutz";
 import Terms from "./pages/Terms";
@@ -50,6 +51,7 @@ const App = () => (
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                   <Route path="/payment-canceled" element={<PaymentCanceled />} />
+                  <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                   <Route path="/impressum" element={<Impressum />} />
                   <Route path="/datenschutz" element={<Datenschutz />} />
                   <Route path="/agb" element={<Terms />} />

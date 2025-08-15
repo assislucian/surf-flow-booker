@@ -11,3 +11,12 @@ verify_jwt = false
 
 [functions.get-booked-slots]
 verify_jwt = false
+
+[functions.create-subscription]
+verify_jwt = false
+
+[functions.check-subscription]
+verify_jwt = false
+
+[functions.customer-portal]
+verify_jwt = false
