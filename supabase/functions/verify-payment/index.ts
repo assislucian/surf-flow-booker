@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.54.0";
+import { Resend } from "npm:resend@4.0.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -121,11 +122,29 @@ if (existingRows && existingRows.length > 0) {
   };
 }
 
+// Send confirmation email server-side (best practice)
+try {
+  const resend = new Resend(Deno.env.get("RESEND_API_KEY") || "");
+  const FROM = Deno.env.get("RESEND_FROM") || "Surfskate Hall <onboarding@resend.dev>";
+  const subject = (md.locale || md.language || "de") === "de"
+    ? "🏄‍♂️ Buchung bestätigt – Let's ride!"
+    : "🏄‍♂️ Booking Confirmed – Let's ride!";
+  const slotsText = Array.isArray(booking.slots) ? booking.slots.join(", ") : (booking.slot || "");
+  const html = `
+    <h2>${subject}</h2>
+    <p>${((md.locale || md.language || "de") === "de") ? "Danke für deine Buchung!" : "Thanks for your booking!"}</p>
+    <p><strong>Date:</strong> ${booking.date}</p>
+    <p><strong>Time:</strong> ${slotsText}</p>
+  `;
+  await resend.emails.send({ from: FROM, to: [booking.email], subject, html });
+} catch (e) {
+  console.log("verify-payment: email send failed (non-blocking)", e);
+}
 
-    return new Response(JSON.stringify({ ok: true, booking }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+return new Response(JSON.stringify({ ok: true, booking }), {
+  status: 200,
+  headers: { ...corsHeaders, "Content-Type": "application/json" },
+});
   } catch (error: any) {
     console.error("verify-payment error:", error);
     return new Response(JSON.stringify({ error: error.message }), {

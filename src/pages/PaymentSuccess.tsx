@@ -3,7 +3,6 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { sendConfirmationEmail } from "@/lib/emails";
 import { supabase } from "@/integrations/supabase/client";
 
 const PaymentSuccess: React.FC = () => {
@@ -24,8 +23,6 @@ const PaymentSuccess: React.FC = () => {
         const booking = (data as any)?.booking;
         if (booking) {
           setDetails(booking);
-          // Send confirmation email (non-blocking) 
-          sendConfirmationEmail(booking, i18n.language).catch((err) => console.error("email error", err));
         }
       } catch (err) {
         console.error("verify-payment error", err);
