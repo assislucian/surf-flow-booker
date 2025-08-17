@@ -37,6 +37,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Handle account deletion - if user becomes null, clear any stale state
+        if (!session?.user && event === 'SIGNED_OUT') {
+          // Clear any cached data or pending requests
+          sessionStorage.clear();
+          localStorage.removeItem('supabase.auth.token');
+        }
       }
     );
 

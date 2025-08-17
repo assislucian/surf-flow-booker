@@ -168,7 +168,8 @@ const Profile = () => {
         description: t("profile.accountDeletedDesc"),
       });
       
-      // User will be automatically signed out
+      // Clear auth state immediately after successful deletion
+      await signOut();
       navigate("/");
     } catch (error: any) {
       toast({
