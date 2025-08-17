@@ -83,9 +83,6 @@ const Booking: React.FC = () => {
 
   const locale = i18n.language === "de" ? deLocale : enLocale;
 
-  const bookedKey = (d: Date | undefined, s: string[]) =>
-    d && s.length ? s.map(slot => `${format(d, "yyyy-MM-dd")}|${slot}`).join(",") : "";
-
   React.useEffect(() => {
     const load = async () => {
       if (!date) {
