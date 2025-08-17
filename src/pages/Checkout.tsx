@@ -48,15 +48,15 @@ const Checkout: React.FC = () => {
   return (
     <main className="container py-10" key={currentLang}>
       <Helmet>
-        <title>Surfskate Hall – {t("checkout.title")}</title>
-        <meta name="description" content={t("checkout.subtitle") as string} />
+        <title>Surfskate Hall – {t("checkout.title", "Checkout")}</title>
+        <meta name="description" content={t("checkout.subtitle", "Please review your information and proceed with payment") as string} />
         <link rel="canonical" href="/checkout" />
       </Helmet>
 
       <h1 className="font-display text-3xl md:text-4xl font-semibold">
         {t("checkout.title", "Checkout")}
       </h1>
-      <p className="mt-2 text-muted-foreground">
+      <p className="mt-2 text-muted-foreground" key={`subtitle-${currentLang}`}>
         {t("checkout.subtitle", "Please review your information and proceed with payment")}
       </p>
 
