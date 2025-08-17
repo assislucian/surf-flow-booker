@@ -22,6 +22,13 @@ const en = {
     pickDate: "Pick a date",
     availableSlots: "Available slots",
     selectedDate: "Selected date",
+    selectDateDesc: "Choose your preferred date for the session",
+    selectTimeDesc: "Choose your preferred time slot (1 hour each)",
+    selectDateFirst: "Please select a date first",
+    booked: "Booked",
+    selected: "Selected",
+    sessionReady: "Your session is ready!",
+    proceedingToPayment: "Proceeding to payment",
     form: {
       name: "Name",
       email: "Email",

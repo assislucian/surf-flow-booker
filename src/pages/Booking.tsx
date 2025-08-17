@@ -98,7 +98,7 @@ const Booking: React.FC = () => {
     };
     sessionStorage.setItem("pending_booking", JSON.stringify(pending));
 
-    toast({ title: i18n.language === "de" ? "Weiter zur Zahlung" : "Proceeding to payment" });
+    toast({ title: t("booking.proceedingToPayment") });
     navigate("/checkout");
   };
 
@@ -127,12 +127,9 @@ const Booking: React.FC = () => {
                 <span className="bg-gradient-primary bg-clip-text text-transparent font-bold">1.</span>
                 {t("booking.pickDate")}
               </CardTitle>
-              <CardDescription>
-                {i18n.language === "de" 
-                  ? "Wähle dein gewünschtes Datum für die Session"
-                  : "Choose your preferred date for the session"
-                }
-              </CardDescription>
+                <CardDescription>
+                  {t("booking.selectDateDesc")}
+                </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col sm:flex-row gap-4 items-start">
@@ -150,8 +147,8 @@ const Booking: React.FC = () => {
                           </span>
                           <span className="text-xs text-muted-foreground">
                             {i18n.language === "de" 
-                              ? `Kalenderwoche ${getWeek(date)} • Week ${getWeek(date)}`
-                              : `Week ${getWeek(date)} • Kalenderwoche ${getWeek(date)}`
+                              ? `Kalenderwoche ${getWeek(date)}`
+                              : `Week ${getWeek(date)}`
                             }
                           </span>
                         </div>
@@ -205,13 +202,9 @@ const Booking: React.FC = () => {
                     </span>
                   </span>
                 )}
-                {i18n.language === "de" 
-                  ? date 
-                    ? " - Wähle deine bevorzugte Uhrzeit (je 1 Stunde)"
-                    : "Wähle zuerst ein Datum aus"
-                  : date 
-                    ? " - Choose your preferred time slot (1 hour each)"
-                    : "Please select a date first"
+                {date 
+                  ? ` - ${t("booking.selectTimeDesc")}`
+                  : t("booking.selectDateFirst")
                 }
               </CardDescription>
             </CardHeader>
@@ -239,7 +232,7 @@ const Booking: React.FC = () => {
                           <span>{slot}</span>
                           {booked && (
                             <span className="text-xs opacity-70">
-                              {i18n.language === "de" ? "Belegt" : "Booked"}
+                              {t("booking.booked")}
                             </span>
                           )}
                         </div>
@@ -251,7 +244,7 @@ const Booking: React.FC = () => {
                 <div className="flex items-center justify-center h-32 text-muted-foreground">
                   <div className="text-center">
                     <CalendarIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>{i18n.language === "de" ? "Bitte wähle zuerst ein Datum" : "Please select a date first"}</p>
+                    <p>{t("booking.selectDateFirst")}</p>
                   </div>
                 </div>
               )}
@@ -261,7 +254,7 @@ const Booking: React.FC = () => {
                   <div className="flex items-center gap-2 text-primary font-medium">
                     <Clock className="h-4 w-4" />
                     <span>
-                      {i18n.language === "de" ? "Ausgewählt:" : "Selected:"} {selectedSlot}
+                      {t("booking.selected")}: {selectedSlot}
                       {date && ` - ${format(date, "dd.MM.yyyy")}`}
                     </span>
                   </div>
@@ -280,13 +273,13 @@ const Booking: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-primary">
-                      {i18n.language === "de" ? "Deine Session ist bereit!" : "Your session is ready!"}
+                      {t("booking.sessionReady")}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlot} • 
+                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlot} • {" "}
                       {i18n.language === "de" 
-                        ? ` Kalenderwoche ${getWeek(date)}`
-                        : ` Week ${getWeek(date)}`
+                        ? `Kalenderwoche ${getWeek(date)}`
+                        : `Week ${getWeek(date)}`
                       }
                     </p>
                   </div>

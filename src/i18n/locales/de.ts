@@ -22,6 +22,13 @@ const de = {
     pickDate: "Datum wählen",
     availableSlots: "Verfügbare Slots",
     selectedDate: "Ausgewähltes Datum",
+    selectDateDesc: "Wähle dein gewünschtes Datum für die Session",
+    selectTimeDesc: "Wähle deine bevorzugte Uhrzeit (je 1 Stunde)",
+    selectDateFirst: "Wähle zuerst ein Datum aus",
+    booked: "Belegt",
+    selected: "Ausgewählt",
+    sessionReady: "Deine Session ist bereit!",
+    proceedingToPayment: "Weiter zur Zahlung",
     form: {
       name: "Name",
       email: "E-Mail",
