@@ -24,7 +24,7 @@ Deno.serve(async (req: Request) => {
 
   try {
     const authHeader = req.headers.get("authorization") || "";
-    const whSignature = req.headers.get("wh-signature") || req.headers.get("wh-signature-256") || "";
+    const webhookSig = req.headers.get("webhook-signature") || "";
     let evt: any;
 
     if (!hookSecret) {
@@ -34,12 +34,17 @@ Deno.serve(async (req: Request) => {
     if (authHeader === `Bearer ${hookSecret}`) {
       // Direct bearer verification: payload is plain JSON
       evt = JSON.parse(payload);
-    } else if (whSignature) {
-      // Signature verification via Standard Webhooks headers (only if present)
-      const wh = new Webhook(hookSecret);
-      evt = wh.verify(payload, headers) as any;
+    } else if (webhookSig) {
+      // Signature verification via Standard Webhooks header
+      try {
+        const wh = new Webhook(hookSecret);
+        evt = wh.verify(payload, headers) as any;
+      } catch (e: any) {
+        console.error("send-email webhook verify error:", e?.message || e);
+        throw new Error("Invalid webhook signature");
+      }
     } else {
-      throw new Error("Missing hook auth (bearer or wh-signature)");
+      throw new Error("Missing hook auth (bearer or webhook-signature)");
     }
 
     const {
