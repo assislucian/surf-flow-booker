@@ -67,6 +67,18 @@ const Profile = () => {
     }
   };
 
+  // Calculate remaining days
+  const getRemainingDays = () => {
+    if (!subscriptionStatus.subscription_end) return null;
+    const endDate = new Date(subscriptionStatus.subscription_end);
+    const today = new Date();
+    const diffTime = endDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 0;
+  };
+
+  const remainingDays = getRemainingDays();
+
   const handleManageSubscription = async () => {
     if (!user) return;
     
@@ -323,9 +335,36 @@ const Profile = () => {
                     </div>
                     
                     {subscriptionEndDate && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{t("subscription.expires")}: {subscriptionEndDate}</span>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock className="h-4 w-4" />
+                          <span>{t("subscription.expires")}: {subscriptionEndDate}</span>
+                        </div>
+                        
+                        {remainingDays !== null && (
+                          <div className={`p-3 rounded-lg border ${
+                            remainingDays <= 7 
+                              ? 'bg-orange-50 border-orange-200 text-orange-800' 
+                              : 'bg-green-50 border-green-200 text-green-800'
+                          }`}>
+                            <div className="flex items-center gap-2">
+                              <div className={`w-2 h-2 rounded-full ${
+                                remainingDays <= 7 ? 'bg-orange-500' : 'bg-green-500'
+                              }`} />
+                              <span className="font-medium text-sm">
+                                {remainingDays === 0 
+                                  ? (i18n.language === 'de' ? 'Läuft heute ab' : 'Expires today')
+                                  : remainingDays === 1 
+                                    ? (i18n.language === 'de' ? '1 Tag verbleibend' : '1 day remaining')
+                                    : (i18n.language === 'de' 
+                                        ? `${remainingDays} Tage verbleibend` 
+                                        : `${remainingDays} days remaining`
+                                      )
+                                }
+                              </span>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -373,11 +412,44 @@ const Profile = () => {
                             {t("profile.cancelSubscription")}
                           </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent>
+                        <AlertDialogContent className="max-w-md">
                           <AlertDialogHeader>
-                            <AlertDialogTitle>{t("profile.cancelSubscriptionTitle")}</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              {t("profile.cancelSubscriptionConfirm")}
+                            <AlertDialogTitle className="flex items-center gap-2">
+                              <AlertTriangle className="h-5 w-5 text-orange-500" />
+                              {t("profile.cancelSubscriptionTitle")}
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="space-y-3">
+                              <p>{t("profile.cancelSubscriptionConfirm")}</p>
+                              
+                              {remainingDays !== null && subscriptionEndDate && (
+                                <div className="bg-orange-50 p-3 rounded-lg border border-orange-200">
+                                  <div className="text-center">
+                                    <p className="font-medium text-orange-800 text-sm">
+                                      {i18n.language === 'de' 
+                                        ? `Du kannst Premium noch ${remainingDays} ${remainingDays === 1 ? 'Tag' : 'Tage'} nutzen`
+                                        : `You can still use Premium for ${remainingDays} ${remainingDays === 1 ? 'day' : 'days'}`
+                                      }
+                                    </p>
+                                    <p className="text-orange-600 text-xs mt-1">
+                                      {i18n.language === 'de' 
+                                        ? `Bis zum ${subscriptionEndDate}`
+                                        : `Until ${subscriptionEndDate}`
+                                      }
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              <div className="bg-red-50 p-3 rounded-lg border border-red-200">
+                                <h4 className="font-medium text-red-800 text-sm mb-2">
+                                  {i18n.language === 'de' ? 'Was du verlierst:' : 'What you\'ll lose:'}
+                                </h4>
+                                <ul className="text-red-700 text-xs space-y-1">
+                                  <li>• {t("subscription.features.0")}</li>
+                                  <li>• {t("subscription.features.1")}</li>
+                                  <li>• {t("subscription.features.2")}</li>
+                                </ul>
+                              </div>
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -486,7 +558,10 @@ const Profile = () => {
                   
                   <div className="bg-destructive/5 p-4 rounded-lg border border-destructive/20">
                     <p className="text-sm text-muted-foreground mb-4">
-                      {t("profile.dangerZoneDesc")}
+                      {i18n.language === 'de' 
+                        ? 'Diese Aktionen können nicht rückgängig gemacht werden. Bitte sei vorsichtig.'
+                        : 'These actions cannot be undone. Please be careful.'
+                      }
                     </p>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>

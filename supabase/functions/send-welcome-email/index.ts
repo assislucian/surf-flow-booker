@@ -14,10 +14,11 @@ serve(async (req) => {
   }
 
   try {
-    const { email, name, language = "de" } = await req.json();
+    const { email, name, language = "de", subscription_tier = "Premium" } = await req.json();
     if (!email) throw new Error("Missing email");
 
     const isGerman = language === "de";
+    const displayName = name || email.split('@')[0];
     
     const html = `
       <!DOCTYPE html>
@@ -29,81 +30,68 @@ serve(async (req) => {
       </head>
       <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
         <div style="background: linear-gradient(135deg, hsl(196, 100%, 28%) 0%, hsl(201, 96%, 40%) 100%); color: white; padding: 40px 30px; border-radius: 15px 15px 0 0; text-align: center;">
-          <h1 style="margin: 0; font-size: 32px; font-weight: bold;">🏄‍♂️ Surfskate Hall</h1>
+          <div style="font-size: 48px; margin-bottom: 15px;">🏄‍♂️</div>
+          <h1 style="margin: 0; font-size: 32px; font-weight: bold;">Surfskate Hall</h1>
           <p style="margin: 15px 0 0; font-size: 20px; opacity: 0.95;">
-            ${isGerman ? "Willkommen in der Community!" : "Welcome to the Community!"}
+            ${isGerman ? "Premium-Mitglied!" : "Premium Member!"}
           </p>
         </div>
         
         <div style="background: white; padding: 40px 30px; border-radius: 0 0 15px 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-          <p style="font-size: 20px; color: #2d3748; margin-bottom: 25px; text-align: center;">
-            ${isGerman ? `Hallo ${name || "Surfskater"}! 🤙` : `Hello ${name || "Surfer"}! 🤙`}
-          </p>
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #2d3748; margin: 0 0 10px; font-size: 24px;">
+              ${isGerman ? `Willkommen, ${displayName}! 🎉` : `Welcome, ${displayName}! 🎉`}
+            </h2>
+            <p style="color: #4a5568; font-size: 16px; margin: 0;">
+              ${isGerman 
+                ? "Du bist jetzt Premium-Mitglied und hast Zugang zu allen exklusiven Vorteilen!" 
+                : "You're now a Premium member with access to all exclusive benefits!"
+              }
+            </p>
+          </div>
           
-          <p style="color: #4a5568; margin-bottom: 25px; font-size: 16px; text-align: center;">
-            ${isGerman 
-              ? "Herzlich willkommen bei Surfskate Hall! Du bist jetzt Teil unserer globalen Surfskate-Community." 
-              : "Welcome to Surfskate Hall! You're now part of our global surfskate community."
-            }
-          </p>
-          
-          <div style="background: linear-gradient(135deg, #e6fffa 0%, #f0f9ff 100%); padding: 25px; border-radius: 12px; border-left: 4px solid hsl(196, 100%, 28%); margin: 30px 0;">
-            <h3 style="margin: 0 0 20px; color: #234e52; font-size: 18px; text-align: center;">
-              ${isGerman ? "🌊 Was dich erwartet:" : "🌊 What awaits you:"}
+          <div style="background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); padding: 25px; border-radius: 12px; margin: 25px 0; border: 1px solid #14b8a6;">
+            <h3 style="margin: 0 0 20px; color: #0f766e; font-size: 18px; text-align: center;">
+              ✨ ${isGerman ? "Deine Premium-Vorteile:" : "Your Premium Benefits:"}
             </h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
-              <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <div style="font-size: 24px; margin-bottom: 8px;">🏄‍♂️</div>
-                <div style="font-size: 14px; color: #2d5a67; font-weight: 600;">
-                  ${isGerman ? "Premium Hall" : "Premium Hall"}
-                </div>
-              </div>
-              <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <div style="font-size: 24px; margin-bottom: 8px;">👥</div>
-                <div style="font-size: 14px; color: #2d5a67; font-weight: 600;">
-                  ${isGerman ? "Community" : "Community"}
-                </div>
-              </div>
-              <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <div style="font-size: 24px; margin-bottom: 8px;">⭐</div>
-                <div style="font-size: 14px; color: #2d5a67; font-weight: 600;">
-                  ${isGerman ? "Premium Features" : "Premium Features"}
-                </div>
-              </div>
-            </div>
+            <ul style="color: #0f766e; margin: 0; padding-left: 20px; line-height: 1.8;">
+              <li>${isGerman ? "Unbegrenzter Zugang zur Halle" : "Unlimited hall access"}</li>
+              <li>${isGerman ? "Vorrangige Buchung von Slots" : "Priority slot booking"}</li>
+              <li>${isGerman ? "10% Rabatt auf Equipment" : "10% equipment discount"}</li>
+              <li>${isGerman ? "Kostenlose Workshops und Events" : "Free workshops and events"}</li>
+              <li>${isGerman ? "Exklusiver Community-Zugang" : "Exclusive community access"}</li>
+            </ul>
           </div>
           
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${Deno.env.get("SUPABASE_URL")?.replace("https://aezvouallinpwtuaakes.supabase.co", "https://surfskate-hall.lovable.app") || "https://surfskate-hall.lovable.app"}" 
-               style="display: inline-block; background: linear-gradient(135deg, hsl(196, 100%, 28%) 0%, hsl(201, 96%, 40%) 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(196, 100%, 28%, 0.3); transition: transform 0.2s;">
-              ${isGerman ? "🚀 Jetzt loslegen" : "🚀 Get Started"}
+            <a href="${Deno.env.get("SUPABASE_URL")?.replace("https://aezvouallinpwtuaakes.supabase.co", "https://surfskate-hall.lovable.app") || "https://surfskate-hall.lovable.app"}/book" 
+               style="display: inline-block; background: linear-gradient(135deg, hsl(196, 100%, 28%) 0%, hsl(201, 96%, 40%) 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(196, 100%, 28%, 0.3); margin-right: 10px;">
+              ${isGerman ? "🏄‍♂️ Ersten Slot buchen" : "🏄‍♂️ Book Your First Slot"}
+            </a>
+            <a href="${Deno.env.get("SUPABASE_URL")?.replace("https://aezvouallinpwtuaakes.supabase.co", "https://surfskate-hall.lovable.app") || "https://surfskate-hall.lovable.app"}/profile" 
+               style="display: inline-block; background: transparent; color: hsl(196, 100%, 28%); padding: 15px 30px; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 16px; border: 2px solid hsl(196, 100%, 28%); margin-top: 10px;">
+              ${isGerman ? "👤 Profil verwalten" : "👤 Manage Profile"}
             </a>
           </div>
           
-          <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin: 25px 0; border: 1px solid #e2e8f0;">
-            <h4 style="margin: 0 0 15px; color: #2d3748; font-size: 16px;">
-              ${isGerman ? "💎 Deine nächsten Schritte:" : "💎 Your next steps:"}
+          <div style="background: #f0f9ff; padding: 20px; border-radius: 10px; margin: 25px 0; border-left: 4px solid #0ea5e9;">
+            <h4 style="margin: 0 0 10px; color: #0c4a6e; font-size: 16px;">
+              💡 ${isGerman ? "Erste Schritte:" : "Getting Started:"}
             </h4>
-            <ul style="color: #4a5568; margin: 0; padding-left: 20px; line-height: 1.8;">
-              <li>${isGerman ? "Erkunde unsere Premium-Features" : "Explore our premium features"}</li>
-              <li>${isGerman ? "Buche deine erste Session" : "Book your first session"}</li>
-              <li>${isGerman ? "Tritt unserer Community bei" : "Join our community"}</li>
-              <li>${isGerman ? "Teile deine Surfskate-Erfahrungen" : "Share your surfskate experiences"}</li>
-            </ul>
+            <p style="color: #0c4a6e; margin: 0; font-size: 14px;">
+              ${isGerman 
+                ? "Besuche dein Premium-Dashboard, um Slots zu buchen und deine Mitgliedschaft zu verwalten. Bei Fragen sind wir da!"
+                : "Visit your Premium dashboard to book slots and manage your membership. We're here if you have any questions!"
+              }
+            </p>
           </div>
           
           <p style="color: #718096; margin: 25px 0; text-align: center; font-size: 14px;">
             ${isGerman 
-              ? "Bei Fragen sind wir jederzeit für dich da. Lass uns gemeinsam diese Welle reiten! 🌊" 
-              : "If you have any questions, we're always here for you. Let's ride this wave together! 🌊"
+              ? "Danke, dass du Teil unserer Surfskate-Community bist. Let's ride the waves! 🌊" 
+              : "Thank you for joining our surfskate community. Let's ride the waves! 🌊"
             }
           </p>
-          
-          <div style="text-align: center; margin: 35px 0;">
-            <p style="font-size: 20px; background: linear-gradient(135deg, hsl(196, 100%, 28%) 0%, hsl(201, 96%, 40%) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">
-              ${isGerman ? "Ride the wave! 🌊" : "Ride the wave! 🌊"}
-            </p>
-          </div>
         </div>
         
         <div style="text-align: center; margin-top: 25px; color: #a0aec0; font-size: 13px;">
@@ -117,8 +105,8 @@ serve(async (req) => {
     `;
 
     const subject = isGerman 
-      ? "🏄‍♂️ Willkommen bei Surfskate Hall – Deine Community wartet!"
-      : "🏄‍♂️ Welcome to Surfskate Hall – Your community awaits!";
+      ? `🎉 Willkommen bei Premium, ${displayName}! Dein Flow beginnt jetzt`
+      : `🎉 Welcome to Premium, ${displayName}! Your Flow Starts Now`;
 
     const { error: sendError } = await resend.emails.send({
       from: "Surfskate Hall <welcome@lifabrasil.com>",
