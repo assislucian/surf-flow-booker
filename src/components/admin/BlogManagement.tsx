@@ -267,7 +267,7 @@ const BlogManagement = () => {
               
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="title">{t("admin.blogManagement.title")}</Label>
+                  <Label htmlFor="title">{t("admin.blogManagement.blogTitle")}</Label>
                   <Input
                     id="title"
                     value={formData.title}
