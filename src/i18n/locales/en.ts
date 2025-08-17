@@ -10,7 +10,8 @@ const en = {
     update: "Update",
     loading: "Loading...",
     error: "Error",
-    success: "Success"
+    success: "Success",
+    required: "Required"
   },
   hero: {
     title: "Surfskate Hall Wiesbaden",
@@ -47,23 +48,44 @@ const en = {
   booking: {
     title: "Book your surfskate slot",
     subtitle: "Choose your date and preferred time",
-    selectDate: "Select date",
+    metaDescription: "Surfskate booking in Wiesbaden – Select slots, enter data, done. German/English.",
+    pickDate: "Select date",
+    selectDateDesc: "Choose your desired date for the surfskate session",
+    selectDateFirst: "Please select a date first",
+    selectTimeDesc: "Choose your preferred times",
     availableSlots: "Available slots",
     selectedSlots: "Selected slots",
     selectedSlotsCount: "{{count}} slot(s) selected",
+    selected: "Selected",
+    slot: "Slot",
+    slots: "Slots",
+    selectedTotal: "total selected",
+    booked: "Booked",
+    sessionReady: "Session ready",
+    sessionsReady: "Sessions ready",
     personalInfo: "Personal information",
-    name: "Name",
-    namePlaceholder: "Your full name",
-    email: "Email",
-    emailPlaceholder: "your@email.com",
-    phone: "Phone (optional)",
-    phonePlaceholder: "+49 123 456789",
-    level: "Experience level",
-    levelBeginner: "Beginner",
-    levelIntermediate: "Intermediate",
-    levelAdvanced: "Advanced",
-    notes: "Notes (optional)",
-    notesPlaceholder: "Special requests or notes...",
+    form: {
+      name: "Name",
+      namePlaceholder: "Your full name",
+      email: "Email",
+      emailPlaceholder: "your@email.com",
+      phone: "Phone (optional)",
+      phonePlaceholder: "+49 123 456789",
+      level: "Experience level",
+      levelOptions: {
+        beginner: "Beginner",
+        intermediate: "Intermediate",
+        advanced: "Advanced"
+      },
+      notes: "Notes (optional)",
+      notesPlaceholder: "Special requests or notes...",
+      submit: "Book now"
+    },
+    errors: {
+      selectDate: "Please select a date",
+      selectSlot: "Please select at least one slot"
+    },
+    proceedingToPayment: "Proceeding to payment...",
     bookNow: "Book now",
     summary: "Booking summary",
     total: "Total",
@@ -75,6 +97,12 @@ const en = {
     selectSlotFirst: "Please select a slot first",
     instructions: "Fill out the form and proceed to payment to confirm your booking.",
     paymentDescription: "Secure payment via Stripe"
+  },
+  blog: {
+    title: "Blog & News",
+    subtitle: "Latest news, tips and updates from Surfskate Hall Wiesbaden",
+    noPostsYet: "No posts yet",
+    readMore: "Read more"
   },
   profile: {
     hello: "Hello",

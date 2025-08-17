@@ -19,14 +19,11 @@ const de = {
     cta: "Jetzt buchen",
     alt: "Surfskate Hall - Indoor-Surfing in Wiesbaden"
   },
-  nav: {
-    home: "Startseite",
-    book: "Buchen",
-    about: "Über uns",
-    contact: "Kontakt",
-    blog: "Blog",
-    profile: "Profil",
-    login: "Anmelden"
+  blog: {
+    title: "Blog & News",
+    subtitle: "Aktuelle Neuigkeiten, Tipps und Updates aus der Surfskate Hall Wiesbaden",
+    noPostsYet: "Noch keine Beiträge",
+    readMore: "Weiterlesen"
   },
   features: {
     title: "Warum Surfskate Hall?",
