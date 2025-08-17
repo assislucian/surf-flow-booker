@@ -248,6 +248,53 @@ const en = {
     manageProfile: "Manage Profile",
     viewProfile: "View Profile"
   },
+  "onboarding": {
+    "title": "Welcome to Surfskate Hall",
+    "welcome": {
+      "title": "Welcome! 🏄‍♂️",
+      "description": "Great to have you as part of our community!",
+      "subtitle": "Your account has been successfully created.",
+      "feature1": "Book slots",
+      "feature2": "Community"
+    },
+    "features": {
+      "title": "What can you do here?",
+      "description": "Discover all possibilities at Surfskate Hall",
+      "booking": "Book slots easily online",
+      "premium": "Premium membership for unlimited access",
+      "community": "Become part of an active surfskate community"
+    },
+    "premium": {
+      "title": "Premium Benefits",
+      "description": "Get the most out of your surfskate experience",
+      "badge": "Premium",
+      "benefit": "Unlimited slots, priority booking and exclusive events",
+      "optional": "You can upgrade to Premium anytime"
+    },
+    "completing": "Completing...",
+    "getStarted": "Let's get started! 🚀"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "welcome": {
+      "title": "Account created! 🎉",
+      "message": "Welcome to Surfskate Hall! Discover Premium benefits now.",
+      "action": "Explore Premium"
+    },
+    "payment": {
+      "success": {
+        "title": "Premium activated! 👑",
+        "message": "Your Premium membership is now active. Book your first slot!",
+        "action": "Book slot"
+      }
+    },
+    "subscription": {
+      "canceled": {
+        "title": "Membership canceled",
+        "message": "You can still use your Premium benefits until the end of your billing period."
+      }
+    }
+  },
   admin: {
     title: "Surfskate Hall Admin",
     loading: "Loading admin panel...",

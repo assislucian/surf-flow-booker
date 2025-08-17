@@ -248,6 +248,53 @@ const de = {
     manageProfile: "Profil verwalten",
     viewProfile: "Profil anzeigen"
   },
+  "onboarding": {
+    "title": "Willkommen bei Surfskate Hall",
+    "welcome": {
+      "title": "Willkommen! 🏄‍♂️",
+      "description": "Schön, dass du Teil unserer Community bist!",
+      "subtitle": "Dein Account wurde erfolgreich erstellt.",
+      "feature1": "Slots buchen",
+      "feature2": "Community"
+    },
+    "features": {
+      "title": "Was kannst du hier machen?",
+      "description": "Entdecke alle Möglichkeiten in der Surfskate Hall",
+      "booking": "Slots einfach online buchen",
+      "premium": "Premium-Mitgliedschaft für unbegrenzten Zugang",
+      "community": "Teil einer aktiven Surfskate-Community werden"
+    },
+    "premium": {
+      "title": "Premium Vorteile",
+      "description": "Hol dir das Maximum aus deiner Surfskate-Erfahrung",
+      "badge": "Premium",
+      "benefit": "Unbegrenzte Slots, Vorrang bei der Buchung und exklusive Events",
+      "optional": "Du kannst jederzeit Premium werden"
+    },
+    "completing": "Wird abgeschlossen...",
+    "getStarted": "Los geht's! 🚀"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "welcome": {
+      "title": "Account erstellt! 🎉",
+      "message": "Willkommen bei Surfskate Hall! Entdecke jetzt Premium-Vorteile.",
+      "action": "Premium entdecken"
+    },
+    "payment": {
+      "success": {
+        "title": "Premium aktiviert! 👑",
+        "message": "Deine Premium-Mitgliedschaft ist jetzt aktiv. Buche deinen ersten Slot!",
+        "action": "Slot buchen"
+      }
+    },
+    "subscription": {
+      "canceled": {
+        "title": "Mitgliedschaft gekündigt",
+        "message": "Du kannst deine Premium-Vorteile noch bis zum Ende der Laufzeit nutzen."
+      }
+    }
+  },
   admin: {
     title: "Surfskate Hall Admin",
     loading: "Lade Admin Panel...",

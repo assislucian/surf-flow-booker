@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signUp = async (email: string, password: string, name?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = `${window.location.origin}/auth?onboarding=true`;
     
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -61,22 +61,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         data: name ? { name } : undefined
       }
     });
-
-    // Send welcome email if signup successful
-    if (!error && data.user) {
-      try {
-        await supabase.functions.invoke('send-welcome-email', {
-          body: { 
-            email, 
-            name, 
-            language: navigator.language.startsWith('de') ? 'de' : 'en' 
-          }
-        });
-      } catch (emailError) {
-        console.warn('Failed to send welcome email:', emailError);
-        // Don't fail signup if email fails
-      }
-    }
+    
+    // Note: Welcome emails are now sent after successful subscription, not signup
+    // This prevents spam and creates a better conversion funnel
     
     return { error };
   };
