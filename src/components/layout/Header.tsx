@@ -2,15 +2,31 @@ import { Link, useInRouterContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { LogIn, LogOut, User } from "lucide-react";
+import { LogIn, LogOut, User, UserPlus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const { i18n, t } = useTranslation();
   const { user, signOut } = useAuth();
+  const { toast } = useToast();
   const inRouter = useInRouterContext();
   const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
   const isActive = (path: string) => currentPath === path;
   const setLang = (lng: "de" | "en") => i18n.changeLanguage(lng);
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast({
+      title: t("auth.logoutSuccess"),
+      description: t("auth.logoutSuccess"),
+    });
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -116,36 +132,35 @@ const Header = () => {
             <Button variant="outline" size="sm" onClick={() => setLang("en")}>EN</Button>
             
             {user ? (
-              <div className="flex items-center gap-2 ml-2">
-                <div className="flex items-center gap-1 px-2 py-1 bg-secondary/50 rounded-md">
-                  <User className="h-4 w-4" />
-                  <span className="text-sm truncate max-w-24">
-                    {user.email?.split('@')[0]}
-                  </span>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={signOut}
-                  className="flex items-center gap-1"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </Button>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-primary hover:text-primary-foreground hover:bg-primary/10 ml-2">
+                    <User className="h-4 w-4 mr-2" />
+                    <span className="truncate max-w-24">
+                      {user.email?.split('@')[0] || user.email}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive hover:text-destructive focus:text-destructive">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    {t("auth.logout")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               inRouter ? (
                 <Link to="/auth">
-                  <Button variant="outline" size="sm" className="flex items-center gap-1 ml-2">
-                    <LogIn className="h-4 w-4" />
-                    Login
+                  <Button variant="default" size="sm" className="bg-gradient-primary hover:opacity-90 ml-2">
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    {t("nav.auth")}
                   </Button>
                 </Link>
               ) : (
                 <a href="/auth">
-                  <Button variant="outline" size="sm" className="flex items-center gap-1 ml-2">
-                    <LogIn className="h-4 w-4" />
-                    Login
+                  <Button variant="default" size="sm" className="bg-gradient-primary hover:opacity-90 ml-2">
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    {t("nav.auth")}
                   </Button>
                 </a>
               )

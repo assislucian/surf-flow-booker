@@ -1,7 +1,9 @@
 {
   "nav": {
     "home": "Home",
-    "book": "Book"
+    "book": "Book",
+    "auth": "Sign In",
+    "dashboard": "Dashboard"
   },
   "hero": {
     "alt": "Indoor surfskate hall – hero image",
@@ -53,5 +55,81 @@
   "payment": {
     "success": { "title": "Payment successful", "desc": "Your booking is confirmed. A confirmation email will be sent." },
     "canceled": { "title": "Payment canceled", "desc": "You can restart the payment anytime." }
+  },
+  "auth": {
+    "title": "Welcome back!",
+    "subtitle": "Sign in to your account or create a new one",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "createAccount": "Create Account",
+    "welcomeBack": "Welcome back!",
+    "loginSuccess": "You have been logged in successfully.",
+    "registrationSuccess": "Registration successful!",
+    "checkEmailConfirm": "Please check your email to confirm your account.",
+    "fillAllFields": "Please fill in all fields",
+    "passwordsNotMatch": "Passwords do not match",
+    "passwordRequirements": "Password must be at least 8 characters with one uppercase, one lowercase, and one number",
+    "accountExists": "Account Exists",
+    "accountExistsDesc": "An account with this email already exists. Please sign in instead.",
+    "loginFailed": "Login Failed",
+    "registrationFailed": "Registration Failed",
+    "logout": "Sign Out",
+    "logoutSuccess": "You have been logged out successfully"
+  },
+  "subscription": {
+    "title": "Premium Membership",
+    "subtitle": "Unlimited access to our surfskate hall",
+    "price": "€29.99",
+    "period": "/month",
+    "benefits": "Premium Benefits",
+    "features": [
+      "Unlimited access to the surfskate hall",
+      "Priority booking slots",
+      "Exclusive community events",
+      "Free equipment rental",
+      "Professional coaching sessions",
+      "24/7 premium support"
+    ],
+    "cta": "Get Premium",
+    "ctaDescription": "Join today and experience the full surfskate experience!",
+    "loading": "Loading status...",
+    "currentPlan": "Current Plan",
+    "subscribed": "Premium Active",
+    "expires": "Expires on",
+    "managePlan": "Manage Subscription",
+    "authRequired": "Sign in required",
+    "authRequiredDesc": "You need to sign in to subscribe to Premium. It only takes a minute!",
+    "signInToContinue": "Sign in now",
+    "whySignUp": "Why sign up?",
+    "signUpBenefits": [
+      "Secure storage of your bookings",
+      "Easy membership management",
+      "Receive exclusive offers and updates",
+      "Access to premium community"
+    ]
+  },
+  "footer": {
+    "copyright": "© 2024 Surfskate Hall. All rights reserved.",
+    "imprint": "Imprint",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "withdrawal": "Withdrawal"
+  },
+  "common": {
+    "required": "Required",
+    "optional": "Optional",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete"
   }
 }

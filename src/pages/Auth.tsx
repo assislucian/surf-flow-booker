@@ -32,8 +32,8 @@ const Auth = () => {
     e.preventDefault();
     if (!email || !password) {
       toast({
-        title: "Error",
-        description: "Please fill in all fields",
+        title: t("common.error"),
+        description: t("auth.fillAllFields"),
         variant: "destructive",
       });
       return;
@@ -44,14 +44,14 @@ const Auth = () => {
     
     if (error) {
       toast({
-        title: "Login Failed",
+        title: t("auth.loginFailed"),
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Welcome back!",
-        description: "You have been logged in successfully.",
+        title: t("auth.welcomeBack"),
+        description: t("auth.loginSuccess"),
       });
     }
     setLoading(false);
@@ -61,8 +61,8 @@ const Auth = () => {
     e.preventDefault();
     if (!email || !password || !confirmPassword) {
       toast({
-        title: "Error",
-        description: "Please fill in all fields",
+        title: t("common.error"),
+        description: t("auth.fillAllFields"),
         variant: "destructive",
       });
       return;
@@ -70,17 +70,19 @@ const Auth = () => {
 
     if (password !== confirmPassword) {
       toast({
-        title: "Error",
-        description: "Passwords do not match",
+        title: t("common.error"),
+        description: t("auth.passwordsNotMatch"),
         variant: "destructive",
       });
       return;
     }
 
-    if (password.length < 6) {
+    // Professional password validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
       toast({
-        title: "Error",
-        description: "Password must be at least 6 characters long",
+        title: t("common.error"),
+        description: t("auth.passwordRequirements"),
         variant: "destructive",
       });
       return;
@@ -92,21 +94,21 @@ const Auth = () => {
     if (error) {
       if (error.message.includes("User already registered")) {
         toast({
-          title: "Account Exists",
-          description: "An account with this email already exists. Please sign in instead.",
+          title: t("auth.accountExists"),
+          description: t("auth.accountExistsDesc"),
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Registration Failed",
+          title: t("auth.registrationFailed"),
           description: error.message,
           variant: "destructive",
         });
       }
     } else {
       toast({
-        title: "Registration Successful!",
-        description: "Please check your email to confirm your account.",
+        title: t("auth.registrationSuccess"),
+        description: t("auth.checkEmailConfirm"),
       });
     }
     setLoading(false);
@@ -121,24 +123,24 @@ const Auth = () => {
       
       <Card className="w-full max-w-md mx-auto">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t("auth.title")}</CardTitle>
           <CardDescription>
-            Sign in to your account or create a new one
+            {t("auth.subtitle")}
           </CardDescription>
         </CardHeader>
         
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="signin">{t("auth.signIn")}</TabsTrigger>
+              <TabsTrigger value="signup">{t("auth.signUp")}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="signin-email" className="text-sm font-medium">
-                    Email
+                    {t("auth.email")}
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -156,7 +158,7 @@ const Auth = () => {
                 
                 <div className="space-y-2">
                   <label htmlFor="signin-password" className="text-sm font-medium">
-                    Password
+                    {t("auth.password")}
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -178,7 +180,7 @@ const Auth = () => {
                   disabled={loading}
                 >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Sign In
+                  {t("auth.signIn")}
                 </Button>
               </form>
             </TabsContent>
@@ -187,7 +189,7 @@ const Auth = () => {
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="signup-email" className="text-sm font-medium">
-                    Email
+                    {t("auth.email")}
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -205,7 +207,7 @@ const Auth = () => {
                 
                 <div className="space-y-2">
                   <label htmlFor="signup-password" className="text-sm font-medium">
-                    Password
+                    {t("auth.password")}
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -217,14 +219,14 @@ const Auth = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       className="pl-10"
                       required
-                      minLength={6}
+                      minLength={8}
                     />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
                   <label htmlFor="confirm-password" className="text-sm font-medium">
-                    Confirm Password
+                    {t("auth.confirmPassword")}
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -236,7 +238,7 @@ const Auth = () => {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       className="pl-10"
                       required
-                      minLength={6}
+                      minLength={8}
                     />
                   </div>
                 </div>
@@ -247,7 +249,7 @@ const Auth = () => {
                   disabled={loading}
                 >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Create Account
+                  {t("auth.createAccount")}
                 </Button>
               </form>
             </TabsContent>

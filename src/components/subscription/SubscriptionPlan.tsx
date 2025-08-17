@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Crown, Loader2 } from "lucide-react";
+import { CheckCircle, Crown, Loader2, UserPlus, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SubscriptionStatus {
   subscribed: boolean;
@@ -16,9 +18,12 @@ interface SubscriptionStatus {
 export const SubscriptionPlan = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(true);
   const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus>({ subscribed: false });
+  const [showAuthRequired, setShowAuthRequired] = useState(false);
 
   const featuresRaw = t("subscription.features", { returnObjects: true }) as unknown;
   const features = Array.isArray(featuresRaw) ? (featuresRaw as string[]) : [];
@@ -30,7 +35,6 @@ export const SubscriptionPlan = () => {
   const checkSubscriptionStatus = async () => {
     try {
       setCheckingStatus(true);
-      const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
         setSubscriptionStatus({ subscribed: false });
@@ -58,13 +62,8 @@ export const SubscriptionPlan = () => {
     try {
       setLoading(true);
       
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to subscribe to Premium",
-          variant: "destructive",
-        });
+        setShowAuthRequired(true);
         return;
       }
 
@@ -115,6 +114,60 @@ export const SubscriptionPlan = () => {
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <span className="ml-2 text-muted-foreground">{t("subscription.loading")}</span>
         </CardContent>
+      </Card>
+    );
+  }
+
+  // Show auth required card if user is not logged in
+  if (!user && showAuthRequired) {
+    return (
+      <Card className="w-full max-w-md mx-auto border-primary/20 bg-gradient-to-br from-background to-secondary/20">
+        <CardHeader className="text-center">
+          <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mb-4">
+            <UserPlus className="h-8 w-8 text-white" />
+          </div>
+          <CardTitle className="text-2xl font-bold text-gradient-primary">
+            {t("subscription.authRequired")}
+          </CardTitle>
+          <CardDescription className="text-base">
+            {t("subscription.authRequiredDesc")}
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent className="space-y-4">
+          <div className="bg-muted/50 rounded-lg p-4">
+            <h4 className="font-semibold mb-3 flex items-center text-primary">
+              <Star className="h-5 w-5 mr-2" />
+              {t("subscription.whySignUp")}
+            </h4>
+            <ul className="space-y-2">
+              {(t("subscription.signUpBenefits", { returnObjects: true }) as string[]).map((benefit, index) => (
+                <li key={index} className="flex items-start">
+                  <CheckCircle className="h-4 w-4 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">{benefit}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </CardContent>
+        
+        <CardFooter className="space-y-3">
+          <Button
+            onClick={() => navigate('/auth')}
+            className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
+            size="lg"
+          >
+            <UserPlus className="mr-2 h-4 w-4" />
+            {t("subscription.signInToContinue")}
+          </Button>
+          <Button
+            onClick={() => setShowAuthRequired(false)}
+            variant="ghost"
+            className="w-full"
+          >
+            {t("common.back")}
+          </Button>
+        </CardFooter>
       </Card>
     );
   }
@@ -189,14 +242,28 @@ export const SubscriptionPlan = () => {
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {t("subscription.managePlan")}
           </Button>
+        ) : user ? (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground text-center">
+              {t("subscription.ctaDescription")}
+            </p>
+            <Button
+              onClick={handleSubscribe}
+              disabled={loading}
+              className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
+              size="lg"
+            >
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {t("subscription.cta")}
+            </Button>
+          </div>
         ) : (
           <Button
-            onClick={handleSubscribe}
-            disabled={loading}
+            onClick={() => setShowAuthRequired(true)}
             className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
             size="lg"
           >
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <UserPlus className="mr-2 h-4 w-4" />
             {t("subscription.cta")}
           </Button>
         )}
