@@ -18,13 +18,22 @@ Deno.serve(async (req: Request) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Supabase will POST with a signed payload
+  // Supabase will POST with either a signed payload or an Authorization bearer secret
   const payload = await req.text();
   const headers = Object.fromEntries(req.headers);
 
   try {
-    const wh = new Webhook(hookSecret);
-    const evt = wh.verify(payload, headers) as any;
+    const authHeader = req.headers.get("authorization");
+    let evt: any;
+
+    if (authHeader && authHeader === `Bearer ${hookSecret}`) {
+      // Direct bearer verification: payload is plain JSON
+      evt = JSON.parse(payload);
+    } else {
+      // Signature verification via Standard Webhooks headers
+      const wh = new Webhook(hookSecret);
+      evt = wh.verify(payload, headers) as any;
+    }
 
     const {
       user,
