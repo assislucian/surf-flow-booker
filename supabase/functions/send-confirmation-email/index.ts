@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY") || "");
+const FROM = Deno.env.get("RESEND_FROM") || "Surfskate Hall <onboarding@resend.dev>";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -102,7 +103,7 @@ serve(async (req) => {
       : "🏄‍♂️ Booking Confirmed – Let's ride!";
 
     const { error: sendError } = await resend.emails.send({
-      from: "Surfskate Hall <noreply@lifabrasil.com>",
+      from: FROM,
       to: [booking.email],
       subject,
       html,

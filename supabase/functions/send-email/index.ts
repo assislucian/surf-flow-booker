@@ -7,6 +7,7 @@ import { AuthEmail } from './_templates/auth-email.tsx';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY") as string);
 const hookSecret = Deno.env.get("SEND_EMAIL_HOOK_SECRET") as string;
+const FROM = Deno.env.get("RESEND_FROM") || "Surfskate Hall <onboarding@resend.dev>";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -114,7 +115,7 @@ Deno.serve(async (req: Request) => {
     );
 
     const { error } = await resend.emails.send({
-      from: "Surfskate Hall <noreply@lifabrasil.com>",
+      from: FROM,
       to: [user?.email].filter(Boolean) as string[],
       subject,
       html,
