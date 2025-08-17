@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { format } from "date-fns";
+import { format, getWeek } from "date-fns";
 import { de as deLocale, enUS as enLocale } from "date-fns/locale";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CalendarIcon, Clock, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -116,51 +118,182 @@ const Booking: React.FC = () => {
       <p className="mt-2 text-muted-foreground">{t("booking.subtitle")}</p>
 
       <section className="mt-8 grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <div className="flex flex-wrap items-center gap-3">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="min-w-[220px] justify-start">
-                  {date ? (
-                    <span>
-                      {t("booking.selectedDate")}: {format(date, "PPP", { locale })}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Step 1: Date Selection */}
+          <Card className="border-primary/20">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <CalendarIcon className="h-5 w-5 text-primary" />
+                <span className="bg-gradient-primary bg-clip-text text-transparent font-bold">1.</span>
+                {t("booking.pickDate")}
+              </CardTitle>
+              <CardDescription>
+                {i18n.language === "de" 
+                  ? "Wähle dein gewünschtes Datum für die Session"
+                  : "Choose your preferred date for the session"
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col sm:flex-row gap-4 items-start">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      className="min-w-[280px] justify-start text-left border-2 hover:border-primary/50 transition-colors"
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4 text-primary" />
+                      {date ? (
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            {format(date, "EEEE, dd. MMMM yyyy", { locale })}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {i18n.language === "de" 
+                              ? `Kalenderwoche ${getWeek(date)} • Week ${getWeek(date)}`
+                              : `Week ${getWeek(date)} • Kalenderwoche ${getWeek(date)}`
+                            }
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">{t("booking.pickDate")}</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                      disabled={(date) => date < new Date()}
+                      className="p-3 pointer-events-auto"
+                      locale={locale}
+                    />
+                  </PopoverContent>
+                </Popover>
+                
+                {date && (
+                  <div className="flex items-center gap-2 px-3 py-2 bg-primary/5 rounded-lg border border-primary/20">
+                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                    <span className="text-sm text-primary font-medium">
+                      {format(date, "dd.MM.yyyy", { locale })}
                     </span>
-                  ) : (
-                    <span>{t("booking.pickDate")}</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                  className="p-3 pointer-events-auto"
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
-          <div className="mt-6">
-            <h2 className="text-lg font-medium">{t("booking.availableSlots")}</h2>
-            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {allSlots.map((slot) => {
-                const booked = isBooked(slot);
-                const isSelected = selectedSlot === slot;
-                return (
-                  <Button
-                    key={slot}
-                    variant={isSelected ? "default" : "secondary"}
-                    disabled={booked}
-                    onClick={() => setSelectedSlot(slot)}
-                  >
-                    {slot}
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
+          {/* Step 2: Time Slot Selection */}
+          <Card className={`border-primary/20 transition-all duration-300 ${date ? 'opacity-100' : 'opacity-50'}`}>
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Clock className="h-5 w-5 text-primary" />
+                <span className="bg-gradient-primary bg-clip-text text-transparent font-bold">2.</span>
+                {t("booking.availableSlots")}
+              </CardTitle>
+              <CardDescription>
+                {date && (
+                  <span className="font-medium">
+                    {format(date, "EEEE, dd. MMMM", { locale })} • 
+                    <span className="text-primary ml-1">
+                      {i18n.language === "de" 
+                        ? `KW ${getWeek(date)}`
+                        : `Week ${getWeek(date)}`
+                      }
+                    </span>
+                  </span>
+                )}
+                {i18n.language === "de" 
+                  ? date 
+                    ? " - Wähle deine bevorzugte Uhrzeit (je 1 Stunde)"
+                    : "Wähle zuerst ein Datum aus"
+                  : date 
+                    ? " - Choose your preferred time slot (1 hour each)"
+                    : "Please select a date first"
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {date ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {allSlots.map((slot) => {
+                    const booked = isBooked(slot);
+                    const isSelected = selectedSlot === slot;
+                    return (
+                      <Button
+                        key={slot}
+                        variant={isSelected ? "default" : "outline"}
+                        disabled={booked}
+                        onClick={() => setSelectedSlot(slot)}
+                        className={`h-12 text-base font-medium transition-all duration-200 ${
+                          isSelected 
+                            ? 'bg-gradient-primary hover:opacity-90 text-white shadow-lg scale-105' 
+                            : booked 
+                              ? 'opacity-40 cursor-not-allowed' 
+                              : 'hover:border-primary hover:text-primary hover:bg-primary/5'
+                        }`}
+                      >
+                        <div className="flex flex-col items-center">
+                          <span>{slot}</span>
+                          {booked && (
+                            <span className="text-xs opacity-70">
+                              {i18n.language === "de" ? "Belegt" : "Booked"}
+                            </span>
+                          )}
+                        </div>
+                      </Button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-32 text-muted-foreground">
+                  <div className="text-center">
+                    <CalendarIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p>{i18n.language === "de" ? "Bitte wähle zuerst ein Datum" : "Please select a date first"}</p>
+                  </div>
+                </div>
+              )}
+              
+              {selectedSlot && (
+                <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20">
+                  <div className="flex items-center gap-2 text-primary font-medium">
+                    <Clock className="h-4 w-4" />
+                    <span>
+                      {i18n.language === "de" ? "Ausgewählt:" : "Selected:"} {selectedSlot}
+                      {date && ` - ${format(date, "dd.MM.yyyy")}`}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Booking Summary */}
+          {date && selectedSlot && (
+            <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center">
+                    <Users className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-primary">
+                      {i18n.language === "de" ? "Deine Session ist bereit!" : "Your session is ready!"}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlot} • 
+                      {i18n.language === "de" 
+                        ? ` Kalenderwoche ${getWeek(date)}`
+                        : ` Week ${getWeek(date)}`
+                      }
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <aside className="lg:col-span-1">
