@@ -7,7 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CalendarDays, Crown, Mail, Settings, CreditCard, Clock, Star, LogOut } from "lucide-react";
+import { 
+  CalendarDays, Crown, Mail, Settings, CreditCard, Clock, Star, LogOut, 
+  Shield, Trash2, AlertTriangle, Key, UserX 
+} from "lucide-react";
+import { 
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, 
+  AlertDialogTrigger 
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -27,6 +37,11 @@ const Profile = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus>({ subscribed: false });
+  const [cancelingSubscription, setCancelingSubscription] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const locale = i18n.language === 'de' ? de : enUS;
 
   useEffect(() => {
@@ -79,6 +94,139 @@ const Profile = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!user) return;
+    
+    setCancelingSubscription(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
+        body: { language: i18n.language }
+      });
+      
+      if (error) {
+        toast({
+          title: t("common.error"),
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: t("profile.subscriptionCanceled"),
+        description: t("profile.subscriptionCanceledDesc"),
+      });
+      
+      // Refresh subscription status
+      await checkSubscriptionStatus();
+    } catch (error: any) {
+      toast({
+        title: t("common.error"),
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setCancelingSubscription(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    
+    setDeletingAccount(true);
+    try {
+      const { error } = await supabase.functions.invoke('delete-user-account', {
+        body: { language: i18n.language }
+      });
+      
+      if (error) {
+        toast({
+          title: t("common.error"),
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: t("profile.accountDeleted"),
+        description: t("profile.accountDeletedDesc"),
+      });
+      
+      // User will be automatically signed out
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: t("common.error"),
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setDeletingAccount(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (!user || !newPassword || !confirmPassword) {
+      toast({
+        title: t("common.error"),
+        description: t("auth.fillAllFields"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: t("common.error"),
+        description: t("auth.passwordsNotMatch"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast({
+        title: t("common.error"),
+        description: t("auth.passwordRequirements"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setChangingPassword(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+      
+      if (error) {
+        toast({
+          title: t("common.error"),
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: t("profile.passwordChanged"),
+        description: t("profile.passwordChangedDesc"),
+      });
+      
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error: any) {
+      toast({
+        title: t("common.error"),
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setChangingPassword(false);
     }
   };
 
@@ -137,14 +285,16 @@ const Profile = () => {
                   <span>{t("profile.memberSince")}: {format(new Date(user.created_at || new Date()), "PPP", { locale })}</span>
                 </div>
                 <Separator />
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
-                  onClick={handleSignOut}
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  {t("auth.logout")}
-                </Button>
+                <div className="space-y-2">
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    {t("auth.logout")}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -205,15 +355,44 @@ const Profile = () => {
                       </div>
                     </div>
 
-                    <Button
-                      onClick={handleManageSubscription}
-                      disabled={loading}
-                      className="w-full"
-                      variant="outline"
-                    >
-                      <CreditCard className="h-4 w-4 mr-2" />
-                      {loading ? t("subscription.loading") : t("subscription.managePlan")}
-                    </Button>
+                    <div className="space-y-3">
+                      <Button
+                        onClick={handleManageSubscription}
+                        disabled={loading}
+                        className="w-full"
+                        variant="outline"
+                      >
+                        <CreditCard className="h-4 w-4 mr-2" />
+                        {loading ? t("subscription.loading") : t("subscription.managePlan")}
+                      </Button>
+                      
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" className="w-full" size="sm">
+                            <UserX className="h-4 w-4 mr-2" />
+                            {t("profile.cancelSubscription")}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t("profile.cancelSubscriptionTitle")}</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {t("profile.cancelSubscriptionConfirm")}
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={handleCancelSubscription}
+                              disabled={cancelingSubscription}
+                              className="bg-destructive hover:bg-destructive/90"
+                            >
+                              {cancelingSubscription ? t("common.loading") : t("profile.confirmCancel")}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </div>
                 ) : (
                   <div className="text-center space-y-4">
@@ -249,6 +428,96 @@ const Profile = () => {
                     </Button>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+
+            {/* Security Settings Card */}
+            <Card className="md:col-span-3">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-primary" />
+                  {t("profile.securitySettings")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Change Password */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold">{t("profile.changePassword")}</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="newPassword">{t("profile.newPassword")}</Label>
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder={t("profile.newPasswordPlaceholder")}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="confirmPassword">{t("auth.confirmPassword")}</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder={t("profile.confirmPasswordPlaceholder")}
+                      />
+                    </div>
+                    <Button
+                      onClick={handleChangePassword}
+                      disabled={changingPassword || !newPassword || !confirmPassword}
+                      className="w-full"
+                    >
+                      <Key className="h-4 w-4 mr-2" />
+                      {changingPassword ? t("common.loading") : t("profile.updatePassword")}
+                    </Button>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Danger Zone */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-destructive" />
+                    <h3 className="font-semibold text-destructive">{t("profile.dangerZone")}</h3>
+                  </div>
+                  
+                  <div className="bg-destructive/5 p-4 rounded-lg border border-destructive/20">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {t("profile.dangerZoneDesc")}
+                    </p>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" className="w-full">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          {t("profile.deleteAccount")}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="text-destructive">
+                            {t("profile.deleteAccountTitle")}
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {t("profile.deleteAccountConfirm")}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleDeleteAccount}
+                            disabled={deletingAccount}
+                            className="bg-destructive hover:bg-destructive/90"
+                          >
+                            {deletingAccount ? t("common.loading") : t("profile.confirmDelete")}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

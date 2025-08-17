@@ -8,7 +8,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mail, Lock } from "lucide-react";
+import { Loader2, Mail, Lock, Eye, EyeOff, UserPlus, LogIn } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { 
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, 
+  AlertDialogTrigger 
+} from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
 
 const Auth = () => {
   const { t } = useTranslation();
@@ -20,6 +27,10 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [sendingReset, setSendingReset] = useState(false);
 
   // Redirect authenticated users to home
   useEffect(() => {
@@ -114,6 +125,48 @@ const Auth = () => {
     setLoading(false);
   };
 
+  const handlePasswordReset = async () => {
+    if (!resetEmail) {
+      toast({
+        title: t("common.error"),
+        description: t("auth.fillAllFields"),
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setSendingReset(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/auth?mode=reset`
+      });
+
+      if (error) {
+        toast({
+          title: t("auth.resetFailed"),
+          description: error.message,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: t("auth.resetSent"),
+        description: t("auth.resetSentDesc")
+      });
+      
+      setResetEmail("");
+    } catch (error: any) {
+      toast({
+        title: t("auth.resetFailed"),
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setSendingReset(false);
+    }
+  };
+
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary/20 py-12">
       <Helmet>
@@ -164,13 +217,26 @@ const Auth = () => {
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signin-password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 pr-10"
                       required
                     />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </Button>
                   </div>
                 </div>
                 
@@ -180,9 +246,50 @@ const Auth = () => {
                   disabled={loading}
                 >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  <LogIn className="mr-2 h-4 w-4" />
                   {t("auth.signIn")}
                 </Button>
               </form>
+              
+              <div className="text-center mt-4">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="link" className="text-sm text-muted-foreground">
+                      {t("auth.forgotPassword")}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>{t("auth.resetPassword")}</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        {t("auth.resetPasswordDesc")}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div>
+                        <Label htmlFor="resetEmail">{t("auth.email")}</Label>
+                        <Input
+                          id="resetEmail"
+                          type="email"
+                          value={resetEmail}
+                          onChange={(e) => setResetEmail(e.target.value)}
+                          placeholder={t("auth.enterEmail")}
+                        />
+                      </div>
+                    </div>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handlePasswordReset}
+                        disabled={sendingReset}
+                      >
+                        <Mail className="h-4 w-4 mr-2" />
+                        {sendingReset ? t("common.loading") : t("auth.sendResetLink")}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </TabsContent>
             
             <TabsContent value="signup">
@@ -249,6 +356,7 @@ const Auth = () => {
                   disabled={loading}
                 >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  <UserPlus className="mr-2 h-4 w-4" />
                   {t("auth.createAccount")}
                 </Button>
               </form>
