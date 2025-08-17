@@ -1,5 +1,5 @@
 const en = {
-  nav: { home: "Home", about: "About", blog: "News", book: "Book" },
+  nav: { home: "Home", about: "About", blog: "News", book: "Book", auth: "Sign In", dashboard: "Dashboard" },
   hero: {
     alt: "Indoor surfskate hall – hero image",
     title: "Surfskate Hall – Book Your Flow",
@@ -145,6 +145,7 @@ const en = {
       "Exclusive events & workshops"
     ],
     cta: "Go Premium",
+    ctaDescription: "Join today and experience the full surfskate experience!",
     benefits: "Why Premium?",
     currentPlan: "Your current plan",
     managePlan: "Manage plan",
@@ -153,14 +154,60 @@ const en = {
     loading: "Loading...",
     success: "Premium membership successfully activated!",
     canceled: "Subscription was canceled.",
-    expires: "Expires on"
+    expires: "Expires on",
+    authRequired: "Sign in required",
+    authRequiredDesc: "You need to sign in to subscribe to Premium. It only takes a minute!",
+    whySignUp: "Why sign up?",
+    signUpBenefits: [
+      "Secure storage of your bookings",
+      "Easy membership management",
+      "Receive exclusive offers and updates", 
+      "Access to premium community"
+    ],
+    signInToContinue: "Sign in now"
+  },
+  auth: {
+    title: "Welcome back!",
+    subtitle: "Sign in to your account or create a new one",
+    signIn: "Sign In",
+    signUp: "Sign Up",
+    email: "Email", 
+    password: "Password",
+    confirmPassword: "Confirm Password",
+    createAccount: "Create Account",
+    welcomeBack: "Welcome back!",
+    loginSuccess: "You have been logged in successfully.",
+    registrationSuccess: "Registration successful!",
+    checkEmailConfirm: "Please check your email to confirm your account.",
+    fillAllFields: "Please fill in all fields",
+    passwordsNotMatch: "Passwords do not match",
+    passwordRequirements: "Password must be at least 8 characters with one uppercase, one lowercase, and one number",
+    accountExists: "Account Exists",
+    accountExistsDesc: "An account with this email already exists. Please sign in instead.",
+    loginFailed: "Login Failed", 
+    registrationFailed: "Registration Failed",
+    logout: "Sign Out",
+    logoutSuccess: "You have been logged out successfully"
   },
   cookies: {
     message: "We only use essential cookies to improve your experience.",
     accept: "Accept",
     decline: "Decline",
   },
-  common: { required: "Required" },
+  common: { 
+    required: "Required",
+    optional: "Optional", 
+    loading: "Loading...",
+    error: "Error",
+    success: "Success",
+    cancel: "Cancel",
+    confirm: "Confirm",
+    back: "Back",
+    next: "Next", 
+    save: "Save",
+    edit: "Edit",
+    delete: "Delete"
+  },
 } as const;
 
 export default en;

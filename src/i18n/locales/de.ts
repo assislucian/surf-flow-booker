@@ -1,5 +1,5 @@
 const de = {
-  nav: { home: "Startseite", about: "Über uns", blog: "News", book: "Buchen" },
+  nav: { home: "Startseite", about: "Über uns", blog: "News", book: "Buchen", auth: "Anmelden", dashboard: "Dashboard" },
   hero: {
     alt: "Indoor Surfskate Halle – Heldengrafik",
     title: "Surfskate Hall – Buche deinen Flow",
@@ -145,6 +145,7 @@ const de = {
       "Exklusive Events & Workshops"
     ],
     cta: "Premium werden",
+    ctaDescription: "Werde noch heute Mitglied und erlebe das volle Surfskate-Erlebnis!",
     benefits: "Warum Premium?",
     currentPlan: "Dein aktueller Plan",
     managePlan: "Plan verwalten",
@@ -153,14 +154,60 @@ const de = {
     loading: "Lade...",
     success: "Premium Mitgliedschaft erfolgreich aktiviert!",
     canceled: "Subscription wurde abgebrochen.",
-    expires: "Läuft ab am"
+    expires: "Läuft ab am",
+    authRequired: "Anmeldung erforderlich",
+    authRequiredDesc: "Du musst dich anmelden, um Premium zu abonnieren. Es dauert nur eine Minute!",
+    whySignUp: "Warum registrieren?",
+    signUpBenefits: [
+      "Sichere Speicherung deiner Buchungen",
+      "Verwalte deine Mitgliedschaft einfach", 
+      "Erhalte exklusive Angebote und Updates",
+      "Zugang zur Premium Community"
+    ],
+    signInToContinue: "Jetzt anmelden"
+  },
+  auth: {
+    title: "Willkommen zurück!",
+    subtitle: "Melde dich an oder erstelle ein neues Konto",
+    signIn: "Anmelden",
+    signUp: "Registrieren", 
+    email: "E-Mail",
+    password: "Passwort",
+    confirmPassword: "Passwort bestätigen",
+    createAccount: "Konto erstellen",
+    welcomeBack: "Willkommen zurück!",
+    loginSuccess: "Du wurdest erfolgreich angemeldet.",
+    registrationSuccess: "Registrierung erfolgreich!",
+    checkEmailConfirm: "Bitte überprüfe deine E-Mail, um dein Konto zu bestätigen.",
+    fillAllFields: "Bitte fülle alle Felder aus",
+    passwordsNotMatch: "Passwörter stimmen nicht überein",
+    passwordRequirements: "Das Passwort muss mindestens 8 Zeichen haben und einen Großbuchstaben, einen Kleinbuchstaben und eine Zahl enthalten",
+    accountExists: "Konto bereits vorhanden",
+    accountExistsDesc: "Ein Konto mit dieser E-Mail existiert bereits. Bitte melde dich stattdessen an.",
+    loginFailed: "Anmeldung fehlgeschlagen",
+    registrationFailed: "Registrierung fehlgeschlagen",
+    logout: "Abmelden",
+    logoutSuccess: "Du wurdest erfolgreich abgemeldet"
   },
   cookies: {
     message: "Wir verwenden nur notwendige Cookies, um Ihr Erlebnis zu verbessern.",
     accept: "Akzeptieren",
     decline: "Ablehnen",
   },
-  common: { required: "Pflichtfeld" },
+  common: { 
+    required: "Pflichtfeld",
+    optional: "Optional",
+    loading: "Lädt...",
+    error: "Fehler",
+    success: "Erfolg",
+    cancel: "Abbrechen",
+    confirm: "Bestätigen",
+    back: "Zurück",
+    next: "Weiter",
+    save: "Speichern",
+    edit: "Bearbeiten",
+    delete: "Löschen"
+  },
 } as const;
 
 export default de;
