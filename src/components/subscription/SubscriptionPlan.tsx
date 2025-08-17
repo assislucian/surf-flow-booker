@@ -141,12 +141,21 @@ export const SubscriptionPlan = () => {
               {t("subscription.whySignUp")}
             </h4>
             <ul className="space-y-2">
-              {(t("subscription.signUpBenefits", { returnObjects: true }) as string[]).map((benefit, index) => (
-                <li key={index} className="flex items-start">
-                  <CheckCircle className="h-4 w-4 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-muted-foreground">{benefit}</span>
-                </li>
-              ))}
+              {(() => {
+                const benefits = t("subscription.signUpBenefits", { returnObjects: true });
+                const benefitsArray = Array.isArray(benefits) ? benefits : [
+                  "Secure storage of your bookings",
+                  "Easy membership management", 
+                  "Receive exclusive offers and updates",
+                  "Access to premium community"
+                ];
+                return benefitsArray.map((benefit, index) => (
+                  <li key={index} className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-muted-foreground">{benefit}</span>
+                  </li>
+                ));
+              })()}
             </ul>
           </div>
         </CardContent>
