@@ -29,7 +29,13 @@ serve(async (req) => {
 
     if (error) throw error;
 
-    const slots = (data || []).map((r: any) => r.slot);
+    // Parse comma-separated slots and flatten them
+    const slots: string[] = [];
+    (data || []).forEach((r: any) => {
+      const slotString = r.slot || "";
+      const parsedSlots = slotString.split(",").filter((s: string) => s.trim());
+      slots.push(...parsedSlots);
+    });
 
     return new Response(JSON.stringify({ slots }), {
       status: 200,

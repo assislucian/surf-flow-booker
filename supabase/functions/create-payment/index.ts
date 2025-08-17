@@ -52,7 +52,7 @@ serve(async (req) => {
             currency,
             product_data: {
               name: "Surfskate Hall Booking",
-              description: `${pending.date ?? ""} ${pending.slot ?? ""}`.trim(),
+              description: `${pending.date ?? ""} ${Array.isArray(pending.slots) ? pending.slots.join(", ") : pending.slot ?? ""}`.trim(),
             },
             unit_amount: amountCents,
           },
@@ -66,7 +66,7 @@ serve(async (req) => {
         name: pending.name ?? "",
         email: pending.email ?? "",
         date: pending.date ?? "",
-        slot: pending.slot ?? "",
+        slots: Array.isArray(pending.slots) ? pending.slots.join(",") : pending.slot ?? "",
         level: pending.level ?? "",
         notes: pending.notes ?? "",
         createdAt: String(pending.createdAt ?? ""),

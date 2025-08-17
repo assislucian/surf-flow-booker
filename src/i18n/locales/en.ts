@@ -432,8 +432,24 @@ const en = {
       payment: "Payment processing via Stripe (separate privacy policy)",
       rights: "Your Rights",
       rightsText: "You have the right to information, correction, deletion, etc."
+  },
+  checkout: {
+    title: "Checkout",
+    subtitle: "Please review your information and proceed with payment",
+    missing: "No pending booking found",
+    back: "Back to Booking",
+    proceed: "Proceed to Payment",
+    summary: {
+      date: "Date",
+      slot: "Time Slot",
+      name: "Name",
+      email: "Email",
+      level: "Level",
+      notes: "Notes"
     },
-    terms: {
+    paymentNote: "After successful payment you'll be redirected and your booking will be confirmed."
+  },
+  terms: {
       title: "Terms and Conditions",
       short: "Terms",
       desc: "Terms for bookings and hall usage.",

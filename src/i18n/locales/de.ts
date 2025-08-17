@@ -432,8 +432,24 @@ const de = {
       payment: "Zahlungsabwicklung via Stripe (separate Datenschutzerklärung)",
       rights: "Ihre Rechte",
       rightsText: "Sie haben das Recht auf Auskunft, Berichtigung, Löschung u.a."
+  },
+  checkout: {
+    title: "Zur Kasse",
+    subtitle: "Bitte prüfe deine Angaben und starte die Zahlung",
+    missing: "Keine ausstehende Buchung gefunden",
+    back: "Zurück zur Buchung",
+    proceed: "Zur Zahlung",
+    summary: {
+      date: "Datum",
+      slot: "Zeitfenster",
+      name: "Name",
+      email: "E-Mail",
+      level: "Level",
+      notes: "Notizen"
     },
-    terms: {
+    paymentNote: "Nach erfolgreicher Zahlung wirst du zurückgeleitet und die Buchung wird bestätigt."
+  },
+  terms: {
       title: "Allgemeine Geschäftsbedingungen",
       short: "AGB",
       desc: "AGB für Buchungen und Nutzung der Halle.",

@@ -53,6 +53,34 @@ const Booking: React.FC = () => {
     defaultValues: { level: "beginner" },
   });
 
+  // Restore data when coming back from checkout
+  React.useEffect(() => {
+    const pendingData = sessionStorage.getItem("pending_booking");
+    if (pendingData) {
+      try {
+        const parsed = JSON.parse(pendingData);
+        if (parsed.date) {
+          setDate(new Date(parsed.date));
+        }
+        if (parsed.slots && Array.isArray(parsed.slots)) {
+          setSelectedSlots(parsed.slots);
+        }
+        // Restore form data
+        if (parsed.name || parsed.email || parsed.phone || parsed.level || parsed.notes) {
+          reset({
+            name: parsed.name || "",
+            email: parsed.email || "",
+            phone: parsed.phone || "",
+            level: parsed.level || "beginner",
+            notes: parsed.notes || ""
+          });
+        }
+      } catch (e) {
+        console.error("Error restoring booking data:", e);
+      }
+    }
+  }, [reset]);
+
   const locale = i18n.language === "de" ? deLocale : enLocale;
 
   const bookedKey = (d: Date | undefined, s: string[]) =>
@@ -104,6 +132,30 @@ const Booking: React.FC = () => {
 
   const isBooked = (slot: string) => {
     return bookedSlots.includes(slot);
+  };
+
+  // Check for time gaps in selected slots
+  const checkForTimeGaps = (slots: string[]): boolean => {
+    if (slots.length <= 1) return false;
+    
+    const sortedSlots = slots.sort();
+    for (let i = 0; i < sortedSlots.length - 1; i++) {
+      const currentHour = parseInt(sortedSlots[i].split(':')[0]);
+      const nextHour = parseInt(sortedSlots[i + 1].split(':')[0]);
+      const gap = nextHour - currentHour;
+      
+      // Allow consecutive slots (gap = 1) or gaps of 2+ hours
+      // Disallow gaps of exactly 1 hour (too short for meaningful separation)
+      if (gap === 1) {
+        // This is consecutive, which is fine
+        continue;
+      } else if (gap === 2) {
+        // This is exactly 1 hour gap, which we don't allow
+        return true;
+      }
+      // Gap of 3+ hours is fine (2+ hour separation)
+    }
+    return false;
   };
 
   return (
@@ -223,22 +275,40 @@ const Booking: React.FC = () => {
                           if (isSelected) {
                             setSelectedSlots(prev => prev.filter(s => s !== slot));
                           } else {
-                            setSelectedSlots(prev => [...prev, slot].sort());
+                            // Check for time gaps when adding new slots
+                            const newSlots = [...selectedSlots, slot].sort();
+                            const hasGaps = checkForTimeGaps(newSlots);
+                            if (hasGaps) {
+                              toast({
+                                title: i18n.language === "de" ? "Zeitlücke erkannt" : "Time gap detected",
+                                description: i18n.language === "de" 
+                                  ? "Bitte wähle zusammenhängende Zeitslots oder lasse mindestens eine Stunde Pause zwischen den Buchungen."
+                                  : "Please select consecutive time slots or leave at least one hour between bookings.",
+                                variant: "destructive"
+                              });
+                              return;
+                            }
+                            setSelectedSlots(newSlots);
                           }
                         }}
                         className={`h-12 text-base font-medium transition-all duration-200 ${
                           isSelected 
                             ? 'bg-gradient-primary hover:opacity-90 text-white shadow-lg scale-105' 
                             : booked 
-                              ? 'opacity-40 cursor-not-allowed' 
-                              : 'hover:border-primary hover:text-primary hover:bg-primary/5'
+                              ? 'opacity-40 cursor-not-allowed bg-destructive/10 text-destructive-foreground border-destructive/20' 
+                              : 'hover:border-primary hover:text-primary hover:bg-primary/5 hover:scale-102'
                         }`}
                       >
                         <div className="flex flex-col items-center">
                           <span>{slot}</span>
                           {booked && (
-                            <span className="text-xs opacity-70">
+                            <span className="text-xs font-medium">
                               {t("booking.booked")}
+                            </span>
+                          )}
+                          {isSelected && (
+                            <span className="text-xs opacity-90">
+                              ✓ {t("booking.selected")}
                             </span>
                           )}
                         </div>
@@ -266,6 +336,12 @@ const Booking: React.FC = () => {
                   </div>
                   <div className="text-sm text-muted-foreground mt-1">
                     {selectedSlots.length} {selectedSlots.length === 1 ? t("booking.slot") : t("booking.slots")} {t("booking.selectedTotal")}
+                  </div>
+                  <div className="text-xs text-primary/70 mt-2">
+                    {i18n.language === "de" 
+                      ? "💡 Tipp: Wähle zusammenhängende Slots oder lasse mind. 2 Stunden Pause zwischen Buchungen"
+                      : "💡 Tip: Select consecutive slots or leave at least 2 hours between bookings"
+                    }
                   </div>
                 </div>
               )}

@@ -44,7 +44,7 @@ serve(async (req) => {
         level: md.level ?? null,
         notes: md.notes ?? null,
         booking_date: md.date ?? "",
-        slot: md.slot ?? "",
+        slot: md.slots ?? md.slot ?? "",
         status: "confirmed",
         stripe_session_id: session.id,
         amount_cents: (session.amount_total as number) ?? 1499,
@@ -73,7 +73,7 @@ serve(async (req) => {
       name: bookingRow.name,
       email: bookingRow.email,
       date: bookingRow.booking_date,
-      slot: bookingRow.slot,
+      slots: bookingRow.slot.split(",").filter(Boolean),
       level: bookingRow.level,
       notes: bookingRow.notes,
     };
