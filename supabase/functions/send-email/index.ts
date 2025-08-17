@@ -23,16 +23,23 @@ Deno.serve(async (req: Request) => {
   const headers = Object.fromEntries(req.headers);
 
   try {
-    const authHeader = req.headers.get("authorization");
+    const authHeader = req.headers.get("authorization") || "";
+    const whSignature = req.headers.get("wh-signature") || req.headers.get("wh-signature-256") || "";
     let evt: any;
 
-    if (authHeader && authHeader === `Bearer ${hookSecret}`) {
+    if (!hookSecret) {
+      throw new Error("Missing SEND_EMAIL_HOOK_SECRET");
+    }
+
+    if (authHeader === `Bearer ${hookSecret}`) {
       // Direct bearer verification: payload is plain JSON
       evt = JSON.parse(payload);
-    } else {
-      // Signature verification via Standard Webhooks headers
+    } else if (whSignature) {
+      // Signature verification via Standard Webhooks headers (only if present)
       const wh = new Webhook(hookSecret);
       evt = wh.verify(payload, headers) as any;
+    } else {
+      throw new Error("Missing hook auth (bearer or wh-signature)");
     }
 
     const {
