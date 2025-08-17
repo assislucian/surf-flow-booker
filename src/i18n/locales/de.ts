@@ -1,7 +1,7 @@
 const de = {
   common: {
     back: "Zurück",
-    cancel: "Abbrechen",
+    cancel: "Abbrechen", 
     submit: "Senden",
     save: "Speichern",
     delete: "Löschen",
@@ -19,11 +19,15 @@ const de = {
     cta: "Jetzt buchen",
     alt: "Surfskate Hall - Indoor-Surfing in Wiesbaden"
   },
-  blog: {
-    title: "Blog & News",
-    subtitle: "Aktuelle Neuigkeiten, Tipps und Updates aus der Surfskate Hall Wiesbaden",
-    noPostsYet: "Noch keine Beiträge",
-    readMore: "Weiterlesen"
+  nav: {
+    home: "Startseite",
+    book: "Buchen",
+    about: "Über uns",
+    contact: "Kontakt",
+    blog: "Blog",
+    profile: "Profil",
+    login: "Anmelden",
+    auth: "Anmelden"
   },
   features: {
     title: "Warum Surfskate Hall?",
@@ -95,48 +99,110 @@ const de = {
     instructions: "Fülle das Formular aus und gehe zur Zahlung, um deine Buchung zu bestätigen.",
     paymentDescription: "Sichere Zahlung über Stripe"
   },
+  blog: {
+    title: "Blog & News",
+    subtitle: "Aktuelle Neuigkeiten, Tipps und Updates aus der Surfskate Hall Wiesbaden",
+    noPostsYet: "Noch keine Beiträge",
+    readMore: "Weiterlesen"
+  },
+  aboutUs: {
+    title: "Über Surfskate Hall",
+    subtitle: "Die erste Indoor-Surfskate-Halle in Wiesbaden mit professioneller Ausrüstung",
+    story: {
+      title: "Unsere Geschichte",
+      content: "Surfskate Hall Wiesbaden ist die erste Indoor-Surfskate-Halle der Region. Unser Ziel ist es, das ganze Jahr über ein authentisches Surferlebnis zu bieten, unabhängig vom Wetter. Mit professioneller Ausrüstung und erfahrenen Trainern schaffen wir den perfekten Ort für Anfänger und Profis."
+    },
+    mission: {
+      title: "Unsere Mission",
+      content: "Wir möchten die Begeisterung für das Surfskaten in Wiesbaden und Umgebung verbreiten. Dabei stehen Sicherheit, Spaß und kontinuierliche Weiterentwicklung im Mittelpunkt. Jeder Gast soll bei uns seinen Flow finden und die Freiheit des Surfens spüren."
+    },
+    values: {
+      title: "Unsere Werte",
+      items: [
+        {
+          title: "Gemeinschaft",
+          desc: "Wir schaffen einen Ort der Begegnung für alle Surfskate-Begeisterten"
+        },
+        {
+          title: "Innovation",
+          desc: "Modernste Ausrüstung und kontinuierliche Weiterentwicklung unserer Angebote"
+        },
+        {
+          title: "Leidenschaft",
+          desc: "Unsere Liebe zum Surfskaten spiegelt sich in allem wider, was wir tun"
+        },
+        {
+          title: "Freude",
+          desc: "Spaß und positive Energie stehen bei uns immer im Vordergrund"
+        }
+      ]
+    },
+    team: {
+      title: "Unser Team",
+      subtitle: "Leidenschaftliche Surfskater und erfahrene Trainer, die dich auf deiner Reise begleiten"
+    }
+  },
   profile: {
-    hello: "Hallo",
-    notLoggedIn: "Du bist nicht angemeldet.",
-    loginPrompt: "Melde dich an, um dein Profil zu sehen und deine Buchungen zu verwalten.",
-    loginButton: "Anmelden",
+    title: "Profil",
+    metaDescription: "Verwalte dein Surfskate Hall Profil und deine Premium-Mitgliedschaft",
+    welcome: "Willkommen",
+    memberSince: "Mitglied seit",
+    subscriptionStatus: "Mitgliedschaftsstatus",
+    subscriptionActive: "Deine Premium-Mitgliedschaft ist aktiv",
+    subscriptionInactive: "Du hast noch keine Premium-Mitgliedschaft",
+    currentBenefits: "Deine aktuellen Vorteile",
+    upgradeToUnlock: "Premium werden um freizuschalten",
+    securitySettings: "Sicherheitseinstellungen",
     changePassword: "Passwort ändern",
-    currentPassword: "Aktuelles Passwort",
     newPassword: "Neues Passwort",
-    confirmPassword: "Passwort bestätigen",
-    updating: "Aktualisiere...",
-    updatePassword: "Passwort aktualisieren",
-    passwordsNoMatch: "Passwörter stimmen nicht überein",
-    passwordTooShort: "Passwort muss mindestens 6 Zeichen lang sein",
-    cancelMembership: "Mitgliedschaft kündigen",
-    cancelMembershipConfirm: "Mitgliedschaft wirklich kündigen?",
-    cancelMembershipDescription: "Diese Aktion kann nicht rückgängig gemacht werden. Deine Premium-Vorteile gehen verloren.",
-    canceling: "Kündige...",
+    newPasswordPlaceholder: "Mindestens 8 Zeichen",
+    confirmPasswordPlaceholder: "Passwort wiederholen",
+    passwordChanged: "Passwort geändert",
+    passwordChangedDesc: "Dein Passwort wurde erfolgreich aktualisiert",
+    cancelSubscription: "Mitgliedschaft kündigen",
+    cancelSubscriptionTitle: "Mitgliedschaft kündigen?",
+    cancelSubscriptionConfirm: "Bist du sicher, dass du deine Premium-Mitgliedschaft kündigen möchtest? Du verlierst alle Premium-Vorteile.",
+    confirmCancel: "Ja, kündigen",
+    subscriptionCanceled: "Mitgliedschaft gekündigt",
+    subscriptionCanceledDesc: "Deine Premium-Mitgliedschaft wurde erfolgreich gekündigt",
     deleteAccount: "Konto löschen",
-    deleteAccountConfirm: "Konto wirklich löschen?",
-    deleteAccountDescription: "Diese Aktion kann nicht rückgängig gemacht werden. Alle deine Daten werden permanent gelöscht.",
-    deleting: "Lösche..."
+    deleteAccountTitle: "Konto löschen?",
+    deleteAccountConfirm: "Bist du sicher, dass du dein Konto löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.",
+    confirmDelete: "Ja, löschen",
+    accountDeleted: "Konto gelöscht",
+    accountDeletedDesc: "Dein Konto wurde erfolgreich gelöscht",
+    dangerZone: "Gefahrenbereich"
   },
   auth: {
+    title: "Anmelden",
+    subtitle: "Melde dich an oder erstelle ein Konto",
     signIn: "Anmelden",
     signUp: "Registrieren",
     email: "E-Mail",
     password: "Passwort",
-    dontHaveAccount: "Noch kein Konto?",
-    alreadyHaveAccount: "Bereits ein Konto?",
+    confirmPassword: "Passwort bestätigen",
+    fillAllFields: "Bitte fülle alle Felder aus",
+    passwordsNotMatch: "Passwörter stimmen nicht überein",
+    passwordRequirements: "Passwort muss mindestens 8 Zeichen lang sein und Groß-, Kleinbuchstaben sowie Zahlen enthalten",
+    loginFailed: "Anmeldung fehlgeschlagen",
+    welcomeBack: "Willkommen zurück",
+    loginSuccess: "Erfolgreich angemeldet",
+    registrationFailed: "Registrierung fehlgeschlagen",
+    registrationSuccess: "Registrierung erfolgreich",
+    checkEmailConfirm: "Bitte überprüfe deine E-Mails zur Bestätigung",
+    accountExists: "Konto existiert bereits",
+    accountExistsDesc: "Ein Konto mit dieser E-Mail-Adresse existiert bereits",
     forgotPassword: "Passwort vergessen?",
     resetPassword: "Passwort zurücksetzen",
-    sendResetEmail: "Reset-E-Mail senden",
-    backToLogin: "Zurück zur Anmeldung",
-    resetEmailSent: "Reset-E-Mail gesendet!",
-    resetEmailSentDesc: "Überprüfe deine E-Mails für Anweisungen zum Zurücksetzen deines Passworts.",
-    authError: "Authentifizierungsfehler",
-    signUpSuccess: "Registrierung erfolgreich",
-    signUpSuccessDesc: "Dein Konto wurde erstellt. Du kannst dich jetzt anmelden.",
-    signInSuccess: "Anmeldung erfolgreich",
-    signInSuccessDesc: "Willkommen zurück!",
-    passwordResetSent: "Passwort-Reset gesendet",
-    passwordResetSentDesc: "Überprüfe deine E-Mails für weitere Anweisungen."
+    resetPasswordDesc: "Gib deine E-Mail-Adresse ein, um einen Reset-Link zu erhalten",
+    enterEmail: "E-Mail-Adresse eingeben",
+    sendResetLink: "Reset-Link senden",
+    resetFailed: "Reset fehlgeschlagen",
+    resetSent: "Reset-Link gesendet",
+    resetSentDesc: "Überprüfe deine E-Mails für weitere Anweisungen",
+    createAccount: "Konto erstellen",
+    logout: "Abmelden",
+    logoutSuccess: "Erfolgreich abgemeldet"
   },
   subscription: {
     title: "Premium Mitgliedschaft",
@@ -165,6 +231,7 @@ const de = {
     ],
     signInToContinue: "Anmelden um fortzufahren",
     subscribed: "Premium Aktiv",
+    notSubscribed: "Nicht abonniert",
     currentPlan: "Aktueller Plan",
     expires: "Läuft ab am",
     managePlan: "Mitgliedschaft verwalten"
@@ -284,39 +351,55 @@ const de = {
       noPricesDescription: "Erstellen Sie Ihren ersten Preis für Buchungen oder Abonnements."
     }
   },
-  pages: {
-    about: {
-      title: "Über Surfskate Hall",
-      desc: "Die erste Indoor-Surfskate-Halle in Wiesbaden",
-      text: "Surfskate Hall bietet einzigartiges Indoor-Surferlebnis mit professioneller Ausrüstung."
-    },
-    contact: {
-      title: "Kontakt",
-      desc: "So erreichst du uns.",
-      text: "Wir freuen uns auf deinen Besuch oder deine Nachricht!"
-    },
-    datenschutz: {
-      title: "Datenschutzerklärung",
-      desc: "Informationen zur Verarbeitung deiner Daten.",
-      text: "Wir nehmen den Schutz deiner persönlichen Daten ernst und halten uns an die DSGVO."
-    },
-    impressum: {
+  legal: {
+    imprint: {
       title: "Impressum",
-      desc: "Rechtliche Informationen über Surfskate Hall.",
-      text: "Verantwortlich für den Inhalt: Surfskate Hall Wiesbaden"
+      short: "Impressum",
+      desc: "Anbieterkennzeichnung gemäß §5 TMG.",
+      contact: "Kontakt",
+      responsibility: "Verantwortlich für den Inhalt",
+      disclaimer: "Haftungsausschluss",
+      text: "Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links."
+    },
+    privacy: {
+      title: "Datenschutzerklärung",
+      short: "Datenschutz",
+      desc: "Informationen gemäß DSGVO.",
+      intro: "Wir verarbeiten personenbezogene Daten ausschließlich im Rahmen der gesetzlichen Bestimmungen (DSGVO, BDSG).",
+      controller: "Verantwortlicher",
+      controllerText: "Verantwortlicher ist der im Impressum genannte Anbieter.",
+      data: "Verarbeitete Daten",
+      bookingData: "Buchungsdaten (Name, E-Mail, gewählter Slot)",
+      payment: "Zahlungsabwicklung via Stripe (separate Datenschutzerklärung)",
+      rights: "Ihre Rechte",
+      rightsText: "Sie haben das Recht auf Auskunft, Berichtigung, Löschung u.a."
     },
     terms: {
       title: "Allgemeine Geschäftsbedingungen",
-      desc: "Die Nutzungsbedingungen für Surfskate Hall.",
-      text: "Diese AGB regeln die Nutzung unserer Einrichtungen und Dienstleistungen."
+      short: "AGB",
+      desc: "AGB für Buchungen und Nutzung der Halle.",
+      bookings: "Buchungen & Zahlung",
+      bookingsText: "Buchungen werden erst mit Zahlung wirksam. Preise inkl. MwSt.",
+      cancellations: "Stornierung",
+      cancellationsText: "Stornierungen sind bis 24h vor Termin möglich, danach keine Erstattung.",
+      rules: "Hausordnung",
+      rulesText: "Sicherheit geht vor. Den Anweisungen des Personals ist Folge zu leisten."
     },
-    widerruf: {
+    withdrawal: {
       title: "Widerrufsbelehrung",
+      short: "Widerruf",
       desc: "Hinweise zum Widerrufsrecht für Verbraucher.",
       text: "Verbraucher haben das Recht, binnen 14 Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen (Ausnahmen bei terminbezogenen Freizeitdienstleistungen möglich)."
+    },
+    contact: {
+      title: "Kontakt",
+      short: "Kontakt",
+      desc: "So erreichen Sie uns in Wiesbaden."
     }
   },
   footer: {
+    hours: "Öffnungszeiten",
+    rights: "Alle Rechte vorbehalten.",
     aboutUs: "Über uns",
     contact: "Kontakt",
     datenschutz: "Datenschutz",
@@ -329,7 +412,9 @@ const de = {
   errors: {
     notFound: "Seite nicht gefunden",
     notFoundDesc: "Die angeforderte Seite existiert nicht.",
-    goHome: "Zur Startseite"
+    goHome: "Zur Startseite",
+    pageNotFound: "Hoppla! Seite nicht gefunden",
+    returnHome: "Zurück zur Startseite"
   },
   payment: {
     success: {
