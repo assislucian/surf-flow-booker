@@ -42,8 +42,11 @@ const Checkout: React.FC = () => {
     }
   };
 
+  // Force re-render when language changes
+  const currentLang = i18n.language;
+
   return (
-    <main className="container py-10">
+    <main className="container py-10" key={currentLang}>
       <Helmet>
         <title>Surfskate Hall – {t("checkout.title")}</title>
         <meta name="description" content={t("checkout.subtitle") as string} />
