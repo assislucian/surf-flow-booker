@@ -104,6 +104,42 @@ export type Database = {
         }
         Relationships: []
       }
+      prices: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          id: string
+          is_active: boolean
+          name: string
+          stripe_price_id: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          stripe_price_id?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          stripe_price_id?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           created_at: string
