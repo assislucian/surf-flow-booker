@@ -25,6 +25,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import ResetPassword from "./pages/ResetPassword";
 import AdminAccess from "./pages/AdminAccess";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";

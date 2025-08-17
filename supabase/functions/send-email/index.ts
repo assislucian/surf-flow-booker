@@ -29,7 +29,10 @@ Deno.serve(async (req: Request) => {
     } = evt;
 
     const supabase_url = Deno.env.get("SUPABASE_URL") ?? "";
-    const actionUrl = `${supabase_url}/auth/v1/verify?token=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || "https://surfskate-hall.lovable.app/")}`;
+    const defaultRedirect = email_action_type === 'recovery'
+      ? 'https://surfskate-hall.lovable.app/reset-password'
+      : 'https://surfskate-hall.lovable.app/';
+    const actionUrl = `${supabase_url}/auth/v1/verify?token=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || defaultRedirect)}`;
 
     // Locale (German default)
     const localeRaw = (user?.user_metadata?.locale as string) || 'de';

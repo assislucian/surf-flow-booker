@@ -28,7 +28,7 @@ serve(async (req) => {
     );
 
     const origin = req.headers.get("origin") || "https://surfskate-hall.lovable.app";
-    const redirectTo = `${origin}/auth?mode=reset`;
+    const redirectTo = `${origin}/reset-password`;
 
     const { data, error } = await supabaseAdmin.auth.admin.generateLink({
       type: "recovery",
