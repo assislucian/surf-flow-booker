@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Webhook } from "https://esm.sh/standardwebhooks@1.0.0";
 import { Resend } from "npm:resend@4.0.0";
+import React from 'npm:react@18.3.1';
+import { renderAsync } from 'npm:@react-email/components@0.5.0';
+import { AuthEmail } from './_templates/auth-email.tsx';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY") as string);
 const hookSecret = Deno.env.get("SEND_EMAIL_HOOK_SECRET") as string;
@@ -77,43 +80,17 @@ Deno.serve(async (req: Request) => {
           ignore: "If you didn't request this, you can safely ignore this email.",
         };
 
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <title>Surfskate Hall</title>
-        </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; background:#f8f9fa; padding:24px; color:#1f2937;">
-          <table width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.08);overflow:hidden;">
-            <tr>
-              <td style="background:linear-gradient(135deg, hsl(196,100%,28%) 0%, hsl(201,96%,40%) 100%); padding:32px; color:#fff; text-align:center;">
-                <div style="font-size:42px;">🏄‍♂️</div>
-                <h1 style="margin:8px 0 0; font-size:24px; font-weight:700;">Surfskate Hall</h1>
-                <p style="margin:8px 0 0; opacity:0.95;">${subject}</p>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:28px 28px 8px; font-size:16px; line-height:1.6;">
-                <p>${copy.greet}</p>
-                <p>${copy.instruction}</p>
-                <div style="text-align:center; margin:28px 0;">
-                  <a href="${actionUrl}" style="display:inline-block; background:linear-gradient(135deg, hsl(196,100%,28%) 0%, hsl(201,96%,40%) 100%); color:#fff; text-decoration:none; padding:14px 24px; border-radius:999px; font-weight:600;">${copy.cta}</a>
-                </div>
-                <p style="color:#6b7280; font-size:14px;">${copy.fallback}</p>
-                <div style="background:#f3f4f6; padding:12px; border-radius:10px; word-break:break-all; font-family:monospace; font-size:12px; color:#374151;">${actionUrl}</div>
-                <p style="margin-top:24px; color:#6b7280; font-size:12px;">${copy.ignore}</p>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:16px 28px 28px; text-align:center; color:#9ca3af; font-size:12px;">
-                <div>Surfskate Hall • lifabrasil.com</div>
-              </td>
-            </tr>
-          </table>
-        </body>
-      </html>`;
+    const html = await renderAsync(
+      React.createElement(AuthEmail, {
+        actionUrl,
+        subject,
+        greet: copy.greet,
+        instruction: copy.instruction,
+        cta: copy.cta,
+        fallback: copy.fallback,
+        ignore: copy.ignore,
+      })
+    );
 
     const { error } = await resend.emails.send({
       from: "Surfskate Hall <noreply@lifabrasil.com>",
