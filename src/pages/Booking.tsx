@@ -41,7 +41,7 @@ const Booking: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [selectedSlot, setSelectedSlot] = React.useState<string | null>(null);
+  const [selectedSlots, setSelectedSlots] = React.useState<string[]>([]);
   const [bookedSlots, setBookedSlots] = React.useState<string[]>([]);
 
   const {
@@ -55,8 +55,8 @@ const Booking: React.FC = () => {
 
   const locale = i18n.language === "de" ? deLocale : enLocale;
 
-  const bookedKey = (d: Date | undefined, s: string | null) =>
-    d && s ? `${format(d, "yyyy-MM-dd")}|${s}` : "";
+  const bookedKey = (d: Date | undefined, s: string[]) =>
+    d && s.length ? s.map(slot => `${format(d, "yyyy-MM-dd")}|${slot}`).join(",") : "";
 
   React.useEffect(() => {
     const load = async () => {
@@ -84,7 +84,7 @@ const Booking: React.FC = () => {
       toast({ title: t("booking.errors.selectDate") as string });
       return;
     }
-    if (!selectedSlot) {
+    if (selectedSlots.length === 0) {
       toast({ title: t("booking.errors.selectSlot") as string });
       return;
     }
@@ -93,7 +93,7 @@ const Booking: React.FC = () => {
     const pending = {
       ...data,
       date: format(date, "yyyy-MM-dd"),
-      slot: selectedSlot,
+      slots: selectedSlots,
       createdAt: Date.now(),
     };
     sessionStorage.setItem("pending_booking", JSON.stringify(pending));
@@ -213,13 +213,19 @@ const Booking: React.FC = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {allSlots.map((slot) => {
                     const booked = isBooked(slot);
-                    const isSelected = selectedSlot === slot;
+                    const isSelected = selectedSlots.includes(slot);
                     return (
                       <Button
                         key={slot}
                         variant={isSelected ? "default" : "outline"}
                         disabled={booked}
-                        onClick={() => setSelectedSlot(slot)}
+                        onClick={() => {
+                          if (isSelected) {
+                            setSelectedSlots(prev => prev.filter(s => s !== slot));
+                          } else {
+                            setSelectedSlots(prev => [...prev, slot].sort());
+                          }
+                        }}
                         className={`h-12 text-base font-medium transition-all duration-200 ${
                           isSelected 
                             ? 'bg-gradient-primary hover:opacity-90 text-white shadow-lg scale-105' 
@@ -249,14 +255,17 @@ const Booking: React.FC = () => {
                 </div>
               )}
               
-              {selectedSlot && (
+              {selectedSlots.length > 0 && (
                 <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20">
                   <div className="flex items-center gap-2 text-primary font-medium">
                     <Clock className="h-4 w-4" />
                     <span>
-                      {t("booking.selected")}: {selectedSlot}
+                      {t("booking.selected")}: {selectedSlots.join(", ")}
                       {date && ` - ${format(date, "dd.MM.yyyy")}`}
                     </span>
+                  </div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    {selectedSlots.length} {selectedSlots.length === 1 ? t("booking.slot") : t("booking.slots")} {t("booking.selectedTotal")}
                   </div>
                 </div>
               )}
@@ -264,7 +273,7 @@ const Booking: React.FC = () => {
           </Card>
 
           {/* Booking Summary */}
-          {date && selectedSlot && (
+          {date && selectedSlots.length > 0 && (
             <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
@@ -273,14 +282,17 @@ const Booking: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-primary">
-                      {t("booking.sessionReady")}
+                      {selectedSlots.length === 1 ? t("booking.sessionReady") : t("booking.sessionsReady")}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlot} • {" "}
+                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlots.join(", ")} • {" "}
                       {i18n.language === "de" 
                         ? `Kalenderwoche ${getWeek(date)}`
                         : `Week ${getWeek(date)}`
                       }
+                    </p>
+                    <p className="text-xs text-primary/70 mt-1">
+                      {selectedSlots.length} {selectedSlots.length === 1 ? t("booking.slot") : t("booking.slots")} {t("booking.selectedTotal")}
                     </p>
                   </div>
                 </div>

@@ -28,6 +28,10 @@ const en = {
     booked: "Booked",
     selected: "Selected",
     sessionReady: "Your session is ready!",
+    sessionsReady: "Your sessions are ready!",
+    slot: "slot",
+    slots: "slots",
+    selectedTotal: "selected",
     proceedingToPayment: "Proceeding to payment",
     form: {
       name: "Name",

@@ -28,6 +28,10 @@ const de = {
     booked: "Belegt",
     selected: "Ausgewählt",
     sessionReady: "Deine Session ist bereit!",
+    sessionsReady: "Deine Sessions sind bereit!",
+    slot: "Slot",
+    slots: "Slots",
+    selectedTotal: "ausgewählt",
     proceedingToPayment: "Weiter zur Zahlung",
     form: {
       name: "Name",
