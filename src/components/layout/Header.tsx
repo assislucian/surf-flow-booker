@@ -142,6 +142,21 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
+                  {inRouter ? (
+                    <Link to="/profile">
+                      <DropdownMenuItem>
+                        <User className="h-4 w-4 mr-2" />
+                        {t("nav.profile")}
+                      </DropdownMenuItem>
+                    </Link>
+                  ) : (
+                    <a href="/profile">
+                      <DropdownMenuItem>
+                        <User className="h-4 w-4 mr-2" />
+                        {t("nav.profile")}
+                      </DropdownMenuItem>
+                    </a>
+                  )}
                   <DropdownMenuItem onClick={handleSignOut} className="text-destructive hover:text-destructive focus:text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />
                     {t("auth.logout")}

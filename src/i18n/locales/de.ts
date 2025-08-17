@@ -1,5 +1,5 @@
 const de = {
-  nav: { home: "Startseite", about: "Über uns", blog: "News", book: "Buchen", auth: "Anmelden", dashboard: "Dashboard" },
+  nav: { home: "Startseite", about: "Über uns", blog: "News", book: "Buchen", auth: "Anmelden", dashboard: "Dashboard", profile: "Profil" },
   hero: {
     alt: "Indoor Surfskate Halle – Heldengrafik",
     title: "Surfskate Hall – Buche deinen Flow",
@@ -193,6 +193,17 @@ const de = {
     message: "Wir verwenden nur notwendige Cookies, um Ihr Erlebnis zu verbessern.",
     accept: "Akzeptieren",
     decline: "Ablehnen",
+  },
+  profile: {
+    title: "Profil",
+    metaDescription: "Verwalte dein Profil und deine Premium-Mitgliedschaft bei Surfskate Hall. Überblicke deine Vorteile und Abonnement-Details.",
+    welcome: "Willkommen",
+    memberSince: "Mitglied seit",
+    subscriptionStatus: "Abonnement-Status",
+    subscriptionActive: "Deine Premium-Mitgliedschaft ist aktiv und du genießt alle Vorteile!",
+    subscriptionInactive: "Upgrade auf Premium und schalte exklusive Features frei.",
+    currentBenefits: "Deine aktuellen Vorteile",
+    upgradeToUnlock: "Upgrade für diese Vorteile",
   },
   common: { 
     required: "Pflichtfeld",

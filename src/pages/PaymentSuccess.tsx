@@ -24,8 +24,8 @@ const PaymentSuccess: React.FC = () => {
         const booking = (data as any)?.booking;
         if (booking) {
           setDetails(booking);
-          // Send confirmation email (non-blocking)
-          sendConfirmationEmail(booking).catch((err) => console.error("email error", err));
+          // Send confirmation email (non-blocking) 
+          sendConfirmationEmail(booking, i18n.language).catch((err) => console.error("email error", err));
         }
       } catch (err) {
         console.error("verify-payment error", err);

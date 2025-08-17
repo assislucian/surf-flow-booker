@@ -1,5 +1,5 @@
 const en = {
-  nav: { home: "Home", about: "About", blog: "News", book: "Book", auth: "Sign In", dashboard: "Dashboard" },
+  nav: { home: "Home", about: "About", blog: "News", book: "Book", auth: "Sign In", dashboard: "Dashboard", profile: "Profile" },
   hero: {
     alt: "Indoor surfskate hall – hero image",
     title: "Surfskate Hall – Book Your Flow",
@@ -193,6 +193,17 @@ const en = {
     message: "We only use essential cookies to improve your experience.",
     accept: "Accept",
     decline: "Decline",
+  },
+  profile: {
+    title: "Profile",
+    metaDescription: "Manage your profile and premium membership at Surfskate Hall. Overview of your benefits and subscription details.",
+    welcome: "Welcome",
+    memberSince: "Member since",
+    subscriptionStatus: "Subscription Status",
+    subscriptionActive: "Your Premium membership is active and you enjoy all benefits!",
+    subscriptionInactive: "Upgrade to Premium and unlock exclusive features.",
+    currentBenefits: "Your current benefits",
+    upgradeToUnlock: "Upgrade to unlock these benefits",
   },
   common: { 
     required: "Required",

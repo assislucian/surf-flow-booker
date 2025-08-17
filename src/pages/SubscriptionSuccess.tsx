@@ -6,10 +6,29 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+
+// Function to trigger subscriber email
+const triggerSubscriberEmail = async (user: any, language: string) => {
+  if (user?.email) {
+    try {
+      await supabase.functions.invoke("send-subscription-email", {
+        body: { 
+          email: user.email, 
+          name: user.email.split('@')[0], 
+          language 
+        }
+      });
+    } catch (error) {
+      console.error("Failed to send subscriber email:", error);
+    }
+  }
+};
 
 const SubscriptionSuccess = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [verifying, setVerifying] = useState(true);
 
   useEffect(() => {
@@ -17,6 +36,11 @@ const SubscriptionSuccess = () => {
       try {
         // Check subscription status to update the database
         await supabase.functions.invoke('check-subscription');
+        
+        // Send subscriber email
+        if (user?.email) {
+          await triggerSubscriberEmail(user, i18n.language);
+        }
         
         toast({
           title: t("subscription.success"),
@@ -30,7 +54,7 @@ const SubscriptionSuccess = () => {
     };
 
     verifySubscription();
-  }, [t, toast]);
+  }, [t, toast, user, i18n.language]);
 
   return (
     <main className="min-h-screen flex items-center justify-center container py-12">
