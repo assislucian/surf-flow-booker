@@ -200,6 +200,8 @@ const en = {
     resetFailed: "Reset Failed",
     resetSent: "Reset Link Sent",
     resetSentDesc: "Check your email for further instructions",
+    userNotFound: "User Not Found",
+    userNotFoundDesc: "No account found with this email address. Please sign up first.",
     createAccount: "Create Account",
     logout: "Sign Out",
     logoutSuccess: "Successfully signed out"

@@ -43,61 +43,79 @@ serve(async (req) => {
     const { language = "de" } = await req.json();
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
-    if (customers.data.length === 0) {
+    // Get customer and subscription info in parallel
+    const [customerResult, subscriptionResult] = await Promise.all([
+      stripe.customers.list({ email: user.email, limit: 1 }),
+      (async () => {
+        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+        if (customers.data.length === 0) return null;
+        return stripe.subscriptions.list({
+          customer: customers.data[0].id,
+          status: "active",
+          limit: 1,
+        });
+      })()
+    ]);
+    
+    if (customerResult.data.length === 0) {
       throw new Error("No Stripe customer found for this user");
     }
     
-    const customerId = customers.data[0].id;
+    const customerId = customerResult.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: "active",
-      limit: 1,
-    });
-
-    if (subscriptions.data.length === 0) {
+    if (!subscriptionResult || subscriptionResult.data.length === 0) {
       throw new Error("No active subscription found");
     }
 
-    const subscription = subscriptions.data[0];
+    const subscription = subscriptionResult.data[0];
     const subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
     logStep("Found active subscription", { subscriptionId: subscription.id, endDate: subscriptionEnd });
 
-    // Cancel at period end (so user keeps benefits until end of billing period)
-    const canceledSubscription = await stripe.subscriptions.update(subscription.id, {
-      cancel_at_period_end: true,
-    });
-    logStep("Subscription set to cancel at period end", { subscriptionId: canceledSubscription.id });
-
-    // Update database
-    await supabaseClient.from("subscribers").upsert({
-      email: user.email,
-      user_id: user.id,
-      stripe_customer_id: customerId,
-      subscribed: true, // Still subscribed until period end
-      subscription_end: subscriptionEnd,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: 'email' });
-    logStep("Updated database with cancellation info");
-
-    // Send cancellation email
-    try {
-      await supabaseClient.functions.invoke("send-cancellation-email", {
-        body: { 
-          email: user.email, 
-          name: user.email.split('@')[0], 
-          language,
-          subscription_end: subscriptionEnd
+    // Perform cancellation, database update, and email in parallel for better performance
+    const [canceledSubscription] = await Promise.allSettled([
+      // Cancel at period end
+      stripe.subscriptions.update(subscription.id, {
+        cancel_at_period_end: true,
+      }),
+      
+      // Update database
+      supabaseClient.from("subscribers").upsert({
+        email: user.email,
+        user_id: user.id,
+        stripe_customer_id: customerId,
+        subscribed: true, // Still subscribed until period end
+        subscription_end: subscriptionEnd,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'email' }),
+      
+      // Send cancellation email
+      (async () => {
+        try {
+          await supabaseClient.functions.invoke("send-cancellation-email", {
+            body: { 
+              email: user.email, 
+              name: user.email.split('@')[0], 
+              language,
+              subscription_end: subscriptionEnd
+            }
+          });
+          logStep("Sent cancellation confirmation email");
+        } catch (emailError) {
+          logStep("Failed to send cancellation email", { error: emailError });
+          // Continue even if email fails
         }
-      });
-      logStep("Sent cancellation confirmation email");
-    } catch (emailError) {
-      logStep("Failed to send cancellation email", { error: emailError });
-      // Continue even if email fails
+      })()
+    ]);
+
+    if (canceledSubscription.status === 'fulfilled') {
+      logStep("Subscription set to cancel at period end", { subscriptionId: canceledSubscription.value.id });
+    } else {
+      throw new Error("Failed to cancel subscription");
     }
+    
+    logStep("Updated database with cancellation info");
 
     return new Response(JSON.stringify({
       success: true,

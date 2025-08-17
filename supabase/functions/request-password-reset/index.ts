@@ -20,12 +20,21 @@ serve(async (req) => {
 
     const isGerman = language === "de";
 
-    // Use service role to generate a secure recovery link
+    // Use service role to check if user exists first
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
     );
+
+    // Check if user exists before generating link
+    const { data: userList, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+    if (listError) throw new Error("Failed to verify user");
+    
+    const userExists = userList.users.some(user => user.email === email);
+    if (!userExists) {
+      throw new Error("User with this email not found");
+    }
 
     const origin = req.headers.get("origin") || "https://surfskate-hall.lovable.app";
     const redirectTo = `${origin}/reset-password`;

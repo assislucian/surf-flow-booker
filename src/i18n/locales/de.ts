@@ -200,6 +200,8 @@ const de = {
     resetFailed: "Reset fehlgeschlagen",
     resetSent: "Reset-Link gesendet",
     resetSentDesc: "Überprüfe deine E-Mails für weitere Anweisungen",
+    userNotFound: "Benutzer nicht gefunden",
+    userNotFoundDesc: "Kein Konto mit dieser E-Mail-Adresse gefunden. Bitte registriere dich zuerst.",
     createAccount: "Konto erstellen",
     logout: "Abmelden",
     logoutSuccess: "Erfolgreich abgemeldet"
