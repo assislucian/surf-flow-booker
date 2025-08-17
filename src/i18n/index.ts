@@ -13,10 +13,14 @@ void i18n
     },
     lng: "de",
     fallbackLng: "en",
-    debug: true,
+    debug: false, // Disable debug in production
     interpolation: { escapeValue: false },
     react: {
       useSuspense: false
+    },
+    // Add missing key handler for better debugging
+    missingKeyHandler: (lng: any, ns: any, key: any) => {
+      console.warn(`Missing translation key: ${key} for language: ${lng}`);
     }
   });
 
