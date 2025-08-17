@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import i18n from '@/i18n';
 
 interface AuthContextType {
   user: User | null;
@@ -65,7 +66,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: name ? { name } : undefined
+        data: {
+          ...(name ? { name } : {}),
+          locale: (i18n?.language === 'en' ? 'en' : 'de'),
+        }
       }
     });
     

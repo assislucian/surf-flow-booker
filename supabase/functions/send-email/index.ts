@@ -31,16 +31,48 @@ Deno.serve(async (req: Request) => {
     const supabase_url = Deno.env.get("SUPABASE_URL") ?? "";
     const actionUrl = `${supabase_url}/auth/v1/verify?token=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || "https://surfskate-hall.lovable.app/")}`;
 
-    // Basic subject per action
-    const subjectMap: Record<string, string> = {
-      signup: "Confirm your email – Surfskate Hall",
-      magiclink: "Your magic link – Surfskate Hall",
-      recovery: "Reset your password – Surfskate Hall",
-      email_change: "Confirm your email change – Surfskate Hall",
-      email_change_current: "Confirm your email change – Surfskate Hall",
-      reauthentication: "Re-authenticate – Surfskate Hall",
+    // Locale (German default)
+    const localeRaw = (user?.user_metadata?.locale as string) || 'de';
+    const locale = localeRaw === 'en' ? 'en' : 'de';
+
+    // Localized subjects
+    const subjects: Record<string, Record<string, string>> = {
+      de: {
+        signup: "E-Mail bestätigen – Surfskate Hall",
+        magiclink: "Dein Magic Link – Surfskate Hall",
+        recovery: "Passwort zurücksetzen – Surfskate Hall",
+        email_change: "E-Mail-Adresse bestätigen – Surfskate Hall",
+        email_change_current: "E-Mail-Änderung bestätigen – Surfskate Hall",
+        reauthentication: "Erneut anmelden – Surfskate Hall",
+        invite: "Einladung – Surfskate Hall",
+      },
+      en: {
+        signup: "Confirm your email – Surfskate Hall",
+        magiclink: "Your magic link – Surfskate Hall",
+        recovery: "Reset your password – Surfskate Hall",
+        email_change: "Confirm your email change – Surfskate Hall",
+        email_change_current: "Confirm your email change – Surfskate Hall",
+        reauthentication: "Re-authenticate – Surfskate Hall",
+        invite: "Invitation – Surfskate Hall",
+      },
     };
-    const subject = subjectMap[email_action_type] || "Action required – Surfskate Hall";
+    const subject = (subjects[locale][email_action_type] || (locale === 'de' ? 'Aktion erforderlich – Surfskate Hall' : 'Action required – Surfskate Hall')) as string;
+
+    const copy = locale === 'de'
+      ? {
+          greet: `Hallo${user?.email ? ` ${user.email}` : ''}! 👋`,
+          instruction: 'Bitte klicke auf den Button, um fortzufahren.',
+          cta: 'Weiter',
+          fallback: 'Wenn der Button nicht funktioniert, kopiere folgenden Link in deinen Browser:',
+          ignore: 'Wenn du dies nicht angefordert hast, kannst du diese E-Mail ignorieren.',
+        }
+      : {
+          greet: `Hello${user?.email ? ` ${user.email}` : ''}! 👋`,
+          instruction: 'Please click the button below to continue.',
+          cta: 'Continue',
+          fallback: "If the button doesn't work, copy and paste this link into your browser:",
+          ignore: "If you didn't request this, you can safely ignore this email.",
+        };
 
     const html = `
       <!DOCTYPE html>
@@ -61,14 +93,14 @@ Deno.serve(async (req: Request) => {
             </tr>
             <tr>
               <td style="padding:28px 28px 8px; font-size:16px; line-height:1.6;">
-                <p>Hello${user?.email ? ` ${user.email}` : ''}! 👋</p>
-                <p>Please click the button below to continue.</p>
+                <p>${copy.greet}</p>
+                <p>${copy.instruction}</p>
                 <div style="text-align:center; margin:28px 0;">
-                  <a href="${actionUrl}" style="display:inline-block; background:linear-gradient(135deg, hsl(196,100%,28%) 0%, hsl(201,96%,40%) 100%); color:#fff; text-decoration:none; padding:14px 24px; border-radius:999px; font-weight:600;">Continue</a>
+                  <a href="${actionUrl}" style="display:inline-block; background:linear-gradient(135deg, hsl(196,100%,28%) 0%, hsl(201,96%,40%) 100%); color:#fff; text-decoration:none; padding:14px 24px; border-radius:999px; font-weight:600;">${copy.cta}</a>
                 </div>
-                <p style="color:#6b7280; font-size:14px;">If the button doesn't work, copy and paste this link into your browser:</p>
+                <p style="color:#6b7280; font-size:14px;">${copy.fallback}</p>
                 <div style="background:#f3f4f6; padding:12px; border-radius:10px; word-break:break-all; font-family:monospace; font-size:12px; color:#374151;">${actionUrl}</div>
-                <p style="margin-top:24px; color:#6b7280; font-size:12px;">If you didn't request this, you can safely ignore this email.</p>
+                <p style="margin-top:24px; color:#6b7280; font-size:12px;">${copy.ignore}</p>
               </td>
             </tr>
             <tr>
