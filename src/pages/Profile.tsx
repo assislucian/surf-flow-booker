@@ -23,6 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import { de, enUS } from "date-fns/locale";
+import { BookingHistory } from "@/components/profile/BookingHistory";
 
 interface SubscriptionStatus {
   subscribed: boolean;
@@ -272,10 +273,10 @@ const Profile = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-subtle py-8">
-        <div className="container max-w-4xl mx-auto px-4">
-          <div className="grid gap-6 md:grid-cols-3">
+        <div className="container max-w-6xl mx-auto px-4">
+          <div className="grid gap-6 lg:grid-cols-3">
             {/* Profile Info Card */}
-            <Card className="md:col-span-1">
+            <Card className="lg:col-span-1">
               <CardHeader className="text-center">
                 <Avatar className="h-20 w-20 mx-auto mb-4">
                   <AvatarImage src="" />
@@ -312,7 +313,7 @@ const Profile = () => {
             </Card>
 
             {/* Subscription Status Card */}
-            <Card className="md:col-span-2">
+            <Card className="lg:col-span-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Crown className="h-5 w-5 text-primary" />
@@ -596,6 +597,11 @@ const Profile = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Booking History Section */}
+            <div className="lg:col-span-3 mt-6">
+              <BookingHistory />
+            </div>
           </div>
         </div>
       </div>

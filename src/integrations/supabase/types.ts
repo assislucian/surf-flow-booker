@@ -69,6 +69,7 @@ export type Database = {
           status: string
           stripe_session_id: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           amount_cents: number
@@ -85,6 +86,7 @@ export type Database = {
           status?: string
           stripe_session_id: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           amount_cents?: number
@@ -101,6 +103,7 @@ export type Database = {
           status?: string
           stripe_session_id?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }

@@ -27,7 +27,25 @@ serve(async (req) => {
 
     const md = (session.metadata || {}) as Record<string, string>;
 
-    const supabaseAdmin = createClient(
+  // Get authenticated user from request
+  const authHeader = req.headers.get("Authorization");
+  let userId: string | null = null;
+  
+  if (authHeader) {
+    try {
+      const authClient = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      );
+      const token = authHeader.replace("Bearer ", "");
+      const { data: userData } = await authClient.auth.getUser(token);
+      userId = userData.user?.id || null;
+    } catch (error) {
+      console.log("Could not get user from auth token:", error);
+    }
+  }
+
+  const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
@@ -84,6 +102,7 @@ if (existingRows && existingRows.length > 0) {
     stripe_session_id: session.id,
     amount_cents: (session.amount_total as number) ?? 1499,
     currency: (session.currency as string) ?? "eur",
+    user_id: userId, // Associate booking with authenticated user
   }));
 
   const { data: inserted, error: insertErr } = await supabaseAdmin
