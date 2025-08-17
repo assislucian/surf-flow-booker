@@ -118,7 +118,7 @@ serve(async (req) => {
       : "😔 Premium Membership Canceled – See You Around!";
 
     const { error: sendError } = await resend.emails.send({
-      from: "Surfskate Hall <goodbye@lifabrasil.com>",
+      from: "Surfskate Hall <noreply@lifabrasil.com>",
       to: [email],
       subject,
       html,

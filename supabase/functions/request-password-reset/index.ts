@@ -114,7 +114,7 @@ serve(async (req) => {
       : "🔐 Reset Your Password – Surfskate Hall";
 
     const { error: sendError } = await resend.emails.send({
-      from: "Surfskate Hall <security@lifabrasil.com>",
+      from: "Surfskate Hall <noreply@lifabrasil.com>",
       to: [email],
       subject,
       html,

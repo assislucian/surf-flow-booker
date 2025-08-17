@@ -159,7 +159,7 @@ serve(async (req) => {
       : "👑 Premium Membership Activated – Welcome to the VIP Experience!";
 
     const { error: sendError } = await resend.emails.send({
-      from: "Surfskate Hall Premium <premium@lifabrasil.com>",
+      from: "Surfskate Hall <noreply@lifabrasil.com>",
       to: [email],
       subject,
       html,

@@ -109,7 +109,7 @@ serve(async (req) => {
       : `🎉 Welcome to Premium, ${displayName}! Your Flow Starts Now`;
 
     const { error: sendError } = await resend.emails.send({
-      from: "Surfskate Hall <welcome@lifabrasil.com>",
+      from: "Surfskate Hall <noreply@lifabrasil.com>",
       to: [email],
       subject,
       html,

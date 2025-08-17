@@ -115,7 +115,7 @@ serve(async (req) => {
       : "🗑️ Account Deleted – Thank You for Everything!";
 
     const { error: sendError } = await resend.emails.send({
-      from: "Surfskate Hall <farewell@lifabrasil.com>",
+      from: "Surfskate Hall <noreply@lifabrasil.com>",
       to: [email],
       subject,
       html,
