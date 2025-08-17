@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import CookieBanner from "./components/common/CookieBanner";
@@ -22,6 +23,7 @@ import Kontakt from "./pages/Kontakt";
 import AboutUs from "./pages/AboutUs";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Auth from "./pages/Auth";
 import AdminAccess from "./pages/AdminAccess";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -33,9 +35,10 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
         <BrowserRouter>
           <Routes>
             {/* Admin Routes - No Header/Footer */}
@@ -56,6 +59,7 @@ const App = () => (
                   <Route path="/about" element={<AboutUs />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<BlogPost />} />
+                  <Route path="/auth" element={<Auth />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                   <Route path="/payment-canceled" element={<PaymentCanceled />} />
@@ -74,7 +78,8 @@ const App = () => (
             } />
           </Routes>
         </BrowserRouter>
-      </TooltipProvider>
+        </TooltipProvider>
+      </AuthProvider>
     </HelmetProvider>
   </QueryClientProvider>
 );

@@ -1,9 +1,12 @@
 import { Link, useInRouterContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { LogIn, LogOut, User } from "lucide-react";
 
 const Header = () => {
   const { i18n, t } = useTranslation();
+  const { user, signOut } = useAuth();
   const inRouter = useInRouterContext();
   const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
   const isActive = (path: string) => currentPath === path;
@@ -111,6 +114,42 @@ const Header = () => {
           <div className="ml-2 flex items-center gap-1">
             <Button variant="outline" size="sm" onClick={() => setLang("de")}>DE</Button>
             <Button variant="outline" size="sm" onClick={() => setLang("en")}>EN</Button>
+            
+            {user ? (
+              <div className="flex items-center gap-2 ml-2">
+                <div className="flex items-center gap-1 px-2 py-1 bg-secondary/50 rounded-md">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm truncate max-w-24">
+                    {user.email?.split('@')[0]}
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={signOut}
+                  className="flex items-center gap-1"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              inRouter ? (
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="flex items-center gap-1 ml-2">
+                    <LogIn className="h-4 w-4" />
+                    Login
+                  </Button>
+                </Link>
+              ) : (
+                <a href="/auth">
+                  <Button variant="outline" size="sm" className="flex items-center gap-1 ml-2">
+                    <LogIn className="h-4 w-4" />
+                    Login
+                  </Button>
+                </a>
+              )
+            )}
           </div>
         </nav>
       </div>
