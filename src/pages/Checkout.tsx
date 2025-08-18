@@ -31,10 +31,13 @@ const Checkout: React.FC = () => {
   const handlePay = async () => {
     if (!pending) return;
     try {
+      console.log("Checkout: Starting payment process", pending);
       const { url } = await createPaymentSession(pending);
+      console.log("Checkout: Payment session created, opening:", url);
       // Open Stripe checkout in a new tab
       window.open(url, "_blank");
     } catch (e: any) {
+      console.error("Checkout: Payment failed:", e);
       toast({
         title: i18n.language === "de" ? "Zahlung fehlgeschlagen" : "Payment failed",
         description: e?.message || (i18n.language === "de" ? "Bitte später erneut versuchen." : "Please try again later."),

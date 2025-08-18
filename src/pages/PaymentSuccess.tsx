@@ -16,16 +16,36 @@ const PaymentSuccess: React.FC = () => {
 
     (async () => {
       try {
+        console.log("PaymentSuccess: Verifying payment with sessionId:", sessionId);
+        
+        // Get current session to send auth token
+        const { data: { session } } = await supabase.auth.getSession();
+        const headers: any = {};
+        
+        if (session?.access_token) {
+          headers.Authorization = `Bearer ${session.access_token}`;
+          console.log("PaymentSuccess: Sending auth token with request");
+        } else {
+          console.log("PaymentSuccess: No auth token available");
+        }
+
         const { data, error } = await supabase.functions.invoke("verify-payment", {
           body: { sessionId },
+          headers
         });
-        if (error) throw error;
+
+        if (error) {
+          console.error("PaymentSuccess: verify-payment error:", error);
+          throw error;
+        }
+
         const booking = (data as any)?.booking;
         if (booking) {
+          console.log("PaymentSuccess: Payment verified successfully:", booking);
           setDetails(booking);
         }
       } catch (err) {
-        console.error("verify-payment error", err);
+        console.error("PaymentSuccess: verify-payment error", err);
       } finally {
         sessionStorage.removeItem("pending_booking");
       }

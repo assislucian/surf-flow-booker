@@ -28,7 +28,7 @@ serve(async (req) => {
 
     const md = (session.metadata || {}) as Record<string, string>;
 
-  // Get authenticated user from request
+  // Get authenticated user from request (if available)
   const authHeader = req.headers.get("Authorization");
   let userId: string | null = null;
   
@@ -39,11 +39,19 @@ serve(async (req) => {
         Deno.env.get("SUPABASE_ANON_KEY") ?? ""
       );
       const token = authHeader.replace("Bearer ", "");
-      const { data: userData } = await authClient.auth.getUser(token);
-      userId = userData.user?.id || null;
+      console.log("verify-payment: Attempting to authenticate user with token");
+      const { data: userData, error: authError } = await authClient.auth.getUser(token);
+      if (!authError && userData.user) {
+        userId = userData.user.id;
+        console.log("verify-payment: User authenticated:", userId, userData.user.email);
+      } else {
+        console.log("verify-payment: No valid authentication found:", authError?.message || "No user");
+      }
     } catch (error) {
-      console.log("Could not get user from auth token:", error);
+      console.log("verify-payment: Could not authenticate user:", error);
     }
+  } else {
+    console.log("verify-payment: No Authorization header provided");
   }
 
   const supabaseAdmin = createClient(
@@ -90,7 +98,6 @@ if (existingRows && existingRows.length > 0) {
     throw new Error("One or more selected slots were just booked. Please choose different times.");
   }
 
-  // Insert one row per slot (enables per-slot uniqueness and validation)
   const rows = desiredSlots.map((slot) => ({
     name: md.name ?? "",
     email: md.email ?? "",
@@ -103,14 +110,29 @@ if (existingRows && existingRows.length > 0) {
     stripe_session_id: session.id,
     amount_cents: (session.amount_total as number) ?? 1499,
     currency: (session.currency as string) ?? "eur",
-    user_id: userId, // Associate booking with authenticated user
+    user_id: userId, // Associate booking with authenticated user if available
   }));
+
+  console.log("verify-payment: Inserting booking rows:", {
+    count: rows.length,
+    userId,
+    email: md.email,
+    slots: desiredSlots
+  });
 
   const { data: inserted, error: insertErr } = await supabaseAdmin
     .from("bookings")
     .insert(rows)
     .select("*");
-  if (insertErr) throw insertErr;
+  if (insertErr) {
+    console.error("verify-payment: Database insert error:", insertErr);
+    throw insertErr;
+  }
+
+  console.log("verify-payment: Successfully inserted bookings:", {
+    count: inserted?.length || 0,
+    bookingIds: inserted?.map(b => b.id) || []
+  });
 
   booking = {
     name: inserted[0].name,

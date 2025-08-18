@@ -222,6 +222,62 @@ const Booking: React.FC = () => {
           >
             🔍 Test API Call
           </Button>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="mt-2 ml-2 text-xs"
+            onClick={async () => {
+              // Simulate a test booking completion
+              if (!date || selectedSlots.length === 0) {
+                toast({
+                  title: "Test Error", 
+                  description: "Please select date and slots first"
+                });
+                return;
+              }
+              
+              try {
+                console.log("Testing booking flow...");
+                
+                // Step 1: Create test booking data
+                const testBooking = {
+                  name: "Test User",
+                  email: "test@example.com", 
+                  level: "beginner",
+                  date: format(date, "yyyy-MM-dd"),
+                  slots: selectedSlots,
+                  createdAt: Date.now()
+                };
+                
+                console.log("Test booking data:", testBooking);
+                
+                // Step 2: Test create-payment
+                const { data: paymentData, error: paymentError } = await supabase.functions.invoke("create-payment", {
+                  body: { pending: testBooking }
+                });
+                
+                if (paymentError) {
+                  throw new Error(`Payment creation failed: ${paymentError.message}`);
+                }
+                
+                console.log("Payment session created:", paymentData);
+                toast({
+                  title: "✅ Test Success",
+                  description: "Booking system is working! Check console for details."
+                });
+                
+              } catch (e: any) {
+                console.error("Test failed:", e);
+                toast({
+                  title: "❌ Test Failed",
+                  description: e.message,
+                  variant: "destructive"
+                });
+              }
+            }}
+          >
+            🧪 Test Booking Flow
+          </Button>
         </div>
       )}
 

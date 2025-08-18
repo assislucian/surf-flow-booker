@@ -34,9 +34,20 @@ export const BookingHistory = () => {
   const fetchBookings = async () => {
     try {
       setLoading(true);
+      
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setBookings([]);
+        return;
+      }
+
+      console.log("Fetching bookings for user:", user.id, user.email);
+
       const { data, error } = await supabase
         .from("bookings")
         .select("*")
+        .or(`user_id.eq.${user.id},email.eq.${user.email}`)
         .order("booking_date", { ascending: false })
         .order("slot", { ascending: false });
 
@@ -50,6 +61,7 @@ export const BookingHistory = () => {
         return;
       }
 
+      console.log("Found bookings:", data?.length || 0, data);
       setBookings(data || []);
     } catch (error: any) {
       console.error("Error fetching bookings:", error);
@@ -170,7 +182,13 @@ export const BookingHistory = () => {
                       </h3>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Clock className="h-4 w-4" />
-                        <span>{booking.slot}</span>
+                        <span>{booking.slot.includes('-') ? booking.slot : (() => {
+                          const [hour] = booking.slot.split(':');
+                          const startHour = parseInt(hour);
+                          const endHour = startHour + 1;
+                          const endHourStr = endHour.toString().padStart(2, "0");
+                          return `${booking.slot} - ${endHourStr}:00`;
+                        })()}</span>
                         <span>•</span>
                         <span>{formatPrice(booking.amount_cents, booking.currency)}</span>
                       </div>
