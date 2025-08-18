@@ -125,7 +125,7 @@ if (existingRows && existingRows.length > 0) {
 // Send confirmation email server-side (best practice)
 try {
   const resend = new Resend(Deno.env.get("RESEND_API_KEY") || "");
-  const FROM = Deno.env.get("RESEND_FROM") || "Surfskate Hall <onboarding@resend.dev>";
+  const FROM = Deno.env.get("RESEND_FROM") || "Surfskate Hall <noreply@lifabrasil.com>";
   const subject = (md.locale || md.language || "de") === "de"
     ? "🏄‍♂️ Buchung bestätigt – Let's ride!"
     : "🏄‍♂️ Booking Confirmed – Let's ride!";
