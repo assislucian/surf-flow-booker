@@ -10,8 +10,7 @@ const en = {
     update: "Update",
     loading: "Loading...",
     error: "Error",
-    success: "Success",
-    required: "Required"
+    success: "Success"
   },
   hero: {
     title: "Surfskate Hall Wiesbaden",
@@ -26,8 +25,7 @@ const en = {
     contact: "Contact",
     blog: "Blog",
     profile: "Profile",
-    login: "Login",
-    auth: "Sign In"
+    login: "Login"
   },
   features: {
     title: "Why Surfskate Hall?",
@@ -49,44 +47,23 @@ const en = {
   booking: {
     title: "Book your surfskate slot",
     subtitle: "Choose your date and preferred time",
-    metaDescription: "Surfskate booking in Wiesbaden – Select slots, enter data, done. German/English.",
-    pickDate: "Select date",
-    selectDateDesc: "Choose your desired date for the surfskate session",
-    selectDateFirst: "Please select a date first",
-    selectTimeDesc: "Choose your preferred times",
+    selectDate: "Select date",
     availableSlots: "Available slots",
     selectedSlots: "Selected slots",
     selectedSlotsCount: "{{count}} slot(s) selected",
-    selected: "Selected",
-    slot: "Slot",
-    slots: "Slots",
-    selectedTotal: "total selected",
-    booked: "Booked",
-    sessionReady: "Session ready",
-    sessionsReady: "Sessions ready",
     personalInfo: "Personal information",
-    form: {
-      name: "Name",
-      namePlaceholder: "Your full name",
-      email: "Email",
-      emailPlaceholder: "your@email.com",
-      phone: "Phone (optional)",
-      phonePlaceholder: "+49 123 456789",
-      level: "Experience level",
-      levelOptions: {
-        beginner: "Beginner",
-        intermediate: "Intermediate",
-        advanced: "Advanced"
-      },
-      notes: "Notes (optional)",
-      notesPlaceholder: "Special requests or notes...",
-      submit: "Book now"
-    },
-    errors: {
-      selectDate: "Please select a date",
-      selectSlot: "Please select at least one slot"
-    },
-    proceedingToPayment: "Proceeding to payment...",
+    name: "Name",
+    namePlaceholder: "Your full name",
+    email: "Email",
+    emailPlaceholder: "your@email.com",
+    phone: "Phone (optional)",
+    phonePlaceholder: "+49 123 456789",
+    level: "Experience level",
+    levelBeginner: "Beginner",
+    levelIntermediate: "Intermediate",
+    levelAdvanced: "Advanced",
+    notes: "Notes (optional)",
+    notesPlaceholder: "Special requests or notes...",
     bookNow: "Book now",
     summary: "Booking summary",
     total: "Total",
@@ -99,110 +76,48 @@ const en = {
     instructions: "Fill out the form and proceed to payment to confirm your booking.",
     paymentDescription: "Secure payment via Stripe"
   },
-  blog: {
-    title: "Blog & News",
-    subtitle: "Latest news, tips and updates from Surfskate Hall Wiesbaden",
-    noPostsYet: "No posts yet",
-    readMore: "Read more"
-  },
-  aboutUs: {
-    title: "About Surfskate Hall",
-    subtitle: "The first indoor surfskate hall in Wiesbaden with professional equipment",
-    story: {
-      title: "Our Story",
-      content: "Surfskate Hall Wiesbaden is the first indoor surfskate hall in the region. Our goal is to provide an authentic surfing experience all year round, regardless of the weather. With professional equipment and experienced trainers, we create the perfect place for beginners and pros."
-    },
-    mission: {
-      title: "Our Mission",
-      content: "We want to spread the passion for surfskating in Wiesbaden and the surrounding area. Safety, fun and continuous development are at the center of everything we do. Every guest should find their flow with us and feel the freedom of surfing."
-    },
-    values: {
-      title: "Our Values",
-      items: [
-        {
-          title: "Community",
-          desc: "We create a meeting place for all surfskate enthusiasts"
-        },
-        {
-          title: "Innovation",
-          desc: "State-of-the-art equipment and continuous development of our offerings"
-        },
-        {
-          title: "Passion",
-          desc: "Our love for surfskating is reflected in everything we do"
-        },
-        {
-          title: "Joy",
-          desc: "Fun and positive energy are always at the forefront"
-        }
-      ]
-    },
-    team: {
-      title: "Our Team",
-      subtitle: "Passionate surfers and experienced trainers who will accompany you on your journey"
-    }
-  },
   profile: {
-    title: "Profile",
-    metaDescription: "Manage your Surfskate Hall profile and premium membership",
-    welcome: "Welcome",
-    memberSince: "Member since",
-    subscriptionStatus: "Subscription Status",
-    subscriptionActive: "Your premium membership is active",
-    subscriptionInactive: "You don't have a premium membership yet",
-    currentBenefits: "Your current benefits",
-    upgradeToUnlock: "Upgrade to unlock",
-    securitySettings: "Security Settings",
-    changePassword: "Change Password",
-    newPassword: "New Password",
-    newPasswordPlaceholder: "At least 8 characters",
-    confirmPasswordPlaceholder: "Repeat password",
-    passwordChanged: "Password Changed",
-    passwordChangedDesc: "Your password has been successfully updated",
-    cancelSubscription: "Cancel Membership",
-    cancelSubscriptionTitle: "Cancel Membership?",
-    cancelSubscriptionConfirm: "Are you sure you want to cancel your premium membership? You will lose all premium benefits.",
-    confirmCancel: "Yes, Cancel",
-    subscriptionCanceled: "Membership Canceled",
-    subscriptionCanceledDesc: "Your premium membership has been successfully canceled",
-    deleteAccount: "Delete Account",
-    deleteAccountTitle: "Delete Account?",
-    deleteAccountConfirm: "Are you sure you want to delete your account? This action cannot be undone.",
-    confirmDelete: "Yes, Delete",
-    accountDeleted: "Account Deleted",
-    accountDeletedDesc: "Your account has been successfully deleted",
-    dangerZone: "Danger Zone"
+    hello: "Hello",
+    notLoggedIn: "You are not logged in.",
+    loginPrompt: "Log in to view your profile and manage your bookings.",
+    loginButton: "Login",
+    changePassword: "Change password",
+    currentPassword: "Current password",
+    newPassword: "New password",
+    confirmPassword: "Confirm password",
+    updating: "Updating...",
+    updatePassword: "Update password",
+    passwordsNoMatch: "Passwords do not match",
+    passwordTooShort: "Password must be at least 6 characters long",
+    cancelMembership: "Cancel membership",
+    cancelMembershipConfirm: "Really cancel membership?",
+    cancelMembershipDescription: "This action cannot be undone. You will lose your premium benefits.",
+    canceling: "Canceling...",
+    deleteAccount: "Delete account",
+    deleteAccountConfirm: "Really delete account?",
+    deleteAccountDescription: "This action cannot be undone. All your data will be permanently deleted.",
+    deleting: "Deleting..."
   },
   auth: {
-    title: "Sign In",
-    subtitle: "Sign in or create an account",
-    signIn: "Sign In",
-    signUp: "Sign Up",
+    signIn: "Sign in",
+    signUp: "Sign up",
     email: "Email",
     password: "Password",
-    confirmPassword: "Confirm Password",
-    fillAllFields: "Please fill in all fields",
-    passwordsNotMatch: "Passwords do not match",
-    passwordRequirements: "Password must be at least 8 characters long and contain uppercase, lowercase letters and numbers",
-    loginFailed: "Login Failed",
-    welcomeBack: "Welcome Back",
-    loginSuccess: "Successfully signed in",
-    registrationFailed: "Registration Failed",
-    registrationSuccess: "Registration Successful",
-    checkEmailConfirm: "Please check your email for confirmation",
-    accountExists: "Account Already Exists",
-    accountExistsDesc: "An account with this email address already exists",
-    forgotPassword: "Forgot Password?",
-    resetPassword: "Reset Password",
-    resetPasswordDesc: "Enter your email address to receive a reset link",
-    enterEmail: "Enter email address",
-    sendResetLink: "Send Reset Link",
-    resetFailed: "Reset Failed",
-    resetSent: "Reset Link Sent",
-    resetSentDesc: "Check your email for further instructions",
-    createAccount: "Create Account",
-    logout: "Sign Out",
-    logoutSuccess: "Successfully signed out"
+    dontHaveAccount: "Don't have an account?",
+    alreadyHaveAccount: "Already have an account?",
+    forgotPassword: "Forgot password?",
+    resetPassword: "Reset password",
+    sendResetEmail: "Send reset email",
+    backToLogin: "Back to login",
+    resetEmailSent: "Reset email sent!",
+    resetEmailSentDesc: "Check your email for instructions to reset your password.",
+    authError: "Authentication error",
+    signUpSuccess: "Sign up successful",
+    signUpSuccessDesc: "Your account has been created. You can now sign in.",
+    signInSuccess: "Sign in successful",
+    signInSuccessDesc: "Welcome back!",
+    passwordResetSent: "Password reset sent",
+    passwordResetSentDesc: "Check your email for further instructions."
   },
   subscription: {
     title: "Premium Membership",
@@ -231,7 +146,6 @@ const en = {
     ],
     signInToContinue: "Sign in to continue",
     subscribed: "Premium Active",
-    notSubscribed: "Not Subscribed",
     currentPlan: "Current Plan",
     expires: "Expires on",
     managePlan: "Manage Membership"
@@ -351,55 +265,39 @@ const en = {
       noPricesDescription: "Create your first price for bookings or subscriptions."
     }
   },
-  legal: {
-    imprint: {
-      title: "Imprint",
-      short: "Imprint",
-      desc: "Provider identification according to §5 TMG.",
-      contact: "Contact",
-      responsibility: "Responsible for content",
-      disclaimer: "Disclaimer",
-      text: "Despite careful content control, we assume no liability for the content of external links."
-    },
-    privacy: {
-      title: "Privacy Policy",
-      short: "Privacy",
-      desc: "Information according to GDPR.",
-      intro: "We process personal data exclusively within the framework of legal provisions (GDPR, BDSG).",
-      controller: "Data Controller",
-      controllerText: "The controller is the provider named in the imprint.",
-      data: "Processed Data",
-      bookingData: "Booking data (name, email, selected slot)",
-      payment: "Payment processing via Stripe (separate privacy policy)",
-      rights: "Your Rights",
-      rightsText: "You have the right to information, correction, deletion, etc."
-    },
-    terms: {
-      title: "Terms and Conditions",
-      short: "Terms",
-      desc: "Terms for bookings and hall usage.",
-      bookings: "Bookings & Payment",
-      bookingsText: "Bookings only become effective with payment. Prices incl. VAT.",
-      cancellations: "Cancellation",
-      cancellationsText: "Cancellations are possible up to 24h before appointment, no refund afterwards.",
-      rules: "House Rules",
-      rulesText: "Safety first. Staff instructions must be followed."
-    },
-    withdrawal: {
-      title: "Right of Withdrawal",
-      short: "Withdrawal",
-      desc: "Information about withdrawal rights for consumers.",
-      text: "Consumers have the right to withdraw from this contract within 14 days without giving reasons (exceptions may apply for time-bound leisure services)."
+  pages: {
+    about: {
+      title: "About Surfskate Hall",
+      desc: "The first indoor surfskate hall in Wiesbaden",
+      text: "Surfskate Hall offers a unique indoor surfing experience with professional equipment."
     },
     contact: {
       title: "Contact",
-      short: "Contact",
-      desc: "How to reach us in Wiesbaden."
+      desc: "How to reach us.",
+      text: "We look forward to your visit or message!"
+    },
+    datenschutz: {
+      title: "Privacy Policy",
+      desc: "Information about data processing.",
+      text: "We take the protection of your personal data seriously and comply with GDPR."
+    },
+    impressum: {
+      title: "Imprint",
+      desc: "Legal information about Surfskate Hall.",
+      text: "Responsible for content: Surfskate Hall Wiesbaden"
+    },
+    terms: {
+      title: "Terms and Conditions",
+      desc: "Terms of use for Surfskate Hall.",
+      text: "These terms govern the use of our facilities and services."
+    },
+    widerruf: {
+      title: "Right of Withdrawal",
+      desc: "Information about withdrawal rights for consumers.",
+      text: "Consumers have the right to withdraw from this contract within 14 days without giving reasons (exceptions may apply for time-bound leisure services)."
     }
   },
   footer: {
-    hours: "Opening Hours",
-    rights: "All rights reserved.",
     aboutUs: "About us",
     contact: "Contact",
     datenschutz: "Privacy",
@@ -412,9 +310,7 @@ const en = {
   errors: {
     notFound: "Page not found",
     notFoundDesc: "The requested page does not exist.",
-    goHome: "Go home",
-    pageNotFound: "Oops! Page not found",
-    returnHome: "Return to Home"
+    goHome: "Go home"
   },
   payment: {
     success: {
