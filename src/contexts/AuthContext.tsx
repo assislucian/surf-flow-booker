@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import i18n from '@/i18n';
 
 interface AuthContextType {
   user: User | null;
@@ -38,13 +37,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
-        
-        // Handle account deletion - if user becomes null, clear any stale state
-        if (!session?.user && event === 'SIGNED_OUT') {
-          // Clear any cached data or pending requests
-          sessionStorage.clear();
-          localStorage.removeItem('supabase.auth.token');
-        }
       }
     );
 
@@ -59,22 +51,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signUp = async (email: string, password: string, name?: string) => {
-    const redirectUrl = `${window.location.origin}/auth?onboarding=true`;
+    const redirectUrl = `${window.location.origin}/auth`;
     
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: {
-          ...(name ? { name } : {}),
-          locale: (i18n?.language === 'en' ? 'en' : 'de'),
-        }
+        data: name ? { name } : undefined
       }
     });
-    
-    // Note: Welcome emails are now sent after successful subscription, not signup
-    // This prevents spam and creates a better conversion funnel
+
+    // Send welcome email if signup successful
+    if (!error && data.user) {
+      try {
+        await supabase.functions.invoke('send-welcome-email', {
+          body: { 
+            email, 
+            name, 
+            language: navigator.language.startsWith('de') ? 'de' : 'en' 
+          }
+        });
+      } catch (emailError) {
+        console.warn('Failed to send welcome email:', emailError);
+        // Don't fail signup if email fails
+      }
+    }
     
     return { error };
   };

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { CalendarDays, Euro, Users, TrendingUp } from "lucide-react";
 import { format, parseISO } from "date-fns";
-import { de, enUS } from "date-fns/locale";
+import { de } from "date-fns/locale";
 
 interface Booking {
   id: string;
@@ -33,7 +32,6 @@ interface DashboardStats {
 }
 
 const AdminDashboard = () => {
-  const { t, i18n } = useTranslation();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
     totalBookings: 0,
@@ -78,7 +76,7 @@ const AdminDashboard = () => {
 
       if (error) {
         toast({
-          title: t("admin.dashboard.loadError"),
+          title: "Fehler beim Laden der Buchungen",
           description: error.message,
           variant: "destructive",
         });
@@ -89,8 +87,8 @@ const AdminDashboard = () => {
       calculateStats(data || []);
     } catch (error: any) {
       toast({
-        title: t("admin.dashboard.error"),
-        description: t("admin.dashboard.unexpectedError"),
+        title: "Fehler",
+        description: "Ein unerwarteter Fehler ist aufgetreten",
         variant: "destructive",
       });
     } finally {
@@ -124,8 +122,7 @@ const AdminDashboard = () => {
   };
 
   const formatCurrency = (cents: number) => {
-    const locale = i18n.language === 'de' ? 'de-DE' : 'en-US';
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat('de-DE', {
       style: 'currency',
       currency: 'EUR',
     }).format(cents / 100);
@@ -133,9 +130,7 @@ const AdminDashboard = () => {
 
   const formatDate = (dateString: string) => {
     try {
-      const locale = i18n.language === 'de' ? de : enUS;
-      const formatStr = i18n.language === 'de' ? "dd.MM.yyyy" : "MM/dd/yyyy";
-      return format(parseISO(dateString), formatStr, { locale });
+      return format(parseISO(dateString), "dd.MM.yyyy", { locale: de });
     } catch {
       return dateString;
     }
@@ -143,9 +138,7 @@ const AdminDashboard = () => {
 
   const formatDateTime = (dateString: string) => {
     try {
-      const locale = i18n.language === 'de' ? de : enUS;
-      const formatStr = i18n.language === 'de' ? "dd.MM.yyyy HH:mm" : "MM/dd/yyyy HH:mm";
-      return format(parseISO(dateString), formatStr, { locale });
+      return format(parseISO(dateString), "dd.MM.yyyy HH:mm", { locale: de });
     } catch {
       return dateString;
     }
@@ -156,7 +149,7 @@ const AdminDashboard = () => {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">{t("admin.dashboard.loading")}</p>
+          <p className="mt-2 text-muted-foreground">Lade Buchungsdaten...</p>
         </div>
       </div>
     );
@@ -165,17 +158,17 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       <Helmet>
-        <title>{t("admin.dashboard.title")} - Surfskate Hall</title>
+        <title>Admin Dashboard - Surfskate Hall</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       {/* Page Header */}
       <div className="bg-gradient-to-r from-primary/10 to-primary-glow/10 p-6 rounded-lg border border-primary/20">
         <h1 className="text-3xl font-display font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-          {t("admin.dashboard.title")}
+          Admin Dashboard
         </h1>
         <p className="text-muted-foreground mt-2">
-          {t("admin.dashboard.subtitle")}
+          Übersicht über alle Buchungen und Finanzen in Echtzeit
         </p>
       </div>
 
@@ -183,53 +176,53 @@ const AdminDashboard = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="border-border/50 shadow-elegant hover:shadow-glow transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("admin.dashboard.totalBookings")}</CardTitle>
+            <CardTitle className="text-sm font-medium">Gesamte Buchungen</CardTitle>
             <div className="p-2 bg-primary/10 rounded-lg">
               <CalendarDays className="h-4 w-4 text-primary" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">{stats.totalBookings}</div>
-            <p className="text-xs text-muted-foreground">{t("admin.dashboard.confirmedBookings")}</p>
+            <p className="text-xs text-muted-foreground">Bestätigte Buchungen</p>
           </CardContent>
         </Card>
 
         <Card className="border-border/50 shadow-elegant hover:shadow-glow transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("admin.dashboard.totalRevenue")}</CardTitle>
+            <CardTitle className="text-sm font-medium">Gesamtumsatz</CardTitle>
             <div className="p-2 bg-accent/10 rounded-lg">
               <Euro className="h-4 w-4 text-accent" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-accent">{formatCurrency(stats.totalRevenue)}</div>
-            <p className="text-xs text-muted-foreground">{t("admin.dashboard.allConfirmedBookings")}</p>
+            <p className="text-xs text-muted-foreground">Alle bestätigten Buchungen</p>
           </CardContent>
         </Card>
 
         <Card className="border-border/50 shadow-elegant hover:shadow-glow transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("admin.dashboard.today")}</CardTitle>
+            <CardTitle className="text-sm font-medium">Heute</CardTitle>
             <div className="p-2 bg-secondary/10 rounded-lg">
               <Users className="h-4 w-4 text-secondary" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-secondary">{stats.todayBookings}</div>
-            <p className="text-xs text-muted-foreground">{t("admin.dashboard.todayBookings")}</p>
+            <p className="text-xs text-muted-foreground">Buchungen für heute</p>
           </CardContent>
         </Card>
 
         <Card className="border-border/50 shadow-elegant hover:shadow-glow transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("admin.dashboard.thisMonth")}</CardTitle>
+            <CardTitle className="text-sm font-medium">Dieser Monat</CardTitle>
             <div className="p-2 bg-primary-glow/10 rounded-lg">
               <TrendingUp className="h-4 w-4 text-primary-glow" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary-glow">{formatCurrency(stats.thisMonthRevenue)}</div>
-            <p className="text-xs text-muted-foreground">{t("admin.dashboard.thisMonthRevenue")}</p>
+            <p className="text-xs text-muted-foreground">Umsatz diesen Monat</p>
           </CardContent>
         </Card>
       </div>
@@ -239,10 +232,10 @@ const AdminDashboard = () => {
         <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
           <CardTitle className="flex items-center gap-2">
             <CalendarDays className="h-5 w-5 text-primary" />
-            {t("admin.dashboard.allBookingsCount", { count: bookings.length })}
+            Alle Buchungen ({bookings.length})
           </CardTitle>
           <CardDescription>
-            {t("admin.dashboard.bookingsDescription")}
+            Übersicht über alle Buchungen in chronologischer Reihenfolge • Aktualisiert in Echtzeit
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -250,21 +243,21 @@ const AdminDashboard = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t("admin.dashboard.bookingDate")}</TableHead>
-                  <TableHead>{t("admin.dashboard.slot")}</TableHead>
-                  <TableHead>{t("admin.dashboard.name")}</TableHead>
-                  <TableHead>{t("admin.dashboard.email")}</TableHead>
-                  <TableHead>{t("admin.dashboard.level")}</TableHead>
-                  <TableHead>{t("admin.dashboard.amount")}</TableHead>
-                  <TableHead>{t("admin.dashboard.status")}</TableHead>
-                  <TableHead>{t("admin.dashboard.created")}</TableHead>
+                  <TableHead>Buchungsdatum</TableHead>
+                  <TableHead>Slot</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>E-Mail</TableHead>
+                  <TableHead>Level</TableHead>
+                  <TableHead>Betrag</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Erstellt</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {bookings.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                      {t("admin.dashboard.noBookings")}
+                      Keine Buchungen gefunden
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -291,11 +284,7 @@ const AdminDashboard = () => {
                           variant={booking.status === 'confirmed' ? 'default' : booking.status === 'pending' ? 'secondary' : 'destructive'}
                           className={booking.status === 'confirmed' ? 'bg-accent/10 text-accent border-accent/20' : ''}
                         >
-                           {booking.status === 'confirmed' 
-                             ? t("admin.dashboard.confirmed") 
-                             : booking.status === 'pending' 
-                             ? t("admin.dashboard.pending") 
-                             : booking.status}
+                          {booking.status === 'confirmed' ? 'Bestätigt' : booking.status === 'pending' ? 'Ausstehend' : booking.status}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">

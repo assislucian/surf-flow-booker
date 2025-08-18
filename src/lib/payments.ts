@@ -10,7 +10,7 @@ export type PendingBooking = {
   level: string;
   notes?: string;
   date: string; // yyyy-MM-dd
-  slots: string[]; // Array of HH:mm slots
+  slot: string; // HH:mm
   createdAt: number;
 };
 

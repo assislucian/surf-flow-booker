@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { sendConfirmationEmail } from "@/lib/emails";
 import { supabase } from "@/integrations/supabase/client";
 
 const PaymentSuccess: React.FC = () => {
@@ -16,36 +17,18 @@ const PaymentSuccess: React.FC = () => {
 
     (async () => {
       try {
-        console.log("PaymentSuccess: Verifying payment with sessionId:", sessionId);
-        
-        // Get current session to send auth token
-        const { data: { session } } = await supabase.auth.getSession();
-        const headers: any = {};
-        
-        if (session?.access_token) {
-          headers.Authorization = `Bearer ${session.access_token}`;
-          console.log("PaymentSuccess: Sending auth token with request");
-        } else {
-          console.log("PaymentSuccess: No auth token available");
-        }
-
         const { data, error } = await supabase.functions.invoke("verify-payment", {
           body: { sessionId },
-          headers
         });
-
-        if (error) {
-          console.error("PaymentSuccess: verify-payment error:", error);
-          throw error;
-        }
-
+        if (error) throw error;
         const booking = (data as any)?.booking;
         if (booking) {
-          console.log("PaymentSuccess: Payment verified successfully:", booking);
           setDetails(booking);
+          // Send confirmation email (non-blocking) 
+          sendConfirmationEmail(booking, i18n.language).catch((err) => console.error("email error", err));
         }
       } catch (err) {
-        console.error("PaymentSuccess: verify-payment error", err);
+        console.error("verify-payment error", err);
       } finally {
         sessionStorage.removeItem("pending_booking");
       }
@@ -68,15 +51,7 @@ const PaymentSuccess: React.FC = () => {
       {details && (
         <article className="mt-6 rounded-xl border bg-card p-6 shadow-[var(--shadow-elegant)]">
           <h2 className="text-lg font-medium">{i18n.language === 'de' ? 'Buchungsdetails' : 'Booking details'}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">{details.date} – {Array.isArray(details.slots) 
-            ? details.slots.map(slot => {
-              const [hour] = slot.split(':');
-              const startHour = parseInt(hour);
-              const endHour = startHour + 1;
-              const endHourStr = endHour.toString().padStart(2, "0");
-              return `${slot} - ${endHourStr}:00`;
-            }).join(", ") 
-            : (details.slot || "")}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{details.date} – {details.slot}</p>
           <p className="mt-1 text-sm">{details.name} · {details.email}</p>
         </article>
       )}

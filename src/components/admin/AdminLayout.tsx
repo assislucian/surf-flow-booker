@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { LogOut, BarChart3, FileText, Euro } from "lucide-react";
+import { LogOut, BarChart3, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminLayout = () => {
-  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,21 +58,21 @@ const AdminLayout = () => {
       const { error } = await supabase.auth.signOut();
       if (error) {
         toast({
-          title: t("admin.auth.error"),
+          title: "Fehler beim Abmelden",
           description: error.message,
           variant: "destructive",
         });
       } else {
         toast({
-          title: t("admin.auth.logoutSuccess"),
-          description: t("admin.auth.logoutDescription"),
+          title: "Erfolgreich abgemeldet",
+          description: "Sie wurden sicher abgemeldet.",
         });
         navigate("/admin/login");
       }
     } catch (error: any) {
       toast({
-        title: t("admin.auth.error"),
-        description: t("admin.auth.logoutError"),
+        title: "Fehler",
+        description: "Ein Fehler beim Abmelden ist aufgetreten",
         variant: "destructive",
       });
     }
@@ -85,7 +83,7 @@ const AdminLayout = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">{t("admin.loading")}</p>
+          <p className="mt-2 text-muted-foreground">Lädt...</p>
         </div>
       </div>
     );
@@ -103,7 +101,7 @@ const AdminLayout = () => {
           <div className="flex items-center space-x-2">
             <BarChart3 className="h-6 w-6 text-primary" />
             <h1 className="font-display text-xl font-semibold">
-              {t("admin.title")}
+              Surfskate Hall Admin
             </h1>
           </div>
           
@@ -113,7 +111,7 @@ const AdminLayout = () => {
             </span>
             <Button variant="outline" size="sm" onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-2" />
-              {t("admin.auth.logout")}
+              Abmelden
             </Button>
           </div>
         </div>
@@ -129,21 +127,14 @@ const AdminLayout = () => {
               className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-secondary"
             >
               <BarChart3 className="h-4 w-4" />
-              {t("admin.navigation.dashboard")}
+              Dashboard
             </Link>
             <Link 
               to="/admin/app/blog"
               className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-secondary"
             >
               <FileText className="h-4 w-4" />
-              {t("admin.navigation.blog")}
-            </Link>
-            <Link 
-              to="/admin/app/prices"
-              className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-secondary"
-            >
-              <Euro className="h-4 w-4" />
-              {t("admin.navigation.prices")}
+              Blog Management
             </Link>
           </div>
         </nav>

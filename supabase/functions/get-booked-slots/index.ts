@@ -15,8 +15,6 @@ serve(async (req) => {
     const { date } = await req.json();
     if (!date) throw new Error("Missing date");
 
-    console.log(`[GET-BOOKED-SLOTS] Searching for bookings on ${date}`);
-
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -29,23 +27,9 @@ serve(async (req) => {
       .eq("booking_date", date)
       .eq("status", "confirmed");
 
-    if (error) {
-      console.error(`[GET-BOOKED-SLOTS] Database error:`, error);
-      throw error;
-    }
+    if (error) throw error;
 
-    console.log(`[GET-BOOKED-SLOTS] Found ${data?.length || 0} bookings for ${date}:`, data);
-
-    // Extract slots - each booking has one slot now (not comma-separated)
-    const slots: string[] = [];
-    (data || []).forEach((r: any) => {
-      const slot = r.slot?.trim();
-      if (slot) {
-        slots.push(slot);
-      }
-    });
-
-    console.log(`[GET-BOOKED-SLOTS] Processed slots:`, slots);
+    const slots = (data || []).map((r: any) => r.slot);
 
     return new Response(JSON.stringify({ slots }), {
       status: 200,

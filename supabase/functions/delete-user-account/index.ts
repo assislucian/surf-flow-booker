@@ -43,68 +43,45 @@ serve(async (req) => {
 
     const { language = "de" } = await req.json();
 
-    // Initialize Stripe
+    // Cancel Stripe subscription if exists
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
-    // Perform all operations in parallel for better performance
-    const [stripeResult, emailResult, dataResult] = await Promise.allSettled([
-      // Cancel Stripe subscriptions
-      (async () => {
-        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-        if (customers.data.length > 0) {
-          const customerId = customers.data[0].id;
-          logStep("Found Stripe customer", { customerId });
-          
-          const subscriptions = await stripe.subscriptions.list({
-            customer: customerId,
-            status: "active",
-          });
-          
-          // Cancel all subscriptions in parallel
-          await Promise.all(
-            subscriptions.data.map(async (subscription) => {
-              await stripe.subscriptions.cancel(subscription.id);
-              logStep("Canceled subscription", { subscriptionId: subscription.id });
-            })
-          );
-        }
-      })(),
+    if (customers.data.length > 0) {
+      const customerId = customers.data[0].id;
+      logStep("Found Stripe customer", { customerId });
       
-      // Send farewell email
-      (async () => {
-        try {
-          await supabaseAdmin.functions.invoke("send-account-deletion-email", {
-            body: { 
-              email: user.email, 
-              name: user.email.split('@')[0], 
-              language 
-            }
-          });
-          logStep("Sent deletion confirmation email");
-        } catch (emailError) {
-          logStep("Failed to send deletion email", { error: emailError });
-          // Don't throw - email failure shouldn't stop deletion
-        }
-      })(),
+      const subscriptions = await stripe.subscriptions.list({
+        customer: customerId,
+        status: "active",
+      });
       
-      // Delete user data from all tables in parallel
-      (async () => {
-        await Promise.all([
-          supabaseAdmin.from("subscribers").delete().eq("user_id", user.id),
-          supabaseAdmin.from("bookings").delete().eq("email", user.email),
-          supabaseAdmin.from("user_roles").delete().eq("user_id", user.id)
-        ]);
-        logStep("Deleted user data from tables");
-      })()
-    ]);
-
-    // Log any failures but continue with deletion
-    [stripeResult, emailResult, dataResult].forEach((result, index) => {
-      if (result.status === 'rejected') {
-        const stepNames = ['Stripe cleanup', 'Email sending', 'Data deletion'];
-        logStep(`${stepNames[index]} failed but continuing`, { error: result.reason });
+      for (const subscription of subscriptions.data) {
+        await stripe.subscriptions.cancel(subscription.id);
+        logStep("Canceled subscription", { subscriptionId: subscription.id });
       }
-    });
+    }
+
+    // Send farewell email before deleting
+    try {
+      await supabaseAdmin.functions.invoke("send-account-deletion-email", {
+        body: { 
+          email: user.email, 
+          name: user.email.split('@')[0], 
+          language 
+        }
+      });
+      logStep("Sent deletion confirmation email");
+    } catch (emailError) {
+      logStep("Failed to send deletion email", { error: emailError });
+      // Continue with deletion even if email fails
+    }
+
+    // Delete user data from our tables (this will cascade due to foreign keys)
+    await supabaseAdmin.from("subscribers").delete().eq("user_id", user.id);
+    await supabaseAdmin.from("bookings").delete().eq("email", user.email);
+    await supabaseAdmin.from("user_roles").delete().eq("user_id", user.id);
+    logStep("Deleted user data from tables");
 
     // Delete the auth user (this is the final step)
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(user.id);

@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,44 +12,14 @@ serve(async (req) => {
   }
 
   try {
-    console.log("create-payment: Function started");
     const body = await req.json();
     const pending = body?.pending;
+    const amountCents = Number.isFinite(body?.amountCents) ? body.amountCents : 1499;
+    const currency = (body?.currency || "eur").toLowerCase();
     const successUrl = body?.successUrl;
     const cancelUrl = body?.cancelUrl;
 
-    if (!pending || !pending.email) {
-      console.error("create-payment: Missing booking or email");
-      throw new Error("Missing booking or email");
-    }
-
-    console.log("create-payment: Processing booking:", {
-      email: pending.email,
-      date: pending.date,
-      slots: pending.slots
-    });
-
-    // Get current booking price from database
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-    );
-
-    const { data: priceData, error: priceError } = await supabaseClient
-      .from('prices')
-      .select('*')
-      .eq('type', 'booking')
-      .eq('is_active', true)
-      .single();
-
-    if (priceError) {
-      console.log('create-payment: Using fallback price due to error:', priceError.message);
-    }
-
-    const amountCents = priceData?.amount_cents || 1499; // Fallback to default
-    const currency = (priceData?.currency || "eur").toLowerCase();
-
-    console.log("create-payment: Using pricing:", { amountCents, currency });
+    if (!pending || !pending.email) throw new Error("Missing booking or email");
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2023-10-16",
@@ -64,7 +33,7 @@ serve(async (req) => {
             currency,
             product_data: {
               name: "Surfskate Hall Booking",
-              description: `${pending.date ?? ""} ${Array.isArray(pending.slots) ? pending.slots.join(", ") : pending.slot ?? ""}`.trim(),
+              description: `${pending.date ?? ""} ${pending.slot ?? ""}`.trim(),
             },
             unit_amount: amountCents,
           },
@@ -78,16 +47,11 @@ serve(async (req) => {
         name: pending.name ?? "",
         email: pending.email ?? "",
         date: pending.date ?? "",
-        slots: Array.isArray(pending.slots) ? pending.slots.join(",") : pending.slot ?? "",
+        slot: pending.slot ?? "",
         level: pending.level ?? "",
         notes: pending.notes ?? "",
         createdAt: String(pending.createdAt ?? ""),
       },
-    });
-
-    console.log("create-payment: Stripe session created:", {
-      sessionId: session.id,
-      url: session.url ? "Generated" : "Missing"
     });
 
     return new Response(JSON.stringify({ url: session.url }), {

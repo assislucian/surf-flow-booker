@@ -69,7 +69,6 @@ export type Database = {
           status: string
           stripe_session_id: string
           updated_at: string
-          user_id: string | null
         }
         Insert: {
           amount_cents: number
@@ -86,7 +85,6 @@ export type Database = {
           status?: string
           stripe_session_id: string
           updated_at?: string
-          user_id?: string | null
         }
         Update: {
           amount_cents?: number
@@ -102,43 +100,6 @@ export type Database = {
           slot?: string
           status?: string
           stripe_session_id?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      prices: {
-        Row: {
-          amount_cents: number
-          created_at: string
-          currency: string
-          id: string
-          is_active: boolean
-          name: string
-          stripe_price_id: string | null
-          type: string
-          updated_at: string
-        }
-        Insert: {
-          amount_cents: number
-          created_at?: string
-          currency?: string
-          id?: string
-          is_active?: boolean
-          name: string
-          stripe_price_id?: string | null
-          type: string
-          updated_at?: string
-        }
-        Update: {
-          amount_cents?: number
-          created_at?: string
-          currency?: string
-          id?: string
-          is_active?: boolean
-          name?: string
-          stripe_price_id?: string | null
-          type?: string
           updated_at?: string
         }
         Relationships: []

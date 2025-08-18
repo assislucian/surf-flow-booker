@@ -50,21 +50,6 @@ serve(async (req) => {
       logStep("Created new customer", { customerId });
     }
 
-    // Get current subscription price from database
-    const { data: priceData, error: priceError } = await supabaseClient
-      .from('prices')
-      .select('*')
-      .eq('type', 'subscription')
-      .eq('is_active', true)
-      .single();
-
-    if (priceError) {
-      console.log('Using fallback price due to error:', priceError.message);
-    }
-
-    const amountCents = priceData?.amount_cents || 2999; // Fallback to default
-    const currency = (priceData?.currency || "eur").toLowerCase();
-
     const origin = req.headers.get("origin") || "https://aezvouallinpwtuaakes.supabase.co";
     
     const session = await stripe.checkout.sessions.create({
@@ -72,12 +57,12 @@ serve(async (req) => {
       line_items: [
         {
           price_data: {
-            currency: currency,
+            currency: "eur",
             product_data: { 
-              name: priceData?.name || "Surfskate Hall Premium Membership",
+              name: "Surfskate Hall Premium Membership",
               description: "Monthly unlimited access to Surfskate Hall"
             },
-            unit_amount: amountCents,
+            unit_amount: 2999, // €29.99
             recurring: { interval: "month" },
           },
           quantity: 1,
