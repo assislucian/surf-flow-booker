@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { Resend } from "npm:resend@4.0.0";
 
 const corsHeaders = {
@@ -15,11 +16,42 @@ serve(async (req) => {
   }
 
   try {
-    const { email, resetUrl, language = "de" } = await req.json();
-    if (!email || !resetUrl) throw new Error("Missing email or resetUrl");
+    const { email, language = "de" } = await req.json();
+    if (!email) throw new Error("Missing email");
 
     const isGerman = language === "de";
+
+    // Use service role to check if user exists first
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    // Check if user exists before generating link
+    const { data: userList, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+    if (listError) throw new Error("Failed to verify user");
     
+    const userExists = userList.users.some(user => user.email === email);
+    if (!userExists) {
+      throw new Error("User with this email not found");
+    }
+
+    const origin = req.headers.get("origin") || "https://surfskate-hall.lovable.app";
+    const redirectTo = `${origin}/reset-password`;
+
+    const { data, error } = await supabaseAdmin.auth.admin.generateLink({
+      type: "recovery",
+      email,
+      options: { redirectTo }
+    });
+
+    if (error) throw new Error(error.message);
+
+    const resetUrl = data?.properties?.action_link;
+    if (!resetUrl) throw new Error("Failed to generate reset link");
+
+    // Build email HTML (personalized, bilingual)
     const html = `
       <!DOCTYPE html>
       <html>
@@ -45,8 +77,7 @@ serve(async (req) => {
           <p style="color: #4a5568; margin-bottom: 25px; font-size: 16px;">
             ${isGerman 
               ? "Du hast eine Passwort-Zurücksetzung für dein Surfskate Hall Konto angefordert. Klicke auf den Button unten, um ein neues Passwort festzulegen." 
-              : "You requested a password reset for your Surfskate Hall account. Click the button below to set a new password."
-            }
+              : "You requested a password reset for your Surfskate Hall account. Click the button below to set a new password."}
           </p>
           
           <div style="text-align: center; margin: 35px 0;">
@@ -62,27 +93,19 @@ serve(async (req) => {
             </h4>
             <p style="color: #92400e; margin: 0; font-size: 14px;">
               ${isGerman 
-                ? "Dieser Link ist nur 24 Stunden gültig. Falls du diese Anfrage nicht gestellt hast, ignoriere diese E-Mail."
-                : "This link is valid for 24 hours only. If you didn't request this reset, please ignore this email."
-              }
+                ? "Dieser Link ist nur 24 Stunden gültig. Falls du diese Anfrage nicht gestellt hast, ignoriere diese E-Mail." 
+                : "This link is valid for 24 hours only. If you didn't request this reset, please ignore this email."}
             </p>
           </div>
           
           <p style="color: #718096; margin: 25px 0; text-align: center; font-size: 14px;">
             ${isGerman 
-              ? "Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:"
-              : "If the button doesn't work, copy this link to your browser:"
-            }
+              ? "Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:" 
+              : "If the button doesn't work, copy this link to your browser:"}
           </p>
           
           <div style="background: #f7fafc; padding: 15px; border-radius: 8px; word-break: break-all; font-family: monospace; font-size: 12px; color: #4a5568; text-align: center;">
             ${resetUrl}
-          </div>
-          
-          <div style="text-align: center; margin: 35px 0;">
-            <p style="font-size: 20px; background: linear-gradient(135deg, hsl(196, 100%, 28%) 0%, hsl(201, 96%, 40%) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">
-              ${isGerman ? "Stay safe! 🌊" : "Stay safe! 🌊"}
-            </p>
           </div>
         </div>
         
@@ -114,7 +137,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: any) {
-    console.error("send-password-reset error:", error);
+    console.error("request-password-reset error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

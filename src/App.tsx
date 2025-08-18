@@ -25,9 +25,11 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import ResetPassword from "./pages/ResetPassword";
 import AdminAccess from "./pages/AdminAccess";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminPrices from "./pages/AdminPrices";
 import BlogManagement from "./components/admin/BlogManagement";
 import AdminLayout from "./components/admin/AdminLayout";
 
@@ -43,12 +45,13 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Admin Routes - No Header/Footer */}
-            <Route path="/admin" element={<AdminAccess />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/app" element={<AdminLayout />}>
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="blog" element={<BlogManagement />} />
-            </Route>
+        <Route path="/admin" element={<AdminAccess />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/app" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="blog" element={<BlogManagement />} />
+          <Route path="prices" element={<AdminPrices />} />
+        </Route>
             
             {/* Public Routes - With Header/Footer */}
             <Route path="/*" element={
@@ -61,6 +64,7 @@ const App = () => (
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<BlogPost />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/payment-success" element={<PaymentSuccess />} />

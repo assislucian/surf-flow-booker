@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY") || "");
+const FROM = Deno.env.get("RESEND_FROM") || "Surfskate Hall <noreply@lifabrasil.com>";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -58,7 +59,7 @@ serve(async (req) => {
               <strong>${isGerman ? "Datum:" : "Date:"}</strong> ${booking.date}
             </p>
             <p style="margin: 8px 0; color: #4a5568;">
-              <strong>${isGerman ? "Zeit:" : "Time:"}</strong> ${booking.slot}
+              <strong>${isGerman ? "Zeit:" : "Time:"}</strong> ${Array.isArray(booking.slots) ? booking.slots.join(", ") : (booking.slot || "")}
             </p>
             ${booking.level ? `<p style="margin: 8px 0; color: #4a5568;"><strong>${isGerman ? "Level:" : "Level:"}</strong> ${booking.level}</p>` : ""}
             ${booking.notes ? `<p style="margin: 8px 0; color: #4a5568;"><strong>${isGerman ? "Notizen:" : "Notes:"}</strong> ${booking.notes}</p>` : ""}
@@ -102,7 +103,7 @@ serve(async (req) => {
       : "🏄‍♂️ Booking Confirmed – Let's ride!";
 
     const { error: sendError } = await resend.emails.send({
-      from: "Surfskate Hall <noreply@lifabrasil.com>",
+      from: FROM,
       to: [booking.email],
       subject,
       html,

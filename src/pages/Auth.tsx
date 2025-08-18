@@ -100,10 +100,14 @@ const Auth = () => {
     }
 
     setLoading(true);
+    
+    // Check if user already exists first - but don't rely on admin access
     const { error } = await signUp(email, password);
     
     if (error) {
-      if (error.message.includes("User already registered")) {
+      if (error.message.includes("User already registered") || 
+          error.message.includes("already been registered") ||
+          error.message.includes("Email rate limit exceeded")) {
         toast({
           title: t("auth.accountExists"),
           description: t("auth.accountExistsDesc"),
@@ -137,16 +141,25 @@ const Auth = () => {
 
     setSendingReset(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/auth?mode=reset`
+      const { error } = await supabase.functions.invoke('request-password-reset', {
+        body: { email: resetEmail, language: (navigator.language?.startsWith('de') ? 'de' : 'en') }
       });
 
       if (error) {
-        toast({
-          title: t("auth.resetFailed"),
-          description: error.message,
-          variant: "destructive"
-        });
+        // Handle specific case of user not found
+        if (error.message.includes("User with this email not found")) {
+          toast({
+            title: t("auth.userNotFound"),
+            description: t("auth.userNotFoundDesc"),
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: t("auth.resetFailed"),
+            description: error.message,
+            variant: "destructive"
+          });
+        }
         return;
       }
 
