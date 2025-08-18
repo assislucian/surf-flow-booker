@@ -62,21 +62,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     });
 
-    // Send welcome email if signup successful
-    if (!error && data.user) {
-      try {
-        await supabase.functions.invoke('send-welcome-email', {
-          body: { 
-            email, 
-            name, 
-            language: navigator.language.startsWith('de') ? 'de' : 'en' 
-          }
-        });
-      } catch (emailError) {
-        console.warn('Failed to send welcome email:', emailError);
-        // Don't fail signup if email fails
-      }
-    }
     
     return { error };
   };
