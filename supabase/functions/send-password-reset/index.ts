@@ -7,7 +7,6 @@ const corsHeaders = {
 };
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY") || "");
-const FROM = Deno.env.get("RESEND_FROM") || "Surfskate Hall <noreply@lifabrasil.com>";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -101,7 +100,7 @@ serve(async (req) => {
       : "🔐 Reset Your Password – Surfskate Hall";
 
     const { error: sendError } = await resend.emails.send({
-      from: FROM,
+      from: "Surfskate Hall <security@lifabrasil.com>",
       to: [email],
       subject,
       html,

@@ -9,15 +9,10 @@ const CookieBanner: React.FC = () => {
   const [visible, setVisible] = React.useState(false);
 
   React.useEffect(() => {
-    // Delay cookie banner to not interrupt initial user experience
-    const timer = setTimeout(() => {
-      try {
-        const v = localStorage.getItem(STORAGE_KEY);
-        if (!v) setVisible(true);
-      } catch {}
-    }, 3000); // Show after 3 seconds
-
-    return () => clearTimeout(timer);
+    try {
+      const v = localStorage.getItem(STORAGE_KEY);
+      if (!v) setVisible(true);
+    } catch {}
   }, []);
 
   const accept = () => {

@@ -20,10 +20,3 @@ verify_jwt = false
 
 [functions.customer-portal]
 verify_jwt = false
-
-[functions.request-password-reset]
-verify_jwt = false
-
-[functions.send-email]
-verify_jwt = false
-

@@ -34,15 +34,6 @@ function generateSlots() {
   return slots;
 }
 
-// Helper function to format time slot with end time
-function formatSlotTime(slot: string): string {
-  const [hour] = slot.split(':');
-  const startHour = parseInt(hour);
-  const endHour = startHour + 1;
-  const endHourStr = endHour.toString().padStart(2, "0");
-  return `${slot} - ${endHourStr}:00`;
-}
-
 const allSlots = generateSlots();
 
 const Booking: React.FC = () => {
@@ -62,35 +53,10 @@ const Booking: React.FC = () => {
     defaultValues: { level: "beginner" },
   });
 
-  // Restore data when coming back from checkout
-  React.useEffect(() => {
-    const pendingData = sessionStorage.getItem("pending_booking");
-    if (pendingData) {
-      try {
-        const parsed = JSON.parse(pendingData);
-        if (parsed.date) {
-          setDate(new Date(parsed.date));
-        }
-        if (parsed.slots && Array.isArray(parsed.slots)) {
-          setSelectedSlots(parsed.slots);
-        }
-        // Restore form data
-        if (parsed.name || parsed.email || parsed.phone || parsed.level || parsed.notes) {
-          reset({
-            name: parsed.name || "",
-            email: parsed.email || "",
-            phone: parsed.phone || "",
-            level: parsed.level || "beginner",
-            notes: parsed.notes || ""
-          });
-        }
-      } catch (e) {
-        console.error("Error restoring booking data:", e);
-      }
-    }
-  }, [reset]);
-
   const locale = i18n.language === "de" ? deLocale : enLocale;
+
+  const bookedKey = (d: Date | undefined, s: string[]) =>
+    d && s.length ? s.map(slot => `${format(d, "yyyy-MM-dd")}|${slot}`).join(",") : "";
 
   React.useEffect(() => {
     const load = async () => {
@@ -100,32 +66,18 @@ const Booking: React.FC = () => {
       }
       try {
         const day = format(date, "yyyy-MM-dd");
-        console.log(`Loading booked slots for ${day}`);
         const { data, error } = await supabase.functions.invoke("get-booked-slots", {
           body: { date: day },
         });
-        if (error) {
-          console.error("get-booked-slots error:", error);
-          throw error;
-        }
-        const slots = ((data as any)?.slots ?? []) as string[];
-        console.log(`Found ${slots.length} booked slots for ${day}:`, slots);
-        setBookedSlots(slots);
+        if (error) throw error;
+        setBookedSlots(((data as any)?.slots ?? []) as string[]);
       } catch (e) {
         console.error("get-booked-slots error", e);
         setBookedSlots([]);
-        // Show toast on error for debugging
-        if (date) {
-          toast({
-            title: "Fehler beim Laden der Buchungen",
-            description: `Konnte reservierte Slots für ${format(date, "dd.MM.yyyy")} nicht laden.`,
-            variant: "destructive"
-          });
-        }
       }
     };
     load();
-  }, [date, toast]);
+  }, [date]);
 
   const onSubmit = (data: BookingForm) => {
     if (!date) {
@@ -154,30 +106,6 @@ const Booking: React.FC = () => {
     return bookedSlots.includes(slot);
   };
 
-  // Check for time gaps in selected slots
-  const checkForTimeGaps = (slots: string[]): boolean => {
-    if (slots.length <= 1) return false;
-    
-    const sortedSlots = slots.sort();
-    for (let i = 0; i < sortedSlots.length - 1; i++) {
-      const currentHour = parseInt(sortedSlots[i].split(':')[0]);
-      const nextHour = parseInt(sortedSlots[i + 1].split(':')[0]);
-      const gap = nextHour - currentHour;
-      
-      // Allow consecutive slots (gap = 1) or gaps of 2+ hours
-      // Disallow gaps of exactly 1 hour (too short for meaningful separation)
-      if (gap === 1) {
-        // This is consecutive, which is fine
-        continue;
-      } else if (gap === 2) {
-        // This is exactly 1 hour gap, which we don't allow
-        return true;
-      }
-      // Gap of 3+ hours is fine (2+ hour separation)
-    }
-    return false;
-  };
-
   return (
     <main className="container py-10">
       <Helmet>
@@ -188,98 +116,6 @@ const Booking: React.FC = () => {
 
       <h1 className="font-display text-3xl md:text-4xl font-semibold">{t("booking.title")}</h1>
       <p className="mt-2 text-muted-foreground">{t("booking.subtitle")}</p>
-
-      {/* Debug Panel - Remove in production */}
-      {process.env.NODE_ENV === "development" && (
-        <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <h3 className="text-sm font-medium text-yellow-800">🔧 Debug Panel</h3>
-          <p className="text-xs text-yellow-700 mt-1">
-            Slots reservados hoje: {bookedSlots.length > 0 ? bookedSlots.join(", ") : "Nenhum"}
-          </p>
-          <p className="text-xs text-yellow-700">
-            Data selecionada: {date ? format(date, "yyyy-MM-dd") : "Nenhuma"}
-          </p>
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="mt-2 text-xs"
-            onClick={async () => {
-              if (!date) return;
-              try {
-                const day = format(date, "yyyy-MM-dd");
-                const { data, error } = await supabase.functions.invoke("get-booked-slots", {
-                  body: { date: day },
-                });
-                console.log("Debug - Direct API call result:", { data, error });
-                toast({
-                  title: "Debug API Call",
-                  description: `Found ${(data as any)?.slots?.length || 0} slots. Check console for details.`
-                });
-              } catch (e) {
-                console.error("Debug API call failed:", e);
-              }
-            }}
-          >
-            🔍 Test API Call
-          </Button>
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="mt-2 ml-2 text-xs"
-            onClick={async () => {
-              // Simulate a test booking completion
-              if (!date || selectedSlots.length === 0) {
-                toast({
-                  title: "Test Error", 
-                  description: "Please select date and slots first"
-                });
-                return;
-              }
-              
-              try {
-                console.log("Testing booking flow...");
-                
-                // Step 1: Create test booking data
-                const testBooking = {
-                  name: "Test User",
-                  email: "test@example.com", 
-                  level: "beginner",
-                  date: format(date, "yyyy-MM-dd"),
-                  slots: selectedSlots,
-                  createdAt: Date.now()
-                };
-                
-                console.log("Test booking data:", testBooking);
-                
-                // Step 2: Test create-payment
-                const { data: paymentData, error: paymentError } = await supabase.functions.invoke("create-payment", {
-                  body: { pending: testBooking }
-                });
-                
-                if (paymentError) {
-                  throw new Error(`Payment creation failed: ${paymentError.message}`);
-                }
-                
-                console.log("Payment session created:", paymentData);
-                toast({
-                  title: "✅ Test Success",
-                  description: "Booking system is working! Check console for details."
-                });
-                
-              } catch (e: any) {
-                console.error("Test failed:", e);
-                toast({
-                  title: "❌ Test Failed",
-                  description: e.message,
-                  variant: "destructive"
-                });
-              }
-            }}
-          >
-            🧪 Test Booking Flow
-          </Button>
-        </div>
-      )}
 
       <section className="mt-8 grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
@@ -387,40 +223,22 @@ const Booking: React.FC = () => {
                           if (isSelected) {
                             setSelectedSlots(prev => prev.filter(s => s !== slot));
                           } else {
-                            // Check for time gaps when adding new slots
-                            const newSlots = [...selectedSlots, slot].sort();
-                            const hasGaps = checkForTimeGaps(newSlots);
-                            if (hasGaps) {
-                              toast({
-                                title: i18n.language === "de" ? "Zeitlücke erkannt" : "Time gap detected",
-                                description: i18n.language === "de" 
-                                  ? "Bitte wähle zusammenhängende Zeitslots oder lasse mindestens eine Stunde Pause zwischen den Buchungen."
-                                  : "Please select consecutive time slots or leave at least one hour between bookings.",
-                                variant: "destructive"
-                              });
-                              return;
-                            }
-                            setSelectedSlots(newSlots);
+                            setSelectedSlots(prev => [...prev, slot].sort());
                           }
                         }}
                         className={`h-12 text-base font-medium transition-all duration-200 ${
                           isSelected 
                             ? 'bg-gradient-primary hover:opacity-90 text-white shadow-lg scale-105' 
                             : booked 
-                              ? 'opacity-40 cursor-not-allowed bg-destructive/10 text-destructive-foreground border-destructive/20' 
-                              : 'hover:border-primary hover:text-primary hover:bg-primary/5 hover:scale-102'
+                              ? 'opacity-40 cursor-not-allowed' 
+                              : 'hover:border-primary hover:text-primary hover:bg-primary/5'
                         }`}
                       >
                         <div className="flex flex-col items-center">
-                          <span className="text-xs font-medium">{formatSlotTime(slot)}</span>
+                          <span>{slot}</span>
                           {booked && (
-                            <span className="text-xs font-medium text-destructive">
+                            <span className="text-xs opacity-70">
                               {t("booking.booked")}
-                            </span>
-                          )}
-                          {isSelected && (
-                            <span className="text-xs opacity-90">
-                              ✓ {t("booking.selected")}
                             </span>
                           )}
                         </div>
@@ -442,18 +260,12 @@ const Booking: React.FC = () => {
                   <div className="flex items-center gap-2 text-primary font-medium">
                     <Clock className="h-4 w-4" />
                     <span>
-                      {t("booking.selected")}: {selectedSlots.map(slot => formatSlotTime(slot)).join(", ")}
+                      {t("booking.selected")}: {selectedSlots.join(", ")}
                       {date && ` - ${format(date, "dd.MM.yyyy")}`}
                     </span>
                   </div>
                   <div className="text-sm text-muted-foreground mt-1">
                     {selectedSlots.length} {selectedSlots.length === 1 ? t("booking.slot") : t("booking.slots")} {t("booking.selectedTotal")}
-                  </div>
-                  <div className="text-xs text-primary/70 mt-2">
-                    {i18n.language === "de" 
-                      ? "💡 Tipp: Wähle zusammenhängende Slots oder lasse mind. 2 Stunden Pause zwischen Buchungen"
-                      : "💡 Tip: Select consecutive slots or leave at least 2 hours between bookings"
-                    }
                   </div>
                 </div>
               )}
@@ -473,7 +285,7 @@ const Booking: React.FC = () => {
                       {selectedSlots.length === 1 ? t("booking.sessionReady") : t("booking.sessionsReady")}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlots.map(slot => formatSlotTime(slot)).join(", ")} • {" "}
+                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlots.join(", ")} • {" "}
                       {i18n.language === "de" 
                         ? `Kalenderwoche ${getWeek(date)}`
                         : `Week ${getWeek(date)}`

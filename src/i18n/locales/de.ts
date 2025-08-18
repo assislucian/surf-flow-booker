@@ -156,12 +156,12 @@ const de = {
     changePassword: "Passwort ändern",
     newPassword: "Neues Passwort",
     newPasswordPlaceholder: "Mindestens 8 Zeichen",
-    updatePassword: "Passwort aktualisieren",
+    confirmPasswordPlaceholder: "Passwort wiederholen",
     passwordChanged: "Passwort geändert",
     passwordChangedDesc: "Dein Passwort wurde erfolgreich aktualisiert",
     cancelSubscription: "Mitgliedschaft kündigen",
-    cancelSubscriptionTitle: "Premium-Mitgliedschaft kündigen?",
-    cancelSubscriptionConfirm: "Möchtest du deine Premium-Mitgliedschaft wirklich kündigen? Die Kündigung wird zum Ende deines aktuellen Abrechnungszeitraums wirksam.",
+    cancelSubscriptionTitle: "Mitgliedschaft kündigen?",
+    cancelSubscriptionConfirm: "Bist du sicher, dass du deine Premium-Mitgliedschaft kündigen möchtest? Du verlierst alle Premium-Vorteile.",
     confirmCancel: "Ja, kündigen",
     subscriptionCanceled: "Mitgliedschaft gekündigt",
     subscriptionCanceledDesc: "Deine Premium-Mitgliedschaft wurde erfolgreich gekündigt",
@@ -200,8 +200,6 @@ const de = {
     resetFailed: "Reset fehlgeschlagen",
     resetSent: "Reset-Link gesendet",
     resetSentDesc: "Überprüfe deine E-Mails für weitere Anweisungen",
-    userNotFound: "Benutzer nicht gefunden",
-    userNotFoundDesc: "Kein Konto mit dieser E-Mail-Adresse gefunden. Bitte registriere dich zuerst.",
     createAccount: "Konto erstellen",
     logout: "Abmelden",
     logoutSuccess: "Erfolgreich abgemeldet"
@@ -236,66 +234,7 @@ const de = {
     notSubscribed: "Nicht abonniert",
     currentPlan: "Aktueller Plan",
     expires: "Läuft ab am",
-    managePlan: "Mitgliedschaft verwalten",
-    successTitle: "🎉 Premium aktiviert!",
-    subscriptionConfirmed: "Deine Premium-Mitgliedschaft wurde erfolgreich aktiviert",
-    welcomeToPremium: "Willkommen bei Premium!",
-    processing: "Verarbeitung läuft...",
-    processingDesc: "Wir aktivieren gerade deine Premium-Mitgliedschaft",
-    confirmationError: "Fehler bei der Bestätigung der Mitgliedschaft",
-    nextBilling: "Nächste Abrechnung",
-    nextSteps: "Nächste Schritte",
-    checkEmail: "Überprüfe deine E-Mails für die Willkommensnachricht",
-    bookFirstSlot: "Ersten Premium-Slot buchen",
-    manageProfile: "Profil verwalten",
-    viewProfile: "Profil anzeigen"
-  },
-  "onboarding": {
-    "title": "Willkommen bei Surfskate Hall",
-    "welcome": {
-      "title": "Willkommen! 🏄‍♂️",
-      "description": "Schön, dass du Teil unserer Community bist!",
-      "subtitle": "Dein Account wurde erfolgreich erstellt.",
-      "feature1": "Slots buchen",
-      "feature2": "Community"
-    },
-    "features": {
-      "title": "Was kannst du hier machen?",
-      "description": "Entdecke alle Möglichkeiten in der Surfskate Hall",
-      "booking": "Slots einfach online buchen",
-      "premium": "Premium-Mitgliedschaft für unbegrenzten Zugang",
-      "community": "Teil einer aktiven Surfskate-Community werden"
-    },
-    "premium": {
-      "title": "Premium Vorteile",
-      "description": "Hol dir das Maximum aus deiner Surfskate-Erfahrung",
-      "badge": "Premium",
-      "benefit": "Unbegrenzte Slots, Vorrang bei der Buchung und exklusive Events",
-      "optional": "Du kannst jederzeit Premium werden"
-    },
-    "completing": "Wird abgeschlossen...",
-    "getStarted": "Los geht's! 🚀"
-  },
-  "notifications": {
-    "title": "Benachrichtigungen",
-    "welcome": {
-      "title": "Account erstellt! 🎉",
-      "message": "Willkommen bei Surfskate Hall! Entdecke jetzt Premium-Vorteile.",
-      "action": "Premium entdecken"
-    },
-    "payment": {
-      "success": {
-        "title": "Premium aktiviert! 👑",
-        "message": "Deine Premium-Mitgliedschaft ist jetzt aktiv. Buche deinen ersten Slot!",
-        "action": "Slot buchen"
-      }
-    },
-    "subscription": {
-      "canceled": {
-        "title": "Mitgliedschaft gekündigt",
-        "message": "Du kannst deine Premium-Vorteile noch bis zum Ende der Laufzeit nutzen."
-      }
-    }
+    managePlan: "Mitgliedschaft verwalten"
   },
   admin: {
     title: "Surfskate Hall Admin",
@@ -434,24 +373,8 @@ const de = {
       payment: "Zahlungsabwicklung via Stripe (separate Datenschutzerklärung)",
       rights: "Ihre Rechte",
       rightsText: "Sie haben das Recht auf Auskunft, Berichtigung, Löschung u.a."
-  },
-  checkout: {
-    title: "Zur Kasse",
-    subtitle: "Bitte prüfe deine Angaben und starte die Zahlung",
-    missing: "Keine ausstehende Buchung gefunden",
-    back: "Zurück zur Buchung",
-    proceed: "Zur Zahlung",
-    summary: {
-      date: "Datum",
-      slot: "Zeitfenster",
-      name: "Name",
-      email: "E-Mail",
-      level: "Level",
-      notes: "Notizen"
     },
-    paymentNote: "Nach erfolgreicher Zahlung wirst du zurückgeleitet und die Buchung wird bestätigt."
-  },
-  terms: {
+    terms: {
       title: "Allgemeine Geschäftsbedingungen",
       short: "AGB",
       desc: "AGB für Buchungen und Nutzung der Halle.",

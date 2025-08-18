@@ -156,12 +156,12 @@ const en = {
     changePassword: "Change Password",
     newPassword: "New Password",
     newPasswordPlaceholder: "At least 8 characters",
-    updatePassword: "Update Password",
+    confirmPasswordPlaceholder: "Repeat password",
     passwordChanged: "Password Changed",
     passwordChangedDesc: "Your password has been successfully updated",
     cancelSubscription: "Cancel Membership",
-    cancelSubscriptionTitle: "Cancel Premium Membership?",
-    cancelSubscriptionConfirm: "Are you sure you want to cancel your Premium membership? The cancellation will take effect at the end of your current billing period.",
+    cancelSubscriptionTitle: "Cancel Membership?",
+    cancelSubscriptionConfirm: "Are you sure you want to cancel your premium membership? You will lose all premium benefits.",
     confirmCancel: "Yes, Cancel",
     subscriptionCanceled: "Membership Canceled",
     subscriptionCanceledDesc: "Your premium membership has been successfully canceled",
@@ -200,8 +200,6 @@ const en = {
     resetFailed: "Reset Failed",
     resetSent: "Reset Link Sent",
     resetSentDesc: "Check your email for further instructions",
-    userNotFound: "User Not Found",
-    userNotFoundDesc: "No account found with this email address. Please sign up first.",
     createAccount: "Create Account",
     logout: "Sign Out",
     logoutSuccess: "Successfully signed out"
@@ -236,66 +234,7 @@ const en = {
     notSubscribed: "Not Subscribed",
     currentPlan: "Current Plan",
     expires: "Expires on",
-    managePlan: "Manage Membership",
-    successTitle: "🎉 Premium Activated!",
-    subscriptionConfirmed: "Your Premium membership has been successfully activated",
-    welcomeToPremium: "Welcome to Premium!",
-    processing: "Processing...",
-    processingDesc: "We're activating your Premium membership",
-    confirmationError: "Error confirming membership",
-    nextBilling: "Next billing",
-    nextSteps: "Next Steps",
-    checkEmail: "Check your email for the welcome message",
-    bookFirstSlot: "Book Your First Premium Slot",
-    manageProfile: "Manage Profile",
-    viewProfile: "View Profile"
-  },
-  "onboarding": {
-    "title": "Welcome to Surfskate Hall",
-    "welcome": {
-      "title": "Welcome! 🏄‍♂️",
-      "description": "Great to have you as part of our community!",
-      "subtitle": "Your account has been successfully created.",
-      "feature1": "Book slots",
-      "feature2": "Community"
-    },
-    "features": {
-      "title": "What can you do here?",
-      "description": "Discover all possibilities at Surfskate Hall",
-      "booking": "Book slots easily online",
-      "premium": "Premium membership for unlimited access",
-      "community": "Become part of an active surfskate community"
-    },
-    "premium": {
-      "title": "Premium Benefits",
-      "description": "Get the most out of your surfskate experience",
-      "badge": "Premium",
-      "benefit": "Unlimited slots, priority booking and exclusive events",
-      "optional": "You can upgrade to Premium anytime"
-    },
-    "completing": "Completing...",
-    "getStarted": "Let's get started! 🚀"
-  },
-  "notifications": {
-    "title": "Notifications",
-    "welcome": {
-      "title": "Account created! 🎉",
-      "message": "Welcome to Surfskate Hall! Discover Premium benefits now.",
-      "action": "Explore Premium"
-    },
-    "payment": {
-      "success": {
-        "title": "Premium activated! 👑",
-        "message": "Your Premium membership is now active. Book your first slot!",
-        "action": "Book slot"
-      }
-    },
-    "subscription": {
-      "canceled": {
-        "title": "Membership canceled",
-        "message": "You can still use your Premium benefits until the end of your billing period."
-      }
-    }
+    managePlan: "Manage Membership"
   },
   admin: {
     title: "Surfskate Hall Admin",
@@ -434,24 +373,8 @@ const en = {
       payment: "Payment processing via Stripe (separate privacy policy)",
       rights: "Your Rights",
       rightsText: "You have the right to information, correction, deletion, etc."
-  },
-  checkout: {
-    title: "Checkout",
-    subtitle: "Please review your information and proceed with payment",
-    missing: "No pending booking found",
-    back: "Back to Booking",
-    proceed: "Proceed to Payment",
-    summary: {
-      date: "Date",
-      slot: "Time Slot",
-      name: "Name",
-      email: "Email",
-      level: "Level",
-      notes: "Notes"
     },
-    paymentNote: "After successful payment you'll be redirected and your booking will be confirmed."
-  },
-  terms: {
+    terms: {
       title: "Terms and Conditions",
       short: "Terms",
       desc: "Terms for bookings and hall usage.",
