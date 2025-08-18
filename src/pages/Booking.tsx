@@ -34,6 +34,15 @@ function generateSlots() {
   return slots;
 }
 
+// Helper function to format time slot with end time
+function formatSlotTime(slot: string): string {
+  const [hour] = slot.split(':');
+  const startHour = parseInt(hour);
+  const endHour = startHour + 1;
+  const endHourStr = endHour.toString().padStart(2, "0");
+  return `${slot} - ${endHourStr}:00`;
+}
+
 const allSlots = generateSlots();
 
 const Booking: React.FC = () => {
@@ -91,18 +100,32 @@ const Booking: React.FC = () => {
       }
       try {
         const day = format(date, "yyyy-MM-dd");
+        console.log(`Loading booked slots for ${day}`);
         const { data, error } = await supabase.functions.invoke("get-booked-slots", {
           body: { date: day },
         });
-        if (error) throw error;
-        setBookedSlots(((data as any)?.slots ?? []) as string[]);
+        if (error) {
+          console.error("get-booked-slots error:", error);
+          throw error;
+        }
+        const slots = ((data as any)?.slots ?? []) as string[];
+        console.log(`Found ${slots.length} booked slots for ${day}:`, slots);
+        setBookedSlots(slots);
       } catch (e) {
         console.error("get-booked-slots error", e);
         setBookedSlots([]);
+        // Show toast on error for debugging
+        if (date) {
+          toast({
+            title: "Fehler beim Laden der Buchungen",
+            description: `Konnte reservierte Slots für ${format(date, "dd.MM.yyyy")} nicht laden.`,
+            variant: "destructive"
+          });
+        }
       }
     };
     load();
-  }, [date]);
+  }, [date, toast]);
 
   const onSubmit = (data: BookingForm) => {
     if (!date) {
@@ -165,6 +188,42 @@ const Booking: React.FC = () => {
 
       <h1 className="font-display text-3xl md:text-4xl font-semibold">{t("booking.title")}</h1>
       <p className="mt-2 text-muted-foreground">{t("booking.subtitle")}</p>
+
+      {/* Debug Panel - Remove in production */}
+      {process.env.NODE_ENV === "development" && (
+        <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <h3 className="text-sm font-medium text-yellow-800">🔧 Debug Panel</h3>
+          <p className="text-xs text-yellow-700 mt-1">
+            Slots reservados hoje: {bookedSlots.length > 0 ? bookedSlots.join(", ") : "Nenhum"}
+          </p>
+          <p className="text-xs text-yellow-700">
+            Data selecionada: {date ? format(date, "yyyy-MM-dd") : "Nenhuma"}
+          </p>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="mt-2 text-xs"
+            onClick={async () => {
+              if (!date) return;
+              try {
+                const day = format(date, "yyyy-MM-dd");
+                const { data, error } = await supabase.functions.invoke("get-booked-slots", {
+                  body: { date: day },
+                });
+                console.log("Debug - Direct API call result:", { data, error });
+                toast({
+                  title: "Debug API Call",
+                  description: `Found ${(data as any)?.slots?.length || 0} slots. Check console for details.`
+                });
+              } catch (e) {
+                console.error("Debug API call failed:", e);
+              }
+            }}
+          >
+            🔍 Test API Call
+          </Button>
+        </div>
+      )}
 
       <section className="mt-8 grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
@@ -297,9 +356,9 @@ const Booking: React.FC = () => {
                         }`}
                       >
                         <div className="flex flex-col items-center">
-                          <span>{slot}</span>
+                          <span className="text-xs font-medium">{formatSlotTime(slot)}</span>
                           {booked && (
-                            <span className="text-xs font-medium">
+                            <span className="text-xs font-medium text-destructive">
                               {t("booking.booked")}
                             </span>
                           )}
@@ -327,7 +386,7 @@ const Booking: React.FC = () => {
                   <div className="flex items-center gap-2 text-primary font-medium">
                     <Clock className="h-4 w-4" />
                     <span>
-                      {t("booking.selected")}: {selectedSlots.join(", ")}
+                      {t("booking.selected")}: {selectedSlots.map(slot => formatSlotTime(slot)).join(", ")}
                       {date && ` - ${format(date, "dd.MM.yyyy")}`}
                     </span>
                   </div>
@@ -358,7 +417,7 @@ const Booking: React.FC = () => {
                       {selectedSlots.length === 1 ? t("booking.sessionReady") : t("booking.sessionsReady")}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlots.join(", ")} • {" "}
+                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlots.map(slot => formatSlotTime(slot)).join(", ")} • {" "}
                       {i18n.language === "de" 
                         ? `Kalenderwoche ${getWeek(date)}`
                         : `Week ${getWeek(date)}`

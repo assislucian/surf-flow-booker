@@ -77,7 +77,13 @@ const Checkout: React.FC = () => {
               <dt className="text-muted-foreground">{t("checkout.summary.date", "Date")}</dt>
               <dd>{pending.date}</dd>
               <dt className="text-muted-foreground">{t("checkout.summary.slot", "Time Slot")}</dt>
-              <dd>{Array.isArray(pending.slots) ? pending.slots.join(", ") : pending.slot}</dd>
+              <dd>{Array.isArray(pending.slots) ? pending.slots.map(slot => {
+                const [hour] = slot.split(':');
+                const startHour = parseInt(hour);
+                const endHour = startHour + 1;
+                const endHourStr = endHour.toString().padStart(2, "0");
+                return `${slot} - ${endHourStr}:00`;
+              }).join(", ") : pending.slot}</dd>
               <dt className="text-muted-foreground">{t("checkout.summary.name", "Name")}</dt>
               <dd>{pending.name}</dd>
               <dt className="text-muted-foreground">{t("checkout.summary.email", "Email")}</dt>

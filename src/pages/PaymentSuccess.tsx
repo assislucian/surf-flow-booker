@@ -48,7 +48,15 @@ const PaymentSuccess: React.FC = () => {
       {details && (
         <article className="mt-6 rounded-xl border bg-card p-6 shadow-[var(--shadow-elegant)]">
           <h2 className="text-lg font-medium">{i18n.language === 'de' ? 'Buchungsdetails' : 'Booking details'}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">{details.date} – {Array.isArray(details.slots) ? details.slots.join(", ") : (details.slot || "")}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{details.date} – {Array.isArray(details.slots) 
+            ? details.slots.map(slot => {
+              const [hour] = slot.split(':');
+              const startHour = parseInt(hour);
+              const endHour = startHour + 1;
+              const endHourStr = endHour.toString().padStart(2, "0");
+              return `${slot} - ${endHourStr}:00`;
+            }).join(", ") 
+            : (details.slot || "")}</p>
           <p className="mt-1 text-sm">{details.name} · {details.email}</p>
         </article>
       )}
