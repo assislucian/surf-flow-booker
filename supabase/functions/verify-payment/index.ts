@@ -40,7 +40,7 @@ serve(async (req) => {
       .insert({
         name: md.name ?? "",
         email: md.email ?? "",
-        phone: md.phone ?? null,
+        phone: null,
         level: md.level ?? null,
         notes: md.notes ?? null,
         booking_date: md.date ?? "",

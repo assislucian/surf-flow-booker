@@ -46,7 +46,6 @@ serve(async (req) => {
       metadata: {
         name: pending.name ?? "",
         email: pending.email ?? "",
-        phone: pending.phone ?? "",
         date: pending.date ?? "",
         slot: pending.slot ?? "",
         level: pending.level ?? "",
