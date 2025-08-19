@@ -14,11 +14,12 @@ import { CalendarIcon, Clock, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface BookingForm {
   name: string;
-  email: string;
-  phone?: string;
+  email?: string;
+  phone: string;
   level: string;
   notes?: string;
 }
@@ -40,6 +41,7 @@ const Booking: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [selectedSlot, setSelectedSlot] = React.useState<string | null>(null);
   const [bookedSlots, setBookedSlots] = React.useState<string[]>([]);
@@ -92,6 +94,7 @@ const Booking: React.FC = () => {
     // Store pending booking to complete after payment success
     const pending = {
       ...data,
+      email: user?.email || data.email, // Use authenticated user's email if available
       date: format(date, "yyyy-MM-dd"),
       slot: selectedSlot,
       createdAt: Date.now(),
@@ -303,14 +306,17 @@ const Booking: React.FC = () => {
               <Input id="name" {...register("name", { required: true })} />
               {errors.name && <p className="text-sm text-destructive mt-1">{t("common.required", { defaultValue: "Required" })}</p>}
             </div>
-            <div>
-              <Label htmlFor="email">{t("booking.form.email")}</Label>
-              <Input id="email" type="email" {...register("email", { required: true })} />
-              {errors.email && <p className="text-sm text-destructive mt-1">{t("common.required", { defaultValue: "Required" })}</p>}
-            </div>
+            {!user && (
+              <div>
+                <Label htmlFor="email">{t("booking.form.email")}</Label>
+                <Input id="email" type="email" {...register("email", { required: !user })} />
+                {errors.email && <p className="text-sm text-destructive mt-1">{t("common.required", { defaultValue: "Required" })}</p>}
+              </div>
+            )}
             <div>
               <Label htmlFor="phone">{t("booking.form.phone")}</Label>
-              <Input id="phone" {...register("phone")} />
+              <Input id="phone" {...register("phone", { required: true })} />
+              {errors.phone && <p className="text-sm text-destructive mt-1">{t("common.required", { defaultValue: "Required" })}</p>}
             </div>
             <div>
               <Label htmlFor="level">{t("booking.form.level")}</Label>
