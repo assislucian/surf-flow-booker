@@ -101,10 +101,21 @@ const Booking: React.FC = () => {
       slots: selectedSlots,
       createdAt: Date.now(),
     };
-    sessionStorage.setItem("pending_booking", JSON.stringify(pending));
-
-    toast({ title: i18n.language === "de" ? "Weiter zur Zahlung" : "Proceeding to payment" });
-    navigate("/checkout");
+    
+    try {
+      sessionStorage.setItem("pending_booking", JSON.stringify(pending));
+      toast({ title: i18n.language === "de" ? "Weiter zur Zahlung" : "Proceeding to payment" });
+      navigate("/checkout");
+    } catch (error) {
+      console.error("Failed to store booking data:", error);
+      toast({
+        title: i18n.language === "de" ? "Fehler" : "Error",
+        description: i18n.language === "de" 
+          ? "Buchungsdaten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut." 
+          : "Could not save booking data. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const isBooked = (slot: string) => {

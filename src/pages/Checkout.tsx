@@ -5,29 +5,55 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, Link } from "react-router-dom";
 import { createPaymentSession } from "@/lib/payments";
+import { Loader2 } from "lucide-react";
 
 const Checkout: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [pending, setPending] = React.useState<any | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     const raw = sessionStorage.getItem("pending_booking");
-    if (raw) setPending(JSON.parse(raw));
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        setPending(parsed);
+      } catch (error) {
+        console.error("Failed to parse pending booking:", error);
+        sessionStorage.removeItem("pending_booking");
+      }
+    }
   }, []);
 
   const handlePay = async () => {
-    if (!pending) return;
+    if (!pending || isLoading) return;
+    
+    setIsLoading(true);
     try {
-      const { url } = await createPaymentSession(pending);
-      // Open Stripe checkout in a new tab
-      window.open(url, "_blank");
+      // Ensure we have the correct data structure
+      const bookingData = {
+        ...pending,
+        slots: pending.slots || (pending.slot ? [pending.slot] : []),
+      };
+      
+      const { url } = await createPaymentSession(bookingData);
+      if (url) {
+        // Open Stripe checkout in a new tab
+        window.open(url, "_blank");
+      } else {
+        throw new Error("No payment URL received");
+      }
     } catch (e: any) {
+      console.error("Payment error:", e);
       toast({
         title: i18n.language === "de" ? "Zahlung fehlgeschlagen" : "Payment failed",
         description: e?.message || (i18n.language === "de" ? "Bitte später erneut versuchen." : "Please try again later."),
+        variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,7 +85,9 @@ const Checkout: React.FC = () => {
               <dt className="text-muted-foreground">{t("checkout.summary.date", { defaultValue: "Datum" })}</dt>
               <dd>{pending.date}</dd>
               <dt className="text-muted-foreground">{t("checkout.summary.slot", { defaultValue: "Zeitfenster" })}</dt>
-              <dd>{pending.slots?.join(", ") || pending.slot}</dd>
+              <dd>
+                {pending.slots ? pending.slots.join(", ") : pending.slot || "N/A"}
+              </dd>
               <dt className="text-muted-foreground">{t("checkout.summary.name", { defaultValue: "Name" })}</dt>
               <dd>{pending.name}</dd>
               <dt className="text-muted-foreground">{t("checkout.summary.email", { defaultValue: "E-Mail" })}</dt>
@@ -77,10 +105,23 @@ const Checkout: React.FC = () => {
 
           <aside>
             <div className="flex gap-3">
-              <Button onClick={handlePay} className="flex-1">
-                {t("checkout.proceed", { defaultValue: "Zur Zahlung" })}
+              <Button 
+                onClick={handlePay} 
+                className="flex-1" 
+                disabled={isLoading || !pending?.slots?.length}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {i18n.language === "de" ? "Lädt..." : "Loading..."}
+                  </>
+                ) : (
+                  t("checkout.proceed", { defaultValue: "Zur Zahlung" })
+                )}
               </Button>
-              <Button variant="secondary" className="flex-1" onClick={() => navigate("/book")}>{t("checkout.back", { defaultValue: "Zurück zur Buchung" })}</Button>
+              <Button variant="secondary" className="flex-1" onClick={() => navigate("/book")}>
+                {t("checkout.back", { defaultValue: "Zurück zur Buchung" })}
+              </Button>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
               {i18n.language === "de"
