@@ -59,7 +59,7 @@ const Checkout: React.FC = () => {
               <dt className="text-muted-foreground">{t("checkout.summary.date", { defaultValue: "Datum" })}</dt>
               <dd>{pending.date}</dd>
               <dt className="text-muted-foreground">{t("checkout.summary.slot", { defaultValue: "Zeitfenster" })}</dt>
-              <dd>{pending.slot}</dd>
+              <dd>{pending.slots?.join(", ") || pending.slot}</dd>
               <dt className="text-muted-foreground">{t("checkout.summary.name", { defaultValue: "Name" })}</dt>
               <dd>{pending.name}</dd>
               <dt className="text-muted-foreground">{t("checkout.summary.email", { defaultValue: "E-Mail" })}</dt>
