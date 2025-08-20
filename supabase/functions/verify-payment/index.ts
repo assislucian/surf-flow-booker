@@ -33,52 +33,71 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Insert booking (idempotent by stripe_session_id)
-    let bookingRow: any = null;
-    const insertRes = await supabaseAdmin
-      .from("bookings")
-      .insert({
-        name: md.name ?? "",
-        email: md.email ?? "",
-        phone: null,
-        level: md.level ?? null,
-        notes: md.notes ?? null,
-        booking_date: md.date ?? "",
-        slot: md.slot ?? "",
-        status: "confirmed",
-        stripe_session_id: session.id,
-        amount_cents: (session.amount_total as number) ?? 1499,
-        currency: (session.currency as string) ?? "eur",
-      })
-      .select()
-      .single();
-
-    if (insertRes.error) {
-      // If unique violation, fetch existing row
-      const existing = await supabaseAdmin
-        .from("bookings")
-        .select("*")
-        .eq("stripe_session_id", session.id)
-        .maybeSingle();
-      if (existing.data) {
-        bookingRow = existing.data;
-      } else {
-        throw insertRes.error;
+    // Parse slots and convert date format
+    const slotsString = md.slots ?? "";
+    const slots = slotsString.split(",").filter(s => s.trim());
+    const dateString = md.date ?? "";
+    
+    // Convert dd.MM.yyyy to yyyy-MM-dd for database
+    const convertDateFormat = (dateStr: string): string => {
+      if (dateStr.includes(".")) {
+        const [day, month, year] = dateStr.split(".");
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
       }
+      return dateStr; // Already in correct format
+    };
+    
+    const dbDate = convertDateFormat(dateString);
+    const totalAmount = (session.amount_total as number) ?? 1499;
+    const amountPerSlot = Math.round(totalAmount / Math.max(slots.length, 1));
+
+    // Check if bookings already exist for this session
+    const existingBookings = await supabaseAdmin
+      .from("bookings")
+      .select("*")
+      .eq("stripe_session_id", session.id);
+
+    let bookingRows: any[] = [];
+
+    if (existingBookings.error || !existingBookings.data?.length) {
+      // Create multiple booking records - one for each slot
+      const bookingPromises = slots.map(slot => {
+        const startTime = slot.split(" - ")[0]; // Extract start time from "HH:mm - HH:mm"
+        return supabaseAdmin
+          .from("bookings")
+          .insert({
+            name: md.name ?? "",
+            email: md.email ?? "",
+            phone: md.phone ?? null,
+            level: md.level ?? null,
+            notes: md.notes ?? null,
+            booking_date: dbDate,
+            slot: startTime,
+            status: "confirmed",
+            stripe_session_id: session.id,
+            amount_cents: amountPerSlot,
+            currency: (session.currency as string) ?? "eur",
+          })
+          .select()
+          .single();
+      });
+
+      const results = await Promise.all(bookingPromises);
+      bookingRows = results.map(r => r.data).filter(Boolean);
     } else {
-      bookingRow = insertRes.data;
+      bookingRows = existingBookings.data;
     }
 
-    const booking = {
-      name: bookingRow.name,
-      email: bookingRow.email,
-      date: bookingRow.booking_date,
-      slot: bookingRow.slot,
-      level: bookingRow.level,
-      notes: bookingRow.notes,
-    };
+    const bookings = bookingRows.map(row => ({
+      name: row.name,
+      email: row.email,
+      date: row.booking_date,
+      slot: row.slot,
+      level: row.level,
+      notes: row.notes,
+    }));
 
-    return new Response(JSON.stringify({ ok: true, booking }), {
+    return new Response(JSON.stringify({ ok: true, bookings }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

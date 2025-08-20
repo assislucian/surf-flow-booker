@@ -25,6 +25,7 @@ serve(async (req) => {
       apiVersion: "2023-10-16",
     });
 
+    const slotsCount = Array.isArray(pending.slots) ? pending.slots.length : 1;
     const session = await stripe.checkout.sessions.create({
       customer_email: pending.email,
       line_items: [
@@ -33,11 +34,11 @@ serve(async (req) => {
             currency,
             product_data: {
               name: "Surfskate Hall Booking",
-              description: `${pending.date ?? ""} ${pending.slot ?? ""}`.trim(),
+              description: `${pending.date ?? ""} - ${Array.isArray(pending.slots) ? pending.slots.join(", ") : pending.slot || ""}`.trim(),
             },
-            unit_amount: amountCents,
+            unit_amount: Math.round(amountCents / slotsCount),
           },
-          quantity: 1,
+          quantity: slotsCount,
         },
       ],
       mode: "payment",
@@ -47,9 +48,10 @@ serve(async (req) => {
         name: pending.name ?? "",
         email: pending.email ?? "",
         date: pending.date ?? "",
-        slot: pending.slot ?? "",
+        slots: Array.isArray(pending.slots) ? pending.slots.join(",") : (pending.slot ?? ""),
         level: pending.level ?? "",
         notes: pending.notes ?? "",
+        phone: pending.phone ?? "",
         createdAt: String(pending.createdAt ?? ""),
       },
     });

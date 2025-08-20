@@ -18,7 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface BookingForm {
   name: string;
   email: string;
-  phone?: string;
+  phone: string;
   level: string;
   notes?: string;
 }
@@ -29,9 +29,14 @@ function generateSlots() {
   const slots: string[] = [];
   for (let h = openingHours.start; h < openingHours.end; h++) {
     const hour = h.toString().padStart(2, "0");
-    slots.push(`${hour}:00`);
+    const nextHour = (h + 1).toString().padStart(2, "0");
+    slots.push(`${hour}:00 - ${nextHour}:00`);
   }
   return slots;
+}
+
+function getSlotStartTime(slot: string): string {
+  return slot.split(' - ')[0];
 }
 
 const allSlots = generateSlots();
@@ -41,7 +46,7 @@ const Booking: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [selectedSlot, setSelectedSlot] = React.useState<string | null>(null);
+  const [selectedSlots, setSelectedSlots] = React.useState<string[]>([]);
   const [bookedSlots, setBookedSlots] = React.useState<string[]>([]);
 
   const {
@@ -84,16 +89,16 @@ const Booking: React.FC = () => {
       toast({ title: t("booking.errors.selectDate") as string });
       return;
     }
-    if (!selectedSlot) {
-      toast({ title: t("booking.errors.selectSlot") as string });
+    if (selectedSlots.length === 0) {
+      toast({ title: i18n.language === "de" ? "Bitte wähle mindestens einen Zeitslot" : "Please select at least one time slot" });
       return;
     }
 
     // Store pending booking to complete after payment success
     const pending = {
       ...data,
-      date: format(date, "yyyy-MM-dd"),
-      slot: selectedSlot,
+      date: format(date, "dd.MM.yyyy"),
+      slots: selectedSlots,
       createdAt: Date.now(),
     };
     sessionStorage.setItem("pending_booking", JSON.stringify(pending));
@@ -103,7 +108,16 @@ const Booking: React.FC = () => {
   };
 
   const isBooked = (slot: string) => {
-    return bookedSlots.includes(slot);
+    const startTime = getSlotStartTime(slot);
+    return bookedSlots.includes(startTime);
+  };
+
+  const toggleSlot = (slot: string) => {
+    setSelectedSlots(prev => 
+      prev.includes(slot) 
+        ? prev.filter(s => s !== slot)
+        : [...prev, slot]
+    );
   };
 
   return (
@@ -220,14 +234,14 @@ const Booking: React.FC = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {allSlots.map((slot) => {
                     const booked = isBooked(slot);
-                    const isSelected = selectedSlot === slot;
+                    const isSelected = selectedSlots.includes(slot);
                     return (
                       <Button
                         key={slot}
                         variant={isSelected ? "default" : "outline"}
                         disabled={booked}
-                        onClick={() => setSelectedSlot(slot)}
-                        className={`h-12 text-base font-medium transition-all duration-200 ${
+                        onClick={() => toggleSlot(slot)}
+                        className={`h-14 text-sm font-medium transition-all duration-200 ${
                           isSelected 
                             ? 'bg-gradient-primary hover:opacity-90 text-white shadow-lg scale-105' 
                             : booked 
@@ -235,11 +249,16 @@ const Booking: React.FC = () => {
                               : 'hover:border-primary hover:text-primary hover:bg-primary/5'
                         }`}
                       >
-                        <div className="flex flex-col items-center">
-                          <span>{slot}</span>
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="font-semibold">{slot}</span>
                           {booked && (
                             <span className="text-xs opacity-70">
                               {i18n.language === "de" ? "Belegt" : "Booked"}
+                            </span>
+                          )}
+                          {isSelected && !booked && (
+                            <span className="text-xs opacity-90">
+                              {i18n.language === "de" ? "Ausgewählt" : "Selected"}
                             </span>
                           )}
                         </div>
@@ -256,14 +275,30 @@ const Booking: React.FC = () => {
                 </div>
               )}
               
-              {selectedSlot && (
+              {selectedSlots.length > 0 && (
                 <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20">
-                  <div className="flex items-center gap-2 text-primary font-medium">
+                  <div className="flex items-center gap-2 text-primary font-medium mb-2">
                     <Clock className="h-4 w-4" />
                     <span>
-                      {i18n.language === "de" ? "Ausgewählt:" : "Selected:"} {selectedSlot}
-                      {date && ` - ${format(date, "dd.MM.yyyy")}`}
+                      {i18n.language === "de" 
+                        ? `Ausgewählt (${selectedSlots.length} ${selectedSlots.length === 1 ? 'Slot' : 'Slots'}):` 
+                        : `Selected (${selectedSlots.length} ${selectedSlots.length === 1 ? 'slot' : 'slots'}):`
+                      }
                     </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSlots.map((slot) => (
+                      <span key={slot} className="inline-flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary text-xs rounded-md">
+                        {slot}
+                        {date && ` • ${format(date, "dd.MM.yyyy")}`}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="mt-2 text-sm text-muted-foreground">
+                    {i18n.language === "de" 
+                      ? `Gesamtpreis: €${(selectedSlots.length * 14.99).toFixed(2)}` 
+                      : `Total price: €${(selectedSlots.length * 14.99).toFixed(2)}`
+                    }
                   </div>
                 </div>
               )}
@@ -271,24 +306,34 @@ const Booking: React.FC = () => {
           </Card>
 
           {/* Booking Summary */}
-          {date && selectedSlot && (
+          {date && selectedSlots.length > 0 && (
             <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center">
                     <Users className="h-5 w-5 text-white" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h3 className="font-semibold text-primary">
-                      {i18n.language === "de" ? "Deine Session ist bereit!" : "Your session is ready!"}
+                      {i18n.language === "de" 
+                        ? `Deine ${selectedSlots.length === 1 ? 'Session ist' : 'Sessions sind'} bereit!` 
+                        : `Your ${selectedSlots.length === 1 ? 'session is' : 'sessions are'} ready!`
+                      }
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {format(date, "EEEE, dd. MMMM yyyy", { locale })} • {selectedSlot} • 
+                      {format(date, "EEEE, dd.MM.yyyy", { locale })} • 
                       {i18n.language === "de" 
                         ? ` Kalenderwoche ${getWeek(date)}`
                         : ` Week ${getWeek(date)}`
                       }
                     </p>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {selectedSlots.map((slot, index) => (
+                        <span key={slot} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                          {slot}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -310,7 +355,8 @@ const Booking: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="phone">{t("booking.form.phone")}</Label>
-              <Input id="phone" {...register("phone")} />
+              <Input id="phone" {...register("phone", { required: true })} />
+              {errors.phone && <p className="text-sm text-destructive mt-1">{t("common.required", { defaultValue: "Required" })}</p>}
             </div>
             <div>
               <Label htmlFor="level">{t("booking.form.level")}</Label>

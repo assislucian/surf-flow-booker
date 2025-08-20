@@ -6,11 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 export type PendingBooking = {
   name: string;
   email: string;
-  phone?: string;
+  phone: string;
   level: string;
   notes?: string;
-  date: string; // yyyy-MM-dd
-  slot: string; // HH:mm
+  date: string; // dd.MM.yyyy
+  slots: string[]; // ["HH:mm - HH:mm", ...]
   createdAt: number;
 };
 
@@ -18,13 +18,14 @@ export async function createPaymentSession(
   pending: PendingBooking,
   opts?: { amountCents?: number; currency?: string }
 ): Promise<{ url: string }> {
-  const amountCents = opts?.amountCents ?? 1499;
+  const pricePerSlot = opts?.amountCents ?? 1499;
+  const totalAmount = pricePerSlot * pending.slots.length;
   const currency = (opts?.currency ?? "eur").toLowerCase();
   const origin = window.location.origin;
   const { data, error } = await supabase.functions.invoke("create-payment", {
     body: {
       pending,
-      amountCents,
+      amountCents: totalAmount,
       currency,
       successUrl: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${origin}/payment-canceled`,
