@@ -164,8 +164,8 @@ const Booking: React.FC = () => {
                           </span>
                           <span className="text-xs text-muted-foreground">
                             {i18n.language === "de" 
-                              ? `Kalenderwoche ${getWeek(date)} • Week ${getWeek(date)}`
-                              : `Week ${getWeek(date)} • Kalenderwoche ${getWeek(date)}`
+                              ? `Kalenderwoche ${getWeek(date)}`
+                              : `Week ${getWeek(date)}`
                             }
                           </span>
                         </div>
@@ -180,7 +180,13 @@ const Booking: React.FC = () => {
                       selected={date}
                       onSelect={setDate}
                       initialFocus
-                      disabled={(date) => date < new Date()}
+                      disabled={(date) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const checkDate = new Date(date);
+                        checkDate.setHours(0, 0, 0, 0);
+                        return checkDate < today;
+                      }}
                       className="p-3 pointer-events-auto"
                       locale={locale}
                     />
