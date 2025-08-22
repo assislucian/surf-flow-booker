@@ -23,3 +23,19 @@ verify_jwt = false
 
 [functions.send-email]
 verify_jwt = false
+
+# Public email functions used by the frontend
+[functions.send-welcome-email]
+verify_jwt = false
+
+[functions.send-password-reset]
+verify_jwt = false
+
+[functions.send-cancellation-email]
+verify_jwt = false
+
+[functions.send-account-deletion-email]
+verify_jwt = false
+
+[functions.send-subscription-email]
+verify_jwt = false

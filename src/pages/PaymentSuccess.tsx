@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const PaymentSuccess: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [details, setDetails] = React.useState<any | null>(null);
+  const [details, setDetails] = React.useState<any[] | null>(null);
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -21,11 +21,23 @@ const PaymentSuccess: React.FC = () => {
           body: { sessionId },
         });
         if (error) throw error;
-        const booking = (data as any)?.booking;
-        if (booking) {
-          setDetails(booking);
-          // Send confirmation email (non-blocking) 
-          sendConfirmationEmail(booking, i18n.language).catch((err) => console.error("email error", err));
+        const bookings = (data as any)?.bookings as any[] | undefined;
+        if (bookings && bookings.length) {
+          setDetails(bookings);
+          // Build a consolidated booking payload for email
+          const first = bookings[0];
+          const combined = {
+            name: first.name,
+            email: first.email,
+            phone: first.phone ?? "",
+            level: first.level ?? "",
+            notes: first.notes ?? "",
+            date: first.date,
+            slots: bookings.map((b: any) => b.slot),
+            createdAt: Date.now(),
+          };
+          // Send confirmation email (non-blocking)
+          sendConfirmationEmail(combined as any, i18n.language).catch((err) => console.error("email error", err));
         }
       } catch (err) {
         console.error("verify-payment error", err);
@@ -48,11 +60,15 @@ const PaymentSuccess: React.FC = () => {
         {t("payment.success.desc", { defaultValue: "Deine Buchung ist bestätigt. Eine Bestätigungsmail wird gesendet." })}
       </p>
 
-      {details && (
+      {details && details.length > 0 && (
         <article className="mt-6 rounded-xl border bg-card p-6 shadow-[var(--shadow-elegant)]">
           <h2 className="text-lg font-medium">{i18n.language === 'de' ? 'Buchungsdetails' : 'Booking details'}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">{details.date} – {details.slot}</p>
-          <p className="mt-1 text-sm">{details.name} · {details.email}</p>
+          <ul className="mt-2 text-sm text-muted-foreground">
+            {details.map((b: any, i: number) => (
+              <li key={i}>{b.date} – {b.slot}</li>
+            ))}
+          </ul>
+          <p className="mt-2 text-sm">{details[0].name} · {details[0].email}</p>
         </article>
       )}
 
